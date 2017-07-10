@@ -79,11 +79,11 @@
     //arGame.html
 
     Game.debug = true;
+    //var noCam = true;
 
     function loadGame() {
         createGame(); //game/js/games/demo.js
-        var notTesting = true;
-        if (notTesting) {
+        if (!window.noCam) {
             loadAR(function () {
                 Game.scene.add(Game.sceneGroup);
                 animate();
@@ -142,7 +142,7 @@
         Game.renderer.autoClear = false;
 //        Game.renderer.clear();
 
-        if (false) {
+        if (!window.noCam) {
             if (!AR.mediaExists) { //simulate marker position in space with render
                 simUpdate();
             } else {
