@@ -1,5 +1,11 @@
 function getMedia(callback) {
     var mediaFounded = false;
+    
+    if(!MediaStreamTrack.getSources){
+        console.log("!MediaStreamTrack.getSources");
+        callback(false);
+        return;
+    }
 
     MediaStreamTrack.getSources(function(media_sources) {
 
