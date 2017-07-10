@@ -1,19 +1,25 @@
 function getMedia(callback) {
     var mediaFounded = false;
-    
-    if(!MediaStreamTrack.getSources){
+
+    if (!MediaStreamTrack.getSources) {
         console.log("!MediaStreamTrack.getSources");
         $("#loading").text("!MediaStreamTrack.getSources");
-        callback(false);
+        callback(true);
         return;
     }
 
-    MediaStreamTrack.getSources(function(media_sources) {
+    connection.enumerateDevices(function (devices) {
+        devices.forEach(function (device) {
+            // device.kind == 'audioinput' || 'audiooutput' || 'audio' // device.kind == 'videoinput' || 'videooutput' || 'video' // device.deviceId // connection.selectDevices('deviceId'); // connection.captureUserMedia(); }); });
+        });
+    });
+
+    MediaStreamTrack.getSources(function (media_sources) {
 
         for (var i = 0; i < media_sources.length; i++) {
             if (media_sources[i].kind == 'video' && media_sources[i].facing == "environment" && !mediaFounded) {
                 mediaFounded = true;
-                getAllUserMedias(media_sources[i], function(media) {
+                getAllUserMedias(media_sources[i], function (media) {
                     if (media) {
                         callback(true);
                     } else {
@@ -28,7 +34,7 @@ function getMedia(callback) {
         for (var i = 0; i < media_sources.length; i++) {
             if (media_sources[i].kind == 'video' && !mediaFounded) {
                 mediaFounded = true;
-                getAllUserMedias(media_sources[i], function(media) {
+                getAllUserMedias(media_sources[i], function (media) {
                     if (media) {
                         callback(true);
                     } else {
@@ -81,12 +87,12 @@ function getAllUserMedias(media_source, callback) {
         throw new Error("URL.createObjectURL not found.");
     }
     getUserMedia(constraints,
-            function(stream) {
+            function (stream) {
                 var url = createObjectURL(stream);
                 AR.video.src = url;
 
                 //get video size!
-                AR.video.addEventListener('playing', function() {
+                AR.video.addEventListener('playing', function () {
                     console.log("AR.video.videoWidth = " + AR.video.videoWidth);
                     console.log("AR.video.videoHeight = " + AR.video.videoHeight);
 
@@ -95,7 +101,7 @@ function getAllUserMedias(media_source, callback) {
 
                 callback(media_source);
             },
-            function(str) {
+            function (str) {
                 console.log(str);
                 alert("Couldn't access camera: " + str.name);
                 callback(false);
