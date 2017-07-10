@@ -1,0 +1,441 @@
+<style>
+    #container {
+        position:absolute;
+        top:0;
+        left:0;
+        width: 50%;
+        height: 100%;
+        /*overflow: clip;*/
+        z-index: 99;
+    }
+    #box {
+        position: absolute;
+        width: 150px;
+        height: 120px;
+        border: 1px solid red;
+        transform-origin: 0 0;
+        -webkit-transform-origin: 0 0;
+        -moz-transform-origin: 0 0;
+        -o-transform-origin: 0 0;
+    }
+    .corner {
+        position: absolute;
+        border: 1px solid blue;
+    }
+
+    #values{
+        background-color: red;
+        position: absolute;
+        right:0;
+        top:0;
+    }
+    #values td{
+        width: 30px;
+        padding: 5px;
+    }
+</style>
+
+
+<div id="loading" style="position:absolute; top:0; left:0">Loading...</div>
+
+<div id="G_interface">
+    <div id="G_stats">
+        <div id="G_statsBorder"></div>
+        <div id="G_statsContent">
+
+        </div>
+
+
+        <table id="values">
+            <tr>
+                <td id="td1"></td>
+                <td id="td2"></td>
+                <td id="td3"></td>
+                <td id="td4"></td>
+            </tr>
+            <tr>
+                <td id="td5"></td>
+                <td id="td6"></td>
+                <td id="td7"></td>
+                <td id="td8"></td>
+            </tr>
+            <tr>
+                <td id="td9"></td>
+                <td id="td10"></td>
+                <td id="td11"></td>
+                <td id="td12"></td>
+            </tr>
+            <tr>
+                <td id="td13"></td>
+                <td id="td14"></td>
+                <td id="td15"></td>
+                <td id="td16"></td>
+            </tr>
+        </table>
+
+    </div>    
+</div>
+
+<div id="container">
+    <div id="box">
+        <p>This is a test.</p>
+    </div>
+    <div id="marker0" class="corner">TL</div>
+    <div id="marker2" class="corner">TR</div>
+    <div id="marker4" class="corner">BL</div>
+    <div id="marker6" class="corner">BR</div>
+</div>
+
+
+
+<!-- GLOBAL TREE OBJECTS -->
+<script src="js/objects.js"></script>
+
+<!-- GLOBAL MATH -->
+<script src="js/math/math_2D.js"></script>
+<script src="js/math/math_3D.js"></script>
+
+<!--GLOBAL MODEL-->
+<script src="js/model/global_geometries.js"></script>
+<script src="js/model/global_materials.js"></script>
+
+<!--BUILDING MODELS-->
+<script src="js/model/building/building_materials.js"></script>
+<script src="js/model/building/demos/cube.js"></script>
+<script src="js/model/building/Building.js"></script>
+
+<!-- UNIT MODELS -->
+<script src="js/model/unit/unit_materials.js"></script>
+<script src="js/model/unit/unit_geometries.js"></script>
+<script src="js/model/unit/geometries/low/body.js"></script>
+<script src="js/model/unit/geometries/low/arms.js"></script>
+<script src="js/model/unit/geometries/low/weapon.js"></script>
+<script src="js/model/unit/geometries/low/shield.js"></script>
+<script src="js/model/unit/geometries/low/legs.js"></script>
+<script src="js/model/unit/geometries/low/head.js"></script>
+<script src="js/model/unit/Unit.js"></script>
+<script src="js/model/unit/unit_actions.js"></script>
+<script src="js/model/unit/unit_path.js"></script>
+<script src="js/model/unit/unit_mapImplementation.js"></script>
+
+<!-- MAP MODELS -->
+<script src="js/model/map/demos/map_footmen.js"></script>
+<script src="js/model/map/map_construction.js"></script>
+<script src="js/model/map/map_materials.js"></script>
+<script src="js/model/map/map_geometries.js"></script>
+
+<!-- MAP -->
+<script src="js/PC/pc_mouseEvents.js"></script>
+<script src="game/js/game_draw.js"></script>
+<script src="game/js/game_pathfinder.js"></script>
+
+<!--PLAYER-->
+<script src="game/js/game_Player.js"></script>
+
+<!--GAME-->
+<script src="game/js/games/demo.js"></script>
+
+<!--AugmentedReality-->
+<script src="js/AR/ar_load.js"></script>
+<script src="js/AR/markerManage.js"></script>
+
+<!--CAMERA SIMULATION-->
+<script src="js/PC/pc_OrbitControls.js"></script>
+<script src="js/PC/camSimulation.js"></script>
+
+<script>
+    //arGame.html
+
+    Game.debug = true;
+
+    function loadGame() {
+
+        createGame();
+
+        loadAR(function() {
+            animate();
+        });
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        var math = Game.math;
+        math.delta = math.clock.getDelta();
+        update(math.delta);
+    }
+
+    function update(delta) {
+
+        /////////////////////////////////////////////////////////////////////
+        // GAME OBJECTS
+        Game.map.unitsWorld = null;
+        for (var pl = 0; pl < Game.players.length; pl++) {
+            var units = Game.players[0].units;
+            for (var i = 0; i < units.length; i++) {
+                units[i].action(delta);
+            }
+            var buildings = Game.players[0].buildings;
+            for (var i = 0; i < buildings.length; i++) {
+                buildings[i].action(delta);
+            }
+        }
+        /////////////////////////////////////////////////////////////////////
+
+        Game.renderer.clear();
+
+        if (!AR.mediaExists) {
+            simUpdate();
+        }
+        updateAR();
+
+        Game.renderer.render(Game.scene, Game.camera);
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function oscar(o1, o2, o3, p1, p2, p3) {
+
+        var r1, r2, r3, r4, r7, r8;
+
+        var detA = o2.y / p2.x * 1 / p3.x - 1 / p2.x * o3.y / p3.x;
+        var detB = o2.x / p2.x * 1 / p3.x - 1 / p2.x * o3.x / p3.x;
+        var detC = o2.x / p2.x * o3.y / p3.x - o2.y / p2.x * o3.x / p3.x;
+
+        var det = o1.x / p1.x * detA + o1.y / p1.x * detB + 1 / p1.x * detC;
+
+//        var inverse1 = [[//r1,r3,r7
+//                detA,
+//                detB,
+//                detC
+//            ], [
+//                o1.y / p1.x * 1 / p3.x - 1 / p1.x * o3.y / p3.x,
+//                o1.x / p1.x * 1 / p3.x - 1 / p1.x * o3.x / p3.x,
+//                o1.x / p1.x * o3.y / p3.x - o1.y / p1.x * o3.x / p3.x
+//            ], [
+//                o1.y / p1.x * 1 / p2.x - 1 / p1.x * o2.y / p2.x,
+//                o1.x / p1.x * 1 / p2.x - 1 / p1.x * o2.x / p2.x,
+//                o1.x / p1.x * o2.y / p2.x - o1.y / p1.x * o2.x / p2.x
+//            ]];
+
+        r1 = (detA + detB + detC) / det;
+        r3 = (o1.y / p1.x * 1 / p3.x - 1 / p1.x * o3.y / p3.x + o1.x / p1.x * 1 / p3.x - 1 / p1.x * o3.x / p3.x + o1.x / p1.x * o3.y / p3.x - o1.y / p1.x * o3.x / p3.x) / det;
+        r7 = (o1.y / p1.x * 1 / p2.x - 1 / p1.x * o2.y / p2.x + o1.x / p1.x * 1 / p2.x - 1 / p1.x * o2.x / p2.x + o1.x / p1.x * o2.y / p2.x - o1.y / p1.x * o2.x / p2.x) / det;
+
+
+        var detA = o2.y / p2.y * 1 / p3.y - 1 / p2.y * o3.y / p3.y;
+        var detB = o2.x / p2.y * 1 / p3.y - 1 / p2.y * o3.x / p3.y;
+        var detC = o2.x / p2.y * o3.y / p3.y - o2.y / p2.y * o3.x / p3.y;
+
+        var det = o1.x / p1.y * detA + o1.y / p1.y * detB + 1 / p1.y * detC;
+
+//        var inverse2 = [[//r2,r4,r8
+//                detA,
+//                detB,
+//                detC
+//            ], [
+//                o1.y / p1.y * 1 / p3.y - 1 / p1.y * o3.y / p3.y,
+//                o1.x / p1.y * 1 / p3.y - 1 / p1.y * o3.x / p3.y,
+//                o1.x / p1.y * o3.y / p3.y - o1.y / p1.y * o3.x / p3.y,
+//            ], [
+//                o1.y / p1.y * 1 / p2.y - 1 / p1.y * o2.y / p2.y,
+//                o1.x / p1.y * 1 / p2.y - 1 / p1.y * o2.x / p2.y,
+//                o1.x / p1.y * o2.y / p2.y - o1.y / p1.y * o2.x / p2.y,
+//            ]];
+
+        r2 = (detA + detB + detC) / det;
+        r4 = (o1.y / p1.y * 1 / p3.y - 1 / p1.y * o3.y / p3.y + o1.x / p1.y * 1 / p3.y - 1 / p1.y * o3.x / p3.y + o1.x / p1.y * o3.y / p3.y - o1.y / p1.y * o3.x / p3.y) / det;
+        r8 = (o1.y / p1.y * 1 / p2.y - 1 / p1.y * o2.y / p2.y + o1.x / p1.y * 1 / p2.y - 1 / p1.y * o2.x / p2.y + o1.x / p1.y * o2.y / p2.y - o1.y / p1.y * o2.x / p2.y) / det;
+
+//        var matrix = [[r1, r3, 0, r7], [r2, r4, 0, r8], [0, 0, 1, 0], [0, 0, 0, 1]];
+
+        return [r1, r3, 0, r7, r2, r4, 0, r8, 0, 0, 1, 0, 0, 0, 0, 1];
+
+//        r1 = (p1.x - r7 - o1.y * r3) / o1.x;
+//
+//        o1.x * r1 + o1.y * r3 + r7 = p1.x;
+//                o2.x * r1 + o2.y * r3 + r7 = p2.x;
+//                o3.x * r1 + o3.y * r3 + r7 = p3.x;
+//                o4.x * r1 + o4.y * r3 + r7 = p4.x;
+//                
+//                o1.x * r2 + o1.y * r4 + r8 = p1.y;
+//                o2.x * r2 + o2.y * r4 + r8 = p2.y;
+//                o3.x * r2 + o3.y * r4 + r8 = p3.y;
+//                o4.x * r2 + o4.y * r4 + r8 = p4.y;
+    }
+
+    function adj(m) { // Compute the adjugate of m
+        return [
+            m[4] * m[8] - m[5] * m[7], m[2] * m[7] - m[1] * m[8], m[1] * m[5] - m[2] * m[4],
+            m[5] * m[6] - m[3] * m[8], m[0] * m[8] - m[2] * m[6], m[2] * m[3] - m[0] * m[5],
+            m[3] * m[7] - m[4] * m[6], m[1] * m[6] - m[0] * m[7], m[0] * m[4] - m[1] * m[3]
+        ];
+    }
+
+    function multmm(a, b) { // multiply two matrices
+        var c = Array(9);
+        for (var i = 0; i != 3; ++i) {
+            for (var j = 0; j != 3; ++j) {
+                var cij = 0;
+                for (var k = 0; k != 3; ++k) {
+                    cij += a[3 * i + k] * b[3 * k + j];
+                }
+                c[3 * i + j] = cij;
+            }
+        }
+        return c;
+    }
+
+    function multmv(m, v) { // multiply matrix and vector
+        return [
+            m[0] * v[0] + m[1] * v[1] + m[2] * v[2],
+            m[3] * v[0] + m[4] * v[1] + m[5] * v[2],
+            m[6] * v[0] + m[7] * v[1] + m[8] * v[2]
+        ];
+    }
+
+    function pdbg(m, v) {
+        var r = multmv(m, v);
+        return r + " (" + r[0] / r[2] + ", " + r[1] / r[2] + ")";
+    }
+
+    function basisToPoints(x1, y1, x2, y2, x3, y3, x4, y4) {
+        var m = [
+            x1, x2, x3,
+            y1, y2, y3,
+            1, 1, 1
+        ];
+        var v = multmv(adj(m), [x4, y4, 1]);
+        return multmm(m, [
+            v[0], 0, 0,
+            0, v[1], 0,
+            0, 0, v[2]
+        ]);
+    }
+
+    function general2DProjection(
+            x1s, y1s, x1d, y1d,
+            x2s, y2s, x2d, y2d,
+            x3s, y3s, x3d, y3d,
+            x4s, y4s, x4d, y4d
+            ) {
+        var s = basisToPoints(x1s, y1s, x2s, y2s, x3s, y3s, x4s, y4s);
+        var d = basisToPoints(x1d, y1d, x2d, y2d, x3d, y3d, x4d, y4d);
+        return multmm(d, adj(s));
+    }
+
+    function project(m, x, y) {
+        var v = multmv(m, [x, y, 1]);
+        return [v[0] / v[2], v[1] / v[2]];
+    }
+
+    var finalMatrix;
+    function transform2d(elt, x1, y1, x2, y2, x3, y3, x4, y4) {
+        var w = elt.offsetWidth, h = elt.offsetHeight;
+        var t = general2DProjection
+                (0, 0, x1, y1, w, 0, x2, y2, 0, h, x3, y3, w, h, x4, y4);
+        for (i = 0; i != 9; ++i) {
+            t[i] = t[i] / t[8];
+        }
+        finalMatrix = t = [t[0], t[3], 0, t[6],
+            t[1], t[4], 0, t[7],
+            0, 0, 1, 0,
+            t[2], t[5], 0, t[8]];
+
+
+        id("td1", t[0]);
+        id("td2", t[4]);
+        id("td3", t[8]);
+        id("td4", t[12]);
+
+        id("td5", t[1]);
+        id("td6", t[5]);
+        id("td7", t[9]);
+        id("td8", t[13]);
+
+        id("td9", t[2]);
+        id("td10", t[6]);
+        id("td11", t[10]);
+        id("td12", t[14]);
+
+        id("td13", t[3]);
+        id("td14", t[7]);
+        id("td15", t[11]);
+        id("td16", t[15]);
+
+        function id(id, num) {
+            return document.getElementById(id).innerHTML = round(num);
+        }
+
+//        console.log(
+//                round(t[0]) + " , " + round(t[1]) + " , " + round(t[2]) + " , " + round(t[3]) + "\n , " +
+//                round(t[4]) + " , " + round(t[5]) + " , " + round(t[6]) + " , " + round(t[7]) + "\n , " +
+//                round(t[8]) + " , " + round(t[9]) + " , " + round(t[10]) + " , " + round(t[11]) + "\n , " +
+//                round(t[12]) + " , " + round(t[13]) + " , " + round(t[14]) + " , " + round(t[15])
+//                );
+
+
+        t = "matrix3d(" + t.join(", ") + ")";
+
+        elt.style["-webkit-transform"] = t;
+        elt.style["-moz-transform"] = t;
+        elt.style["-o-transform"] = t;
+        elt.style.transform = t;
+    }
+    function round(num) {
+        return Math.round(num * 100) / 100;
+    }
+
+    corners = [
+        100, 100,
+        300, 100,
+        100, 300,
+        300, 300
+    ];
+    function updateMatrix() {
+        var box = document.getElementById("box");
+
+        transform2d(box,
+                corners[0], corners[1], //x, y
+                corners[2], corners[3],
+                corners[4], corners[5],
+                corners[6], corners[7]);
+
+        for (var i = 0; i != 8; i += 2) {
+            var elt = document.getElementById("marker" + i);
+            elt.style.left = corners[i] + "px";
+            elt.style.top = corners[i + 1] + "px";
+        }
+    }
+
+    function move(evnt) {
+        if (currentcorner < 0) {
+            return;
+        }
+        corners[currentcorner] = evnt.pageX;
+        corners[parseInt(currentcorner) + 1] = evnt.pageY;
+        updateMatrix();
+    }
+
+    currentcorner = -1;
+    updateMatrix();
+
+    $(".corner").mousedown(function(e) {
+        var id = $(this).attr("id");
+        var num = id[id.length - 1];
+        currentcorner = num;
+
+        move(e);
+    });
+
+    window.addEventListener('mouseup', function(evnt) {
+        currentcorner = -1;
+    });
+
+    window.addEventListener('mousemove', move);
+</script>
+
+<!-- 3D INITIALIZATION (at the end!)-->
+<script src="js/3Dbuild.js"></script>

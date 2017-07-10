@@ -1,0 +1,123 @@
+
+<div id="G_interface">
+    <div id="G_stats">
+        <div id="G_statsBorder"></div>
+        <div id="G_statsContent">
+
+            Map size:
+            <input id="map_resize" style="width: 50px"/>
+
+            <div class="G_session">
+                <br/><br/>
+                LOAD MODEL:<br/>
+                <select id="unit_select" style="width:120px"></select> 
+                <span id="unit_load" class="link">load</span>
+                <br/>
+                <input id="G_finderButton" type="button" value="find public maps"/>
+
+                <br/><br/>
+                SAVE MODEL:<br/>
+                <input id="unit_name" placeholder="map name"/><br/>
+                <input id="unit_public" type="checkbox"/> <span>public</span><br/>
+                <input id="unit_save" type="button" value="save"/>
+
+                <br/><br/>
+                LOAD MATERIAL:<br/>
+                <select id="unit_buildSelect" style="width:120px"></select> 
+                <span id="unit_buildLoad" class="link">pick</span>
+                <br/>
+                <input id="unit_buildFinderButton" type="button" value="find public building"/>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- PC CONTROLS -->
+<script src="js/PC/pc_OrbitControls.js"></script>
+
+<!-- MATH -->
+<script src="js/objects.js"></script>
+<script src="js/math/math_2D.js"></script>
+<script src="js/math/math_3D.js"></script>
+
+<script src="game/js/game_Player.js"></script>
+
+<!-- MODEL 3D (unit) -->
+<script src="js/model/unit/geometries/low/body.js"></script>
+<script src="js/model/unit/geometries/low/arms.js"></script>
+<script src="js/model/unit/geometries/low/weapon.js"></script>
+<script src="js/model/unit/geometries/low/shield.js"></script>
+<script src="js/model/unit/geometries/low/legs.js"></script>
+<script src="js/model/unit/geometries/low/head.js"></script>
+<script src="js/model/unit/Unit.js"></script>
+<script src="js/model/unit/unit_materials.js"></script>
+<script src="js/model/unit/unit_actions.js"></script>
+
+<!--AugmentedReality-->
+<script src="js/AR/ar_load.js"></script>
+<script src="js/AR/markerManage.js"></script>
+
+<!--CAMERA SIMULATION-->
+<script src="js/PC/pc_OrbitControls.js"></script>
+<script src="js/PC/camSimulation.js"></script>
+
+<!-- INTERFACE -->
+<script src="makers/unitMaker/js/unitMaker_mouse.js"></script>
+
+<script>
+
+    function loadGame() {
+        Game.camera.position.set(20, 20, 20);
+
+        var unitMaker = {};
+        // first unit
+        unitMaker.unit = new Unit();
+        unitMaker.unit.model.position.z = -10;
+        Game.scene.add(unitMaker.unit.model);
+
+        loadAR(function() {
+            animate();
+        });
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        var math = Game.math;
+
+        math.delta = math.clock.getDelta();
+        update(math.delta);
+    }
+
+    function update(delta) {
+        for (var i = 0; i < Game.model.unit.all.length; i++) {
+            Game.model.unit.all[i].action(delta);
+        }
+
+            
+        if (!AR.mediaExists) {
+            simUpdate();
+            
+        }else{
+            updateAR();
+            Game.renderer.render(Game.scene, Game.camera);
+        }
+    }
+
+</script>
+
+<script src="js/3Dbuild.js"></script>
+
+<script src="makers/unitMaker/js/unitMaker_interface.js"></script>
+
+<!--EXPORTER-->
+<script src="js/libraries/three/BufferGeometryExporter.js"></script>
+<script src="js/libraries/three/GeometryExporter.js"></script>
+
+<script src="js/libraries/three/OBJExporter.js"></script>
+<script src="js/libraries/three/ObjectExporter.js"></script>
+<script src="js/libraries/three/MaterialExporter.js"></script>
+<script src="js/libraries/three/SceneExporter.js"></script>
+
+

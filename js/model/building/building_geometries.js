@@ -1,0 +1,5 @@
+
+Game.model.building.geometries = {
+    
+};
+

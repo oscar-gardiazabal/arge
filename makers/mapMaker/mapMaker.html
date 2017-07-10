@@ -1,0 +1,120 @@
+
+<link rel='stylesheet' href='css/map.css'>
+
+<div id="infoButton"></div>
+<div id="infoBox"></div>
+
+<div id="G_interface">
+    <div id="G_stats">
+        <div id="G_statsBorder"></div>
+        <div id="G_statsContent">
+
+            Map size:
+            <input id="map_resize" style="width: 50px"/>
+
+            <div class="G_session">
+                <br/><br/>
+                LOAD MAP:<br/>
+                <select id="map_select" style="width:120px"></select> 
+                <span id="map_load" class="link">load</span>
+                <br/>
+                <input id="map_finderButton" type="button" value="find public maps"/>
+
+                <br/><br/>
+                SAVE MAP:<br/>                     
+                <input id="map_name" placeholder="map name"/><br/>
+                <input id="map_public" type="checkbox"/> <span>public</span><br/>
+                <input id="map_save" type="button" value="save"/>
+
+                <br/><br/>
+                LOAD BUILDING:<br/>
+                <select id="map_buildSelect" style="width:120px"></select> 
+                <span id="map_buildLoad" class="link">pick</span>
+                <br/>
+                <input id="map_buildFinderButton" type="button" value="find public building"/>
+
+            </div>
+
+        </div>
+    </div>    
+</div>
+
+<!-- PC CONTROLS -->
+<script src="js/PC/pc_OrbitControls.js"></script>
+
+<!-- GLOBAL TREE OBJECTS -->
+<script src="js/objects.js"></script>
+
+<!-- GLOBAL MATH -->
+<script src="js/math/math_2D.js"></script>
+<script src="js/math/math_3D.js"></script>
+
+<!-- UNIT MODEL 3D -->
+<script src="makers/unitMaker/models/low/body.js"></script>
+<script src="makers/unitMaker/models/low/arms.js"></script>
+<script src="makers/unitMaker/models/low/weapon.js"></script>
+<script src="makers/unitMaker/models/low/shield.js"></script>
+<script src="makers/unitMaker/models/low/legs.js"></script>
+<script src="makers/unitMaker/models/low/head.js"></script>
+<script src="js/unit/Unit.js"></script>
+
+<!-- GLOBAL MAP MODELS -->
+<script src="js/map/demos/map_footmen.js"></script>
+<script src="js/map/map_construction.js"></script>
+<script src="js/map/map_materials.js"></script>
+<script src="js/map/map_geometries.js"></script>
+
+<!-- MAP MAKER -->
+<script src="makers/mapMaker/js/mapMaker_mouse.js"></script>
+<script src="makers/mapMaker/js/mapMaker_draw.js"></script>
+
+<!--AugmentedReality-->
+<script src="js/AR/ar_load.js"></script>
+<script src="js/AR/markerManage.js"></script>
+
+<!--CAMERA SIMULATION-->
+<script src="js/PC/pc_OrbitControls.js"></script>
+<script src="js/PC/camSimulation.js"></script>
+
+<!-- GLOBAL INTERFACES -->
+<script src="js/interface/drawCanvasMap.js"></script>
+
+<script>
+    
+    function loadGame() {
+        // WORLD
+        createWorld(); //js/map/demos
+        drawMap(Game.map.world.length);
+
+        //Game.light.shadowCameraVisible = true; // only for debugging
+
+        // first unit
+        var unit = new Unit("original", 1, 1);
+        Game.model.unit.all.push(unit);
+        Game.sceneGroup.add(unit.model);
+
+        loadAR(function() {
+            animate();
+        });
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        update();
+    }
+    function update() {
+        
+        
+        
+        Game.controls.update();
+        Game.renderer.clear();
+        Game.renderer.render(Game.scene, Game.camera);
+    }
+</script>
+<!--  -->
+
+<!-- 3D INITIALIZATION -->
+<script src="js/3Dbuild.js"></script>
+
+<!-- MAP-MAKER INTERFACE -->
+<script src="makers/mapMaker/js/mapMaker_Interface.js"></script>

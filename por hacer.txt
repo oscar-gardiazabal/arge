@@ -1,0 +1,5 @@
+- create jsartoolkit mod
+
+- reduce video resolution calculations vs visual video
+
+

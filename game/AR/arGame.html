@@ -1,0 +1,165 @@
+
+<div id="loading" style="position:absolute; top:0; left:0">Loading...</div>
+
+<div id="G_interface">
+    <div id="G_stats">
+        <div id="G_statsBorder"></div>
+        <div id="G_statsContent">
+        </div>
+    </div>    
+</div>
+
+<div id="icons"></div>
+
+<canvas id='debugCanvas' width="600" height="480" style="position:absolute;right:0; top:0"></canvas>
+<script> var DEBUG = true;</script>
+
+<!-- LIBRARIES -->
+<script src="js/libraries/jquery/jquery.mobile.custom.min.js"></script>
+
+<!-- GLOBAL TREE OBJECTS -->
+<script src="js/objects.js"></script>
+
+<!-- GLOBAL MATH -->
+<script src="js/math/math_2D.js"></script>
+<script src="js/math/math_3D.js"></script>
+
+<!--GLOBAL MODEL-->
+<script src="js/model/global_geometries.js"></script>
+<script src="js/model/global_materials.js"></script>
+
+<!--BUILDING MODELS-->
+<script src="js/model/building/building_materials.js"></script>
+<script src="js/model/building/demos/cube.js"></script>
+<script src="js/model/building/Building.js"></script>
+<script src="js/model/building/building_actions.js"></script>
+
+<!-- UNIT MODELS -->
+<script src="js/model/unit/unit_materials.js"></script>
+<script src="js/model/unit/geometries/low/body.js"></script>
+<script src="js/model/unit/geometries/low/arms.js"></script>
+<script src="js/model/unit/geometries/low/weapon.js"></script>
+<script src="js/model/unit/geometries/low/shield.js"></script>
+<script src="js/model/unit/geometries/low/legs.js"></script>
+<script src="js/model/unit/geometries/low/head.js"></script>
+<script src="js/model/unit/Unit.js"></script>
+<script src="js/model/unit/unit_actions.js"></script>
+<script src="js/model/unit/unit_path.js"></script>
+<script src="js/model/unit/unit_mapImplementation.js"></script>
+
+<!-- MAP MODELS -->
+<script src="js/model/map/demos/map_footmen.js"></script>
+<script src="js/model/map/map_construction.js"></script>
+<script src="js/model/map/map_materials.js"></script>
+<script src="js/model/map/map_geometries.js"></script>
+
+<!-- MAP -->
+<script src="js/interface/mouseEvents.js"></script>
+<script src="game/AR/ar_mouseEvents.js"></script>
+<!--<script src="game/PC/pc_mouseEvents.js"></script>-->
+<script src="game/js/game_draw.js"></script>
+<script src="game/js/game_pathfinder.js"></script>
+
+<!--PLAYER-->
+<script src="game/js/game_Player.js"></script>
+
+<!--GAME-->
+<script src="game/js/games/demo.js"></script>
+
+<!--AugmentedReality-->
+<script src="js/AR/ar_load.js"></script>
+<script src="js/AR/markerManage.js"></script>
+
+<!--CAMERA SIMULATION-->
+<script src="js/interface/disableDefaultEvents.js"></script>
+<script src="js/PC/pc_OrbitControls.js"></script>
+<script src="js/PC/ARcamSimulation.js"></script>
+
+<script>
+    //arGame.html
+
+    Game.debug = true;
+
+    function loadGame() {
+        createGame(); //game/js/games/demo.js
+        if (false) {
+            loadAR(function () {
+                Game.scene.add(Game.sceneGroup);
+                animate();
+            });
+
+        } else {
+            var ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 10000;
+            Game.camera = new THREE.PerspectiveCamera(45, ASPECT, NEAR, FAR);
+            Game.camera.up.set(0, 0, 1);
+            Game.camera.position.set(-1, -1, 150);
+
+            Game.controls = new THREE.OrbitControls(Game.camera, Game.renderer.domElement);
+            Game.controls.center = new THREE.Vector3(150, 150, 0);
+            Game.controls.userPanSpeed = 10;
+
+            Game.scene.add(Game.sceneGroup);
+            animate();
+        }
+    }
+
+    var now, elapsed, then = 0;
+    var fpsInterval = 1000 / 20;
+    function animate() {
+        requestAnimationFrame(animate);
+
+        now = Date.now();
+        elapsed = now - then;
+
+        if (elapsed > fpsInterval) {
+            then = now - (elapsed % fpsInterval);
+
+            var math = Game.math;
+            math.delta = math.clock.getDelta();
+            update(math.delta);
+        }
+
+    }
+
+    function update(delta) {
+        /////////////////////////////////////////////////////////////////////
+        // GAME OBJECTS
+        Game.map.unitsWorld = null;
+        for (var pl = 0; pl < Game.players.length; pl++) {
+            var units = Game.players[0].units;            
+            for (var id in units) {
+//                console.log("id = " + id)
+                units[id].action(delta);
+            }
+            var buildings = Game.players[0].buildings;
+            for (var id in buildings) {
+                buildings[id].action(delta);
+            }
+        }
+        /////////////////////////////////////////////////////////////////////
+
+        Game.renderer.autoClear = false;
+//        Game.renderer.clear();
+
+        if (false) {
+            if (!AR.mediaExists) { //simulate marker position in space with render
+                simUpdate();
+            } else {
+                Game.renderer.render(AR.videoScene, AR.videoCam);
+            }
+            updateAR();
+
+        } else {
+            Game.scene.matrixWorldNeedsUpdate = true;
+
+            Game.controls.update();
+            Game.renderer.clear();
+        }
+
+        Game.renderer.render(Game.scene, Game.camera);
+    }
+
+</script>
+
+<!-- 3D INITIALIZATION (at the end!)-->
+<script src="js/3Dbuild.js"></script>

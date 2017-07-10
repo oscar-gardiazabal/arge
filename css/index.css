@@ -1,0 +1,14 @@
+html{
+    background-color: grey;
+}
+
+canvas{
+    position: absolute;
+}
+
+#debugCanvas{
+    -moz-user-select: none; 
+    -webkit-user-select: none; 
+    -ms-user-select:none; 
+    user-select:none;
+}

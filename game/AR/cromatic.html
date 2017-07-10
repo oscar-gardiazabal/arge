@@ -1,0 +1,43 @@
+
+<canvas id="myCanvas" width="800" height="600"></canvas>
+
+<script>
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+    var imageObj = new Image();
+
+    imageObj.onload = function() {
+        context.drawImage(imageObj, 1, 1);
+        pixels();
+    };
+    imageObj.src = 'img/cromatico.jpg';
+
+
+    function pixels() {
+        setTimeout(function() {
+            
+            
+            var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            var pixelArray = imageData.data;
+            var length = pixelArray.length / 4; // 4 component - red, green, blue and alpha
+
+            for (var i = 0; i < length; i++) {
+                var index = 4 * i;
+                var r = pixelArray[index];
+
+                if (r > 127) {
+                    pixelArray[index] = 255; // red
+                    pixelArray[index+1] = 255; // blue
+                    pixelArray[index+2] = 255; // green
+                }else{
+                    pixelArray[index] = 0; // red
+                    pixelArray[index+1] = 0; // blue
+                    pixelArray[index+2] = 0; // green
+                }
+            }
+            context.putImageData(imageData, 0, 0);
+        
+        
+    }, 1500);
+    }
+</script>

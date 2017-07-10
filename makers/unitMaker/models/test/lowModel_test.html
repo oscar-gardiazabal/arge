@@ -1,0 +1,68 @@
+
+<div id="G_interface">
+    <div id="G_stats">
+        <div id="G_statsBorder"></div>
+        <div id="G_statsContent">
+        </div>
+    </div>
+</div>
+
+<!-- PC CONTROLS -->
+<script src="js/PC/pc_OrbitControls.js"></script>
+
+<!-- MATH -->
+<script src="js/objects.js"></script>
+
+<!-- MODEL 3D (unit) -->
+<script src="makers/unitMaker/js/model/body.js"></script>
+<script src="makers/unitMaker/js/model/arms.js"></script>
+<script src="makers/unitMaker/js/model/weapon.js"></script>
+<script src="makers/unitMaker/js/model/shield.js"></script>
+<script src="makers/unitMaker/js/model/legs.js"></script>
+<script src="makers/unitMaker/js/model/head.js"></script>
+<script src="js/unit/Unit.js"></script>
+<script src="js/unit/unit_actions.js"></script>
+
+<!-- INTERFACE -->
+<script src="js/interface/interface.js"></script>
+<script src="js/interface/ajax.js"></script>
+<script src="makers/unitMaker/js/unitMaker_mouse.js"></script>
+
+<script src="js/3Dbuild.js"></script>
+<script>
+
+    Game.camera.position.set(20, 20, 20);
+
+    var unitMaker = {};
+    // first unit
+    unitMaker.unit = new Unit("original", 0, 0);
+    unitMaker.unit.model.position.z = -10;
+    Game.scene.add(unitMaker.unit.model);
+
+    animate();
+    function animate() {
+        requestAnimationFrame(animate);
+        var math = Game.math;
+
+        math.delta = math.clock.getDelta();
+        update(math.delta);
+    }
+
+    function update(delta) {
+        for (var i = 0; i < Game.model.units.length; i++) {
+            Game.model.units[i].action(delta);
+        }
+
+        Game.controls.update();
+        Game.renderer.clear();
+        Game.renderer.render(Game.scene, Game.camera);
+    }
+
+</script>
+
+<!--EXPORTER-->
+<script src="js/three/BufferGeometryExporter.js"></script>
+<script src="js/three/OBJExporter.js"></script>
+<script src="js/three/ObjectExporter.js"></script>
+<script src="js/three/MaterialExporter.js"></script>
+<script src="js/three/GeometryExporter.js"></script>

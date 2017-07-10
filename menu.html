@@ -1,0 +1,26 @@
+
+<title>gameCreator</title>
+
+<div id="menu">
+Menu:
+<br/><br/>
+</div>
+
+<script>
+    for (page in pages) {
+        if (pages[page].name) {
+            var a = $("<a>");
+            a.attr("href", page);
+            a.text(pages[page].name);
+            $("#menu").append(a);
+
+            var span = $("<span>");
+            span.addClass("desc");
+            $(span).text(" ..." + pages[page].desc);
+            $("#menu").append(span);
+            $("#menu").append("<br/>");
+        }
+    }
+
+
+</script>

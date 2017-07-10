@@ -1,0 +1,187 @@
+
+<div id="G_interface">
+    <div id="G_stats">
+        <div id="G_statsBorder"></div>
+        <div id="G_statsContent">
+
+            Map size:
+            <input id="map_resize" style="width: 50px"/>
+
+            <div class="G_session">
+                <br/><br/>
+                LOAD MAP:<br/>
+                <select id="map_select" style="width:120px"></select> 
+                <span id="map_load" class="link">load</span>
+                <br/>
+                <input id="map_finderButton" type="button" value="find public maps"/>
+
+                <br/><br/>
+                SAVE MAP:<br/>                     
+                <input id="map_name" placeholder="map name"/><br/>
+                <input id="map_public" type="checkbox"/> <span>public</span><br/>
+                <input id="map_save" type="button" value="save"/>
+
+                <br/><br/>
+                LOAD BUILDING:<br/>
+                <select id="map_buildSelect" style="width:120px"></select> 
+                <span id="map_buildLoad" class="link">pick</span>
+                <br/>
+                <input id="map_buildFinderButton" type="button" value="find public building"/>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="map_finder">
+        <div id="map_closeFinder" class="G_letterButton">x</div>
+        <div id="map_minFinder" class="G_letterButton">-</div>
+
+        <div id="map_find">
+            <span style="font-size: 14px; margin-left: 5px;">find by:</span>  
+            <span id="map_selectors">
+                <span class="map_selection">
+                    <select class="map_findSelect">
+                        <option value="mapName">map name</option>
+                        <option value="userName">user</option>
+                        <option value="mapSize">size</option>
+                    </select>
+                    <input type="text" placeholder="value"/>
+                </span>
+            </span>
+            <span id="map_findPlus" class="link">+</span>
+            <input id="map_findButton" type="button" value="find"/>
+        </div>
+        <div id="map_findResults"></div>
+    </div>
+</div>
+
+
+<!-- PC CONTROLS -->
+<script src="js/PC/pc_OrbitControls.js"></script>
+
+<!-- MATH -->
+<script src="js/objects.js"></script>
+<script src="js/math/math_2D.js"></script>
+<script src="js/math/math_3D.js"></script>
+
+<!-- MODEL 3D (unit) -->
+<script src="makers/unitMaker/models/low/body.js"></script>
+<script src="makers/unitMaker/models/low/arms.js"></script>
+<script src="makers/unitMaker/models/low/weapon.js"></script>
+<script src="makers/unitMaker/models/low/shield.js"></script>
+<script src="makers/unitMaker/models/low/legs.js"></script>
+<script src="makers/unitMaker/models/low/head.js"></script>
+<script src="js/unit/Unit.js"></script>
+<script src="js/unit/unit_actions.js"></script>
+
+
+<script>
+
+    // standard global variables
+    var container, scene, camera, renderer, controls, stats;
+    var clock = new THREE.Clock();
+
+    // custom global variables
+    var pj;
+    var delta = 0;
+
+    var animOffset = 0, // starting frame of animation
+            walking = false,
+            duration = 1000, // milliseconds to complete animation
+            keyframes = 20, // total number of animation frames
+            interpolation = duration / keyframes, // milliseconds per frame
+            lastKeyframe = 0, // previous keyframe
+            currentKeyframe = 0;
+
+    if (Detector.webgl) {
+        Game.renderer = new THREE.WebGLRenderer({antialias: true});
+    } else {
+        Game.renderer = new THREE.CanvasRenderer();
+    }
+
+    Game.canvas = Game.renderer.domElement;
+    $("body").append(Game.canvas);
+
+    init();
+    animate();
+
+    // FUNCTIONS 		
+    function init() {
+
+        // SCENE
+        scene = new THREE.Scene();
+        // CAMERA
+        var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+        var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+        camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+        scene.add(camera);
+        camera.position.set(0, 25, 50);
+        camera.lookAt(scene.position);
+
+        // RENDERER
+        Game.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        Game.renderer.shadowMapEnabled = true;
+        Game.renderer.shadowMapSoft = true;
+
+        Game.renderer.shadowCameraNear = 3;
+        Game.renderer.shadowCameraFar = camera.far;
+        Game.renderer.shadowCameraFov = 50;
+
+        Game.renderer.shadowMapBias = 0.0039;
+        Game.renderer.shadowMapDarkness = 0.5;
+        Game.renderer.shadowMapWidth = 1024;
+        Game.renderer.shadowMapHeight = 1024;
+        
+        // STATS
+        stats = new Stats();
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.bottom = '0px';
+        stats.domElement.style.zIndex = 100;
+        
+        // FLOOR
+        planeSimple = new THREE.PlaneGeometry(100, 100);
+        matSolid = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: false});
+        floor = new THREE.Mesh(planeSimple, matSolid);
+        floor.rotation.x = -Math.PI / 2;
+        floor.receiveShadow = true;
+        floor.doubleSided = true;
+        scene.add(floor);
+        
+        // LIGHT
+        var light = new THREE.DirectionalLight(0xffffff);
+        light.target.position.set(0, 0, 0);
+        light.position.set(-100, 200, 100);
+        light.castShadow = true;
+        light.shadowDarkness = 0.5;
+        light.shadowCameraVisible = true; // only for debugging
+        scene.add(light);
+
+        // add subtle blue ambient lighting
+        var ambientLight = new THREE.AmbientLight(0x555555);
+        scene.add(ambientLight);
+
+        makeChar();
+        scene.add(character.model);
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        update();
+    }
+
+    function update() {
+        delta = clock.getDelta();
+
+        if (character) {
+            characterAction(delta);
+        }
+
+        controls.update();
+        stats.update();
+
+        Game.renderer.clear();
+        Game.renderer.render(scene, camera);
+    }
+
+</script>

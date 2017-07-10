@@ -1,0 +1,287 @@
+
+<link rel='stylesheet' href='css/map.css'>
+
+<div id="infoButton"></div>
+<div id="infoBox"></div>
+
+<div id="G_interface">
+    <div id="G_stats">
+        <div id="G_statsBorder"></div>
+        <div id="G_statsContent">
+
+            Map size:
+            <input id="map_resize" style="width: 50px"/>
+
+            <div class="G_session">
+                <br/><br/>
+                LOAD MAP:<br/>
+                <select id="map_select" style="width:120px"></select> 
+                <span id="map_load" class="link">load</span>
+                <br/>
+                <input id="map_finderButton" type="button" value="find public maps"/>
+
+                <br/><br/>
+                SAVE MAP:<br/>                     
+                <input id="map_name" placeholder="map name"/><br/>
+                <input id="map_public" type="checkbox"/> <span>public</span><br/>
+                <input id="map_save" type="button" value="save"/>
+
+                <br/><br/>
+                LOAD BUILDING:<br/>
+                <select id="map_buildSelect" style="width:120px"></select> 
+                <span id="map_buildLoad" class="link">pick</span>
+                <br/>
+                <input id="map_buildFinderButton" type="button" value="find public building"/>
+
+            </div>
+
+        </div>
+    </div>    
+</div>
+
+<!-- PC CONTROLS -->
+<script src="js/PC/pc_OrbitControls.js"></script>
+
+<!-- GLOBAL TREE OBJECTS -->
+<script src="js/objects.js"></script>
+
+<!-- GLOBAL MATH -->
+<script src="js/math/math_2D.js"></script>
+<script src="js/math/math_3D.js"></script>
+
+<!--GLOBAL MODEL-->
+<script src="js/model/global_geometries.js"></script>
+<script src="js/model/global_materials.js"></script>
+
+<!--BUILDING MODELS-->
+<script src="js/model/building/building_materials.js"></script>
+<script src="js/model/building/demos/cube.js"></script>
+<script src="js/model/building/Building.js"></script>
+
+<!-- UNIT MODELS -->
+<script src="js/model/unit/unit_materials.js"></script>
+<script src="js/model/unit/unit_geometries.js"></script>
+<script src="js/model/unit/geometries/low/body.js"></script>
+<script src="js/model/unit/geometries/low/arms.js"></script>
+<script src="js/model/unit/geometries/low/weapon.js"></script>
+<script src="js/model/unit/geometries/low/shield.js"></script>
+<script src="js/model/unit/geometries/low/legs.js"></script>
+<script src="js/model/unit/geometries/low/head.js"></script>
+<script src="js/model/unit/Unit.js"></script>
+<script src="js/model/unit/unit_actions.js"></script>
+<script src="js/model/unit/unit_path.js"></script>
+<script src="js/model/unit/unit_mapImplementation.js"></script>
+
+<!-- MAP MODELS -->
+<script src="js/model/map/demos/map_footmen.js"></script>
+<script src="js/model/map/map_construction.js"></script>
+<script src="js/model/map/map_materials.js"></script>
+<script src="js/model/map/map_geometries.js"></script>
+
+<!-- MAP -->
+<script src="js/PC/pc_mouseEvents.js"></script>
+<script src="game/js/game_draw.js"></script>
+<script src="game/js/game_pathfinder.js"></script>
+
+<!--PLAYER-->
+<script src="game/js/game_Player.js"></script>
+
+<!--GLOBAL INTERFACES--> 
+<!--<script src="js/interface/interface.js"></script>-->
+<script src="js/interface/ajax.js"></script>
+<!--<script src="js/interface/drawCanvasMap.js"></script>-->
+
+<script>
+    //pcGame
+
+    // WORLD
+    createWorld();
+    drawMap(Game.map.world.length); //game_draw
+    Game.camera.position.set(300, 150, 1800);
+    Game.controls.center = new THREE.Vector3(150, 150, 0);
+    Game.controls.userPanSpeed = 10;
+
+    //players
+    Game.user = new Player(1, "oscar");
+
+    Game.players.push(Game.user);
+    Game.players.push(new Player(2, "troll"));
+    Game.players.push(new Player(3, "gea"));
+
+    // first unit
+    new Unit(Game.players[0], {x: 5, y: 5});
+
+    //building    
+    new Building(Game.players[0], {x: 9, y: 9});
+    new Building(Game.players[1], {x: 18, y: 9});
+    new Building(Game.players[2], {x: 9, y: 18});
+
+    for (var i = 0; i < 10; i++) {
+        new Unit(Game.players[0], {x: 20, y: 20});
+//        new Unit(Game.players[1], {x: 40, y: 40});
+    }
+
+    Game.math.delta = 0;
+
+    function animate() {
+
+//        setTimeout(function() {
+        requestAnimationFrame(animate);
+//        }, 1000 / 30);
+
+        var math = Game.math;
+        math.delta = math.clock.getDelta();
+        update(math.delta);
+    }
+
+    Game.debug = true;
+    function update(delta) {
+        Game.map.unitsWorld = null;
+
+        for (var pl = 0; pl < Game.players.length; pl++) {
+            var units = Game.players[0].units;
+            for (var i = 0; i < units.length; i++) {
+                units[i].action(delta);
+            }
+            var buildings = Game.players[0].buildings;
+            for (var i = 0; i < buildings.length; i++) {
+                buildings[i].action(delta);
+            }
+        }
+
+        if (Game.debug) {
+            Debug();
+        }
+
+        Game.controls.update();
+        Game.renderer.clear();
+        Game.renderer.render(Game.scene, Game.camera);
+
+    }
+
+    Game.debugElements = [];
+
+    function Debug() {
+
+        for (var i = 0; i < Game.debugElements.length; i++) {
+            Game.scene.remove(Game.debugElements[i]);
+        }
+        Game.debugElements = [];
+
+        var mapSize = Game.map.gridWorld.length;
+        for (var i = 0; i < mapSize; i++) {
+            for (var j = 0; j < mapSize; j++) {
+                if (typeof Game.map.gridWorld[i][j] == 'object' && Game.map.gridWorld[i][j].length > 0) {
+                    var cubeDebug = Game.model.geometries.smallDebug(i, j);
+                    Game.debugElements.push(cubeDebug);
+                }
+            }
+        }
+    }
+
+</script>
+<!--  -->
+
+<script>
+
+//    $(document).ready(function() {
+//        animate();
+//    });
+    function loadGame() {
+        animate();
+    }
+//
+//    $("start").addEventListener('click', onStartClick, false);
+//
+//    var callbackProgress = function(progress, result) {
+//
+//        var bar = 250,
+//                total = progress.totalModels + progress.totalTextures,
+//                loaded = progress.loadedModels + progress.loadedTextures;
+//
+//        if (total)
+//            bar = Math.floor(bar * loaded / total);
+//
+//        $("bar").style.width = bar + "px";
+//
+//        var count = 0;
+//        for (var m in result.materials)
+//            count++;
+//
+//        handle_update(result, Math.floor(count / total));
+//    };
+//
+//    var callbackFinished = function(result) {
+//
+//        loaded = result;
+//
+//        $("message").style.display = "none";
+//        $("progressbar").style.display = "none";
+//        $("start").style.display = "block";
+//        $("start").className = "enabled";
+//
+//        handle_update(result, 1);
+//
+//        result.scene.traverse(function(object) {
+//
+//            if (object.userData.rotating === true) {
+//                rotatingObjects.push(object);
+//            }
+//
+//            if (object instanceof THREE.MorphAnimMesh) {
+//                morphAnimatedObjects.push(object);
+//            }
+//
+//            if (object instanceof THREE.SkinnedMesh) {
+//
+//                if (object.geometry.animation) {
+//
+//                    THREE.AnimationHandler.add(object.geometry.animation);
+//
+//                    var animation = new THREE.Animation(object, object.geometry.animation.name);
+//                    animation.JITCompile = false;
+//                    animation.interpolationType = THREE.AnimationHandler.LINEAR;
+//
+//                    animation.play();
+//                }
+//            }
+//        });
+//    };
+//
+//    $("progress").style.display = "block";
+//
+//    var loader = new THREE.SceneLoader();
+//
+//    loader.addGeometryHandler("binary", THREE.BinaryLoader);
+//    loader.addGeometryHandler("ctm", THREE.CTMLoader);
+//    loader.addGeometryHandler("vtk", THREE.VTKLoader);
+//    loader.addGeometryHandler("stl", THREE.STLLoader);
+//
+//    loader.addHierarchyHandler("obj", THREE.OBJLoader);
+//    loader.addHierarchyHandler("dae", THREE.ColladaLoader);
+//    loader.addHierarchyHandler("utf8", THREE.UTF8Loader);
+//
+//    loader.callbackProgress = callbackProgress;
+//
+//    loader.load("scenes/test_scene.js", callbackFinished);
+//
+//    $("plus_exp").addEventListener('click', createToggle("exp"), false);
+//
+//    window.addEventListener('resize', onWindowResize, false);
+//
+//    function onStartClick() {
+//        $("progress").style.display = "none";
+//        camera = loaded.currentCamera;
+//        camera.aspect = window.innerWidth / window.innerHeight;
+//        camera.updateProjectionMatrix();
+//        scene = loaded.scene;
+//    }
+
+</script>
+
+<!-- MAP-MAKER INTERFACE -->
+<script src="game/PC/js/pc_interface.js"></script>
+
+<!-- 3D INITIALIZATION -->
+<script src="js/3Dbuild.js"></script>
+<script src="js/PC/camSimulation.js"></script>
