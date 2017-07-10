@@ -44,10 +44,10 @@ Game.map.updateGrid = function (x, y) {
     var code = map.world[x][y];
     var tile = map.smallTile;
 
-    for (var p = 0; p < tile +1; p++) {
-        for (var q = 0; q < tile +1; q++) {
-            var i = x * tile + p -1;
-            var j = y * tile + q -1;
+    for (var p = 0; p < tile + 1; p++) {
+        for (var q = 0; q < tile + 1; q++) {
+            var i = x * tile + p - 1;
+            var j = y * tile + q - 1;
             if (coordExists(map.gridWorld, i, j))
                 map.gridWorld[i][j].code = code;
         }

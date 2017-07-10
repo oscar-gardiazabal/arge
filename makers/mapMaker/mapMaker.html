@@ -49,6 +49,10 @@
 <script src="js/math/math_2D.js"></script>
 <script src="js/math/math_3D.js"></script>
 
+<!--GLOBAL MODEL-->
+<script src="js/model/global_geometries.js"></script>
+<script src="js/model/global_materials.js"></script>
+
 <!-- UNIT MODEL 3D -->
 <script src="makers/unitMaker/models/low/body.js"></script>
 <script src="makers/unitMaker/models/low/arms.js"></script>
@@ -81,7 +85,7 @@
 <script src="js/interface/drawCanvasMap.js"></script>
 
 <script>
-    
+
     function loadGame() {
         // WORLD
         createWorld(); //js/map/demos
@@ -94,7 +98,7 @@
         Game.model.unit.all.push(unit);
         Game.sceneGroup.add(unit.model);
 
-        loadAR(function() {
+        loadAR(function () {
             animate();
         });
     }
@@ -104,9 +108,9 @@
         update();
     }
     function update() {
-        
-        
-        
+
+
+
         Game.controls.update();
         Game.renderer.clear();
         Game.renderer.render(Game.scene, Game.camera);
