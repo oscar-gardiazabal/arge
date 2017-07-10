@@ -8,12 +8,6 @@ function getMedia(callback) {
 //        return;
 //    }
 
-    connection.enumerateDevices(function (devices) {
-        devices.forEach(function (device) {
-            // device.kind == 'audioinput' || 'audiooutput' || 'audio' // device.kind == 'videoinput' || 'videooutput' || 'video' // device.deviceId // connection.selectDevices('deviceId'); // connection.captureUserMedia(); }); });
-        });
-    });
-
 //    MediaStreamTrack.getSources(function (media_sources) {
     navigator.mediaDevices.getUserMedia(function (media_sources) {
 
