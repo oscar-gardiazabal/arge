@@ -1,12 +1,12 @@
 function getMedia(callback) {
     var mediaFounded = false;
 
-    if (!MediaStreamTrack.getSources) {
-        console.log("!MediaStreamTrack.getSources");
-        $("#loading").text("!MediaStreamTrack.getSources");
-        callback(true);
-        return;
-    }
+//    if (!MediaStreamTrack.getSources) {
+//        console.log("!MediaStreamTrack.getSources");
+//        $("#loading").text("!MediaStreamTrack.getSources");
+//        callback(true);
+//        return;
+//    }
 
     connection.enumerateDevices(function (devices) {
         devices.forEach(function (device) {
@@ -14,7 +14,8 @@ function getMedia(callback) {
         });
     });
 
-    MediaStreamTrack.getSources(function (media_sources) {
+//    MediaStreamTrack.getSources(function (media_sources) {
+    navigator.mediaDevices.getUserMedia(function (media_sources) {
 
         for (var i = 0; i < media_sources.length; i++) {
             if (media_sources[i].kind == 'video' && media_sources[i].facing == "environment" && !mediaFounded) {
