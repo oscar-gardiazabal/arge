@@ -3,6 +3,7 @@ function getMedia(callback) {
     
     if(!MediaStreamTrack.getSources){
         console.log("!MediaStreamTrack.getSources");
+        $("#loading").text("!MediaStreamTrack.getSources");
         callback(false);
         return;
     }
