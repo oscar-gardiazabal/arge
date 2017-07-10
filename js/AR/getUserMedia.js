@@ -9,11 +9,10 @@ function getMedia(callback) {
 //    }
 
 //    MediaStreamTrack.getSources(function (media_sources) {
-    var constraints = window.constraints = {
+    navigator.mediaDevices.getUserMedia({
         audio: false,
         video: true
-    };
-    navigator.mediaDevices.getUserMedia(constraints).then(function (media_sources) {
+    }).then(function (media_sources) {
 
         for (var i = 0; i < media_sources.length; i++) {
             if (media_sources[i].kind == 'video' && media_sources[i].facing == "environment" && !mediaFounded) {
