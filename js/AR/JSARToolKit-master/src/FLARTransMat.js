@@ -1,2 +1,0 @@
-
-FLARTransMatResult = NyARTransMatResult;

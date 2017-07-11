@@ -5,8 +5,8 @@ var AR = {
             "' style='width:" + SCREEN_WIDTH + "px; height:" + SCREEN_HEIGHT + "px'>")[0] //canvas virtual
     ,
 //    video: $("<video id='video'>")[0] //video
-    video: $("<video id='video' width='" + (SCREEN_WIDTH) + "' height='" + (SCREEN_HEIGHT) +
-            "' style='width:" + SCREEN_WIDTH + "px; height:" + SCREEN_HEIGHT + "px'>")[0] //video
+    video: $("<video id='video' autoplay width='" + (SCREEN_WIDTH) + "' height='" + (SCREEN_HEIGHT) +
+            "' style='width:" + SCREEN_WIDTH + "px; height:" + SCREEN_HEIGHT + "px; display:none'>")[0] //video
     ,
     raster: "", param: "", detector: "", resultMat: "" //jsartoolkit
     ,
@@ -20,7 +20,7 @@ var AR = {
     ,
     sceneGroupId: null
     ,
-    copyMatrix: function(mat, cm) { //simetric matrix
+    copyMatrix: function (mat, cm) { //simetric matrix
         cm[0] = mat.m00;
         cm[1] = -mat.m10;
         cm[2] = mat.m20;
@@ -45,15 +45,15 @@ var AR = {
 
 function loadAR(animateCallback) {
 
-    $("body").prepend("#video");
+    $("body").prepend(AR.video);
     $(AR.video).css({
         top: 0,
         left: 0,
         position: "absolute",
-        "z-index": 99
+        'z-index': 99
     });
 
-    AR.video.autoplay = true; //!important
+    //AR.video.autoplay = true; //!important    
     Game.renderer.autoClear = false;
 
     AR.raster = new NyARRgbRaster_Canvas2D(AR.arCanvas);
@@ -68,16 +68,20 @@ function loadAR(animateCallback) {
     AR.videoScene = new THREE.Scene();
     AR.videoScene.add(AR.videoCam);
 
-    getMedia(function(medExists) {
+    getMedia(function (media_sources) {
         console.log("media got");
+        video.srcObject = media_sources;
+        video.onloadedmetadata = function (e) {
+            AR.video.play();
+        };
 
         Game.camera.projectionMatrix.setFromArray(AR.tmp);
         AR.videoTex = new THREE.Texture(AR.video);
 
-        if (!medExists) {
+        if (!media_sources) {
             console.log("no media loaded"); //not remove
             AR.mediaExists = false; //ambient occlusion js effect
-            camSimulation(function() {
+            camSimulation(function () {
                 loadScene();
             });
         } else {
@@ -127,11 +131,11 @@ function updateAR() {
 //        }
 
         AR.detector.getTransformMatrix(AR.resultMat);
-        
+
         var error = AR.resultMat.error;
-        console.log("AR.resultMat.error = " + error)
+        //console.log("AR.resultMat.error = " + error)
 //        if (error < 0.5) {
-            AR.board.transform = Object.asCopy(AR.resultMat);
+        AR.board.transform = Object.asCopy(AR.resultMat);
 //        }
 
         AR.board.age = 0;
@@ -146,8 +150,8 @@ function updateAR() {
 
     if (AR.board.age > 8) {
         if (Game.scene.getObjectById(AR.sceneGroupId)) {
-//                console.log("model removed");
-//                Game.scene.remove(Game.sceneGroup);
+            console.log("model removed");
+            Game.scene.remove(Game.sceneGroup);
         }
 
     } else { //update matrix tranformation
@@ -165,7 +169,7 @@ function updateAR() {
     AR.board.age++;
 }
 
-THREE.Matrix4.prototype.setFromArray = function(m) {
+THREE.Matrix4.prototype.setFromArray = function (m) {
     return this.set(
             m[0], m[4], m[8], m[12],
             m[1], m[5], m[9], m[13],

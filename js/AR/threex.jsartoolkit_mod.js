@@ -32,10 +32,10 @@
  */
 
 if (!window.console)
-    console = {log: function() {
+    console = {log: function () {
         }};
 
-ASVector = function(elements) {
+ASVector = function (elements) {
     elements = elements || 0;
     if (elements.length) {
         this.length = elements.length;
@@ -48,7 +48,7 @@ ASVector = function(elements) {
     }
 }
 ASVector.prototype = {};
-ASVector.prototype.set = function(idx, val) {
+ASVector.prototype.set = function (idx, val) {
     if (idx.length)
         ASVector.call(this, idx);
     else
@@ -67,7 +67,7 @@ if (typeof Float32Array == 'undefined') {
 
 toInt = Math.floor;
 
-Object.extend = function(dst, src) {
+Object.extend = function (dst, src) {
     for (var i in src) {
         try {
             dst[i] = src[i];
@@ -77,15 +77,15 @@ Object.extend = function(dst, src) {
     return dst;
 }
 
-toArray = function(obj) {
+toArray = function (obj) {
     var a = new Array(obj.length);
     for (var i = 0; i < obj.length; i++)
         a[i] = obj[i];
     return a;
 }
 
-Klass = (function() {
-    var c = function() {
+Klass = (function () {
+    var c = function () {
         if (this.initialize)
             this.initialize.apply(this, arguments);
     }
@@ -103,7 +103,7 @@ Klass = (function() {
     return c;
 })
 
-Object.asCopy = function(obj) {
+Object.asCopy = function (obj) {
     if (typeof obj != 'object') {
         return obj;
     } else if (obj instanceof FloatVector) {
@@ -136,8 +136,8 @@ Object.asCopy = function(obj) {
     }
 }
 
-ASKlass = (function(name) {
-    var c = function() {
+ASKlass = (function (name) {
+    var c = function () {
         var cc = this.__copyObjects__;
         for (var i = 0; i < cc.length; i++)
             this[cc[i]] = Object.asCopy(this[cc[i]])
@@ -175,7 +175,7 @@ ASKlass = (function(name) {
  * See: http://www.adobe.com/livedocs/flash/9.0/ActionScriptLangRefV3/flash/display/BitmapData.html
  */
 BitmapData = Klass({
-    initialize: function(i_width, i_height, transparent, fill) {
+    initialize: function (i_width, i_height, transparent, fill) {
         this.width = i_width;
         this.height = i_height;
         this.transparent = (transparent == null ? true : transparent);
@@ -186,7 +186,7 @@ BitmapData = Klass({
         }
         this.rect = new Rectangle(0, 0, this.width, this.height);
     },
-    fillRect: function(rect, value) {
+    fillRect: function (rect, value) {
         var stride = this.width;
         var y = Math.clamp(rect.y, 0, this.height) * stride
                 , y2 = Math.clamp(rect.y + rect.height, 0, this.height) * stride
@@ -197,25 +197,25 @@ BitmapData = Klass({
             for (var x1 = x; x1 < x2; x1++)
                 d[y1 + x1] = value;
     },
-    getPixel32: function(x, y) {
+    getPixel32: function (x, y) {
         return this.data[y * this.width + x];
     },
-    setPixel32: function(x, y, v) {
+    setPixel32: function (x, y, v) {
         return this.data[y * this.width + x] = v;
     },
-    getPixel: function(x, y) {
+    getPixel: function (x, y) {
         return this.data[y * this.width + x] & 0x00ffffff;
     },
-    setPixel: function(x, y, v) {
+    setPixel: function (x, y, v) {
         return this.data[y * this.width + x] = v | (this.data[y * this.width + x] & 0xff000000);
     },
-    getWidth: function() {
+    getWidth: function () {
         return this.width;
     },
-    getHeight: function() {
+    getHeight: function () {
         return this.height;
     },
-    copyPixels: function(source, rect, offset) {
+    copyPixels: function (source, rect, offset) {
         var tstride = this.width;
         var stride = source.width;
         var d = source.data;
@@ -232,14 +232,14 @@ BitmapData = Klass({
             for (var x1 = x, tx1 = tx; x1 < x2 && tx1 < tx2; x1++, tx1++)
                 td[ty1 + tx1] = d[y1 + x1];
     },
-    getColorBoundsRect: function(mask, color, findColor) {
+    getColorBoundsRect: function (mask, color, findColor) {
         if (findColor) {
             return this.getColorBoundsRect_true(mask, color);
         } else {
             return this.getColorBoundsRect_false(mask, color);
         }
     },
-    getColorBoundsRect_true: function(mask, color) {
+    getColorBoundsRect_true: function (mask, color) {
         var minX = this.width, minY = this.height, maxX = 0, maxY = 0;
         var w = this.width;
         h = this.height;
@@ -290,7 +290,7 @@ BitmapData = Klass({
         }
         return new Rectangle(minX, minY, Math.max(0, maxX - minX), Math.max(0, maxY - minY));
     },
-    getColorBoundsRect_false: function(mask, color) {
+    getColorBoundsRect_false: function (mask, color) {
         var minX = this.width, minY = this.height, maxX = 0, maxY = 0;
         var w = this.width;
         h = this.height;
@@ -336,7 +336,7 @@ BitmapData = Klass({
         }
         return new Rectangle(minX, minY, Math.max(0, maxX - minX), Math.max(0, maxY - minY));
     },
-    putImageData: function(imageData, x, y, w, h) {
+    putImageData: function (imageData, x, y, w, h) {
         w = Math.clamp(w, 0, imageData.width), h = Math.clamp(h, 0, imageData.height);
         var stride = this.width;
         var d = this.data;
@@ -356,10 +356,10 @@ BitmapData = Klass({
             }
         }
     },
-    drawCanvas: function(canvas, x, y, w, h) {
+    drawCanvas: function (canvas, x, y, w, h) {
         this.putImageData(canvas.getContext('2d').getImageData(0, 0, w, h), x, y, w, h);
     },
-    drawOnCanvas: function(canvas) {
+    drawOnCanvas: function (canvas) {
         var ctx = canvas.getContext('2d');
         var id = ctx.getImageData(0, 0, this.width, this.height);
         var stride = this.width;
@@ -378,7 +378,7 @@ BitmapData = Klass({
         }
         ctx.putImageData(id, 0, 0);
     },
-    floodFill: function(x, y, nv) {
+    floodFill: function (x, y, nv) {
         var l = 0, x1 = 0, x2 = 0, dy = 0;
         var ov = 0; /* old pixel value */
         var stack = [];
@@ -431,7 +431,7 @@ BitmapData = Klass({
 })
 
 Rectangle = Klass({
-    initialize: function(x, y, w, h) {
+    initialize: function (x, y, w, h) {
         this.x = x;
         this.y = y;
         this.top = y;
@@ -442,23 +442,23 @@ Rectangle = Klass({
         this.height = h;
         this.updateCalc();
     },
-    updateCalc: function() {
+    updateCalc: function () {
         this.top = this.y;
         this.left = this.x;
         this.bottom = this.y + this.height;
         this.right = this.x + this.width;
     },
-    clone: function() {
+    clone: function () {
         return new Rectangle(this.x, this.y, this.width, this.height);
     },
-    inflate: function(dx, dy) {
+    inflate: function (dx, dy) {
         this.x -= dx;
         this.y -= dy;
         this.width += 2 * dx;
         this.height += 2 * dy;
         this.updateCalc();
     },
-    isEmpty: function() {
+    isEmpty: function () {
         return (this.width <= 0 && this.height <= 0)
     }
 })
@@ -468,15 +468,15 @@ Rectangle = Klass({
  */
 NyARException = Klass(Error,
         {
-            initialize: function(m)
+            initialize: function (m)
             {
                 Error.call(this, m);
             },
-            trap: function(m)
+            trap: function (m)
             {
                 throw new NyARException("trap:" + m);
             },
-            notImplement: function()
+            notImplement: function ()
             {
                 throw new NyARException("Not Implement!");
             }
@@ -487,7 +487,7 @@ NyAS3Const_Inherited = Klass({
 
 NyAS3Utils = Klass(
         {
-            assert: function(e, mess)
+            assert: function (e, mess)
             {
                 if (!e) {
                     throw new Error("NyAS3Utils.assert:" + mess != null ? mess : "");
@@ -499,16 +499,16 @@ NyARVec = Klass(
         {
             clm: null,
             v: null,
-            initialize: function(i_clm)
+            initialize: function (i_clm)
             {
                 this.v = new FloatVector(i_clm);
                 this.clm = i_clm;
             },
-            getClm: function()
+            getClm: function ()
             {
                 return this.clm;
             },
-            getArray: function()
+            getArray: function ()
             {
                 return this.v;
             }
@@ -528,7 +528,7 @@ NyARMat = Klass(
             __matrixSelfInv_nos: null,
             clm: null,
             row: null,
-            initialize: function(i_row, i_clm)
+            initialize: function (i_row, i_clm)
             {
                 this.m = new Array(i_row);
                 for (var i = 0; i < i_row; i++) {
@@ -545,7 +545,7 @@ NyARMat = Klass(
              * 行列の列数を返します。
              * @return
              */
-            , getClm: function()
+            , getClm: function ()
             {
                 return this.clm;
             }
@@ -553,11 +553,11 @@ NyARMat = Klass(
              * 行列の行数を返します。
              * @return
              */
-            , getRow: function()
+            , getRow: function ()
             {
                 return this.row;
             }
-            , getArray: function()
+            , getArray: function ()
             {
                 return this.m;
             }
@@ -565,7 +565,7 @@ NyARMat = Klass(
              * 逆行列を計算して、thisへ格納します。
              * @throws NyARException
              */
-            , matrixSelfInv: function()
+            , matrixSelfInv: function ()
             {
                 var ap = this.m;
                 var dimen = this.row;
@@ -658,7 +658,7 @@ NyARMat = Klass(
 
 ArrayUtils = ASKlass('ArrayUtils',
         {
-            create2dInt: function(height, width)
+            create2dInt: function (height, width)
             {
                 var r = new Array(height);
                 for (var i = 0; i < height; i++) {
@@ -666,7 +666,7 @@ ArrayUtils = ASKlass('ArrayUtils',
                 }
                 return r;
             }
-            , create2dNumber: function(height, width)
+            , create2dNumber: function (height, width)
             {
                 var r = new Array(height);
                 for (var i = 0; i < height; i++) {
@@ -674,7 +674,7 @@ ArrayUtils = ASKlass('ArrayUtils',
                 }
                 return r;
             }
-            , copyInt: function(src, srcPos, dest, destPos, length) {
+            , copyInt: function (src, srcPos, dest, destPos, length) {
                 for (var i = 0; i < length; i++) {
                     dest[destPos + i] = src[srcPos + i];
                 }
@@ -710,7 +710,7 @@ ArrayUtils = ASKlass('ArrayUtils',
  *
  */
 ArrayUtil = ASKlass('ArrayUtil', {
-    createJaggedArray: function(len) {
+    createJaggedArray: function (len) {
         var arr = new Array(len);
         var args = toArray(arguments).slice(1);
         while (len--) {
@@ -718,13 +718,13 @@ ArrayUtil = ASKlass('ArrayUtil', {
         }
         return arr;
     }
-    , create2d: function(height, width) {
+    , create2d: function (height, width) {
         return this.createJaggedArray(height, width);
     }
-    , create3d: function(depth, height, width) {
+    , create3d: function (depth, height, width) {
         return this.createJaggedArray(depth, height, width);
     }
-    , copy: function(src, srcPos, dest, destPos, length) {
+    , copy: function (src, srcPos, dest, destPos, length) {
         for (var i = 0; i < length; i++) {
             dest[destPos + i] = src[srcPos + i];
         }
@@ -759,96 +759,96 @@ ArrayUtil = ASKlass('ArrayUtil', {
  *  <saq(at)saqoosha.net>
  *
  */
-FLARException = ASKlass('FLARException', NyARException,
-        {
-            FLARException: function(m)
-            {
-                NyARException.initialize.call(this, m || '');
-            }
-            , trap: function(m)
-            {
-                throw new FLARException("trap:" + m);
-            }
-            , notImplement: function()
-            {
-                throw new FLARException("Not Implement!");
-            }
-        })
+FLARException = ASKlass('FLARException', NyARException, {
+    FLARException: function (m)
+    {
+        NyARException.initialize.call(this, m || '');
+    }
+    , trap: function (m)
+    {
+        throw new FLARException("trap:" + m);
+    }
+    , notImplement: function ()
+    {
+        throw new FLARException("Not Implement!");
+    }
+});
 
 FLARMat = NyARMat;
 
-FLARRgbPixelReader_BitmapData = ASKlass('FLARRgbPixelReader_BitmapData',
-        {
-            _ref_bitmap: null
-            , FLARRgbPixelReader_BitmapData: function(i_buffer)
-            {
-                this._ref_bitmap = i_buffer;
-            }
-            , getPixel: function(i_x, i_y, o_rgb)
-            {
-                var c = this._ref_bitmap.getPixel(i_x, i_y);
-                o_rgb[0] = (c >> 16) & 0xff;// R
-                o_rgb[1] = (c >> 8) & 0xff;// G
-                o_rgb[2] = c & 0xff;// B
-                return;
-            }
-            , getPixelSet: function(i_x, i_y, i_num, o_rgb)
-            {
-                var bmp = this._ref_bitmap;
-                var c;
-                var i;
-                for (i = 0; i < i_num; i++) {
-                    c = bmp.getPixel(i_x[i], i_y[i]);
-                    o_rgb[i * 3 + 0] = (c >> 16) & 0xff;
-                    o_rgb[i * 3 + 1] = (c >> 8) & 0xff;
-                    o_rgb[i * 3 + 2] = c & 0xff;
-                }
-            }
-            , setPixel: function() {
-                NyARException.notImplement();
-            }
-            , setPixels: function() {
-                NyARException.notImplement();
-            }
-            , switchBuffer: function() {
-                NyARException.notImplement();
-            }
-        });
-FLARGrayPixelReader_BitmapData = ASKlass('FLARGrayPixelReader_BitmapData',
-        {
-            _ref_bitmap: null
-            , FLARGrayPixelReader_BitmapData: function(i_buffer)
-            {
-                this._ref_bitmap = i_buffer;
-            }
-            , getPixel: function(i_x, i_y, i_num, o_gray)
-            {
-                NyARException.notImplement();
-                var w = this._ref_bitmap.getWidth();
-                var d = this._ref_bitmap.getBuffer();
-                o_gray[0] = o_gray[1] = o_gray[2] = ~d(i_x + w * i_y) & 0xff;
-            }
-            , getPixelSet: function(i_x, i_y, i_num, o_gray)
-            {
-                var w = this._ref_bitmap.getWidth();
-                var d = this._ref_bitmap.data;
-                for (var i = 0; i < i_num; i++) {
-                    o_gray[i] = ~d[i_x[i] + w * i_y[i]] & 0xff;
-                }
-            }
-            , setPixel: function()
-            {
-                NyARException.notImplement();
-            }
-            , setPixels: function()
-            {
-                NyARException.notImplement();
-            }
-            , switchBuffer: function()
-            {
-                NyARException.notImplement();
-            }
-        });
+FLARRgbPixelReader_BitmapData = ASKlass('FLARRgbPixelReader_BitmapData', {
+    _ref_bitmap: null
+    , FLARRgbPixelReader_BitmapData: function (i_buffer) {
+        this._ref_bitmap = i_buffer;
+    }
+    ,
+    getPixel: function (i_x, i_y, o_rgb) {
+        var c = this._ref_bitmap.getPixel(i_x, i_y);
+        o_rgb[0] = (c >> 16) & 0xff;// R
+        o_rgb[1] = (c >> 8) & 0xff;// G
+        o_rgb[2] = c & 0xff;// B
+        return;
+    }
+    ,
+    getPixelSet: function (i_x, i_y, i_num, o_rgb) {
+        var bmp = this._ref_bitmap;
+        var c;
+        var i;
+        for (i = 0; i < i_num; i++) {
+            c = bmp.getPixel(i_x[i], i_y[i]);
+            o_rgb[i * 3 + 0] = (c >> 16) & 0xff;
+            o_rgb[i * 3 + 1] = (c >> 8) & 0xff;
+            o_rgb[i * 3 + 2] = c & 0xff;
+        }
+    }
+    ,
+    setPixel: function () {
+        NyARException.notImplement();
+    }
+    ,
+    setPixels: function () {
+        NyARException.notImplement();
+    }
+    ,
+    switchBuffer: function () {
+        NyARException.notImplement();
+    }
+});
+
+FLARGrayPixelReader_BitmapData = ASKlass('FLARGrayPixelReader_BitmapData', {
+    _ref_bitmap: null
+    ,
+    FLARGrayPixelReader_BitmapData: function (i_buffer) {
+        this._ref_bitmap = i_buffer;
+    }
+    ,
+    getPixel: function (i_x, i_y, i_num, o_gray) {
+        NyARException.notImplement();
+        var w = this._ref_bitmap.getWidth();
+        var d = this._ref_bitmap.getBuffer();
+        o_gray[0] = o_gray[1] = o_gray[2] = ~d(i_x + w * i_y) & 0xff;
+    }
+    ,
+    getPixelSet: function (i_x, i_y, i_num, o_gray) {
+        var w = this._ref_bitmap.getWidth();
+        var d = this._ref_bitmap.data;
+        for (var i = 0; i < i_num; i++) {
+            o_gray[i] = ~d[i_x[i] + w * i_y[i]] & 0xff;
+        }
+    }
+    ,
+    setPixel: function () {
+        NyARException.notImplement();
+    }
+    ,
+    setPixels: function () {
+        NyARException.notImplement();
+    }
+    ,
+    switchBuffer: function () {
+        NyARException.notImplement();
+    }
+});
 
 /*
  * JSARToolkit
@@ -882,50 +882,49 @@ FLARGrayPixelReader_BitmapData = ASKlass('FLARGrayPixelReader_BitmapData',
  *  ilmari.heikkinen@gmail.com
  *
  */
-INyARHistogramAnalyzer_Threshold = ASKlass('INyARHistogramAnalyzer_Threshold',
-        {
-            getThreshold: function(i_histgram) {
+
+INyARHistogramAnalyzer_Threshold = ASKlass('INyARHistogramAnalyzer_Threshold', {
+    getThreshold: function (i_histgram) {
+    }
+});
+
+NyARHistogramAnalyzer_SlidePTile = ASKlass('NyARHistogramAnalyzer_SlidePTile', INyARHistogramAnalyzer_Threshold, {
+    _persentage: 0,
+    NyARHistogramAnalyzer_SlidePTile: function (i_persentage) {
+        NyAS3Utils.assert(0 <= i_persentage && i_persentage <= 50);
+        //初期化
+        this._persentage = i_persentage;
+    }
+    ,
+    getThreshold: function (i_histgram) {
+        //総ピクセル数を計算
+        var n = i_histgram.length;
+        var sum_of_pixel = i_histgram.total_of_data;
+        var hist = i_histgram.data;
+        // 閾値ピクセル数確定
+        var th_pixcels = sum_of_pixel * this._persentage / 100;
+        var th_wk;
+        var th_w, th_b;
+        // 黒点基準
+        th_wk = th_pixcels;
+        for (th_b = 0; th_b < n - 2; th_b++) {
+            th_wk -= hist[th_b];
+            if (th_wk <= 0) {
+                break;
             }
-        })
-NyARHistogramAnalyzer_SlidePTile = ASKlass('NyARHistogramAnalyzer_SlidePTile', INyARHistogramAnalyzer_Threshold,
-        {
-            _persentage: 0,
-            NyARHistogramAnalyzer_SlidePTile: function(i_persentage)
-            {
-                NyAS3Utils.assert(0 <= i_persentage && i_persentage <= 50);
-                //初期化
-                this._persentage = i_persentage;
+        }
+        // 白点基準
+        th_wk = th_pixcels;
+        for (th_w = n - 1; th_w > 1; th_w--) {
+            th_wk -= hist[th_w];
+            if (th_wk <= 0) {
+                break;
             }
-            , getThreshold: function(i_histgram)
-            {
-                //総ピクセル数を計算
-                var n = i_histgram.length;
-                var sum_of_pixel = i_histgram.total_of_data;
-                var hist = i_histgram.data;
-                // 閾値ピクセル数確定
-                var th_pixcels = sum_of_pixel * this._persentage / 100;
-                var th_wk;
-                var th_w, th_b;
-                // 黒点基準
-                th_wk = th_pixcels;
-                for (th_b = 0; th_b < n - 2; th_b++) {
-                    th_wk -= hist[th_b];
-                    if (th_wk <= 0) {
-                        break;
-                    }
-                }
-                // 白点基準
-                th_wk = th_pixcels;
-                for (th_w = n - 1; th_w > 1; th_w--) {
-                    th_wk -= hist[th_w];
-                    if (th_wk <= 0) {
-                        break;
-                    }
-                }
-                // 閾値の保存
-                return (th_w + th_b) / 2;
-            }
-        });
+        }
+        // 閾値の保存
+        return (th_w + th_b) / 2;
+    }
+});
 
 INyARPca2d = ASKlass('INyARPca2d',
         {
@@ -942,7 +941,7 @@ INyARPca2d = ASKlass('INyARPca2d',
              * @param o_mean
              * @throws NyARException
              */
-            pca: function(i_v1, i_v2, i_number_of_point, o_evec, o_ev, o_mean) {
+            pca: function (i_v1, i_v2, i_number_of_point, o_evec, o_ev, o_mean) {
             }
         }
 )
@@ -958,7 +957,7 @@ NyARPca2d_MatrixPCA_O2 = ASKlass('NyARPca2d_MatrixPCA_O2', INyARPca2d,
              * @param dv
              * @throws NyARException
              */
-            PCA_QRM: function(o_matrix, dv)
+            PCA_QRM: function (o_matrix, dv)
             {
                 var w, t, s, x, y, c;
                 var ev1;
@@ -1049,7 +1048,7 @@ NyARPca2d_MatrixPCA_O2 = ASKlass('NyARPca2d_MatrixPCA_O2', INyARPca2d,
              * @param o_ev
              * @throws NyARException
              */
-            , PCA_PCA: function(i_v1, i_v2, i_number_of_data, o_matrix, o_ev, o_mean)
+            , PCA_PCA: function (i_v1, i_v2, i_number_of_data, o_matrix, o_ev, o_mean)
             {
                 var i;
                 // double[] mean_array=mean.getArray();
@@ -1095,7 +1094,7 @@ NyARPca2d_MatrixPCA_O2 = ASKlass('NyARPca2d_MatrixPCA_O2', INyARPca2d,
                 // }
                 return;
             }
-            , pca: function(i_v1, i_v2, i_number_of_point, o_evec, o_ev, o_mean)
+            , pca: function (i_v1, i_v2, i_number_of_point, o_evec, o_ev, o_mean)
             {
                 this.PCA_PCA(i_v1, i_v2, i_number_of_point, o_evec, o_ev, o_mean);
                 var sum = o_ev[0] + o_ev[1];
@@ -1111,27 +1110,27 @@ NyARPca2d_MatrixPCA_O2 = ASKlass('NyARPca2d_MatrixPCA_O2', INyARPca2d,
  *
  */
 INyARRgbPixelReader = ASKlass('INyARRgbPixelReader', {
-    getPixel: function() {
+    getPixel: function () {
     },
-    getPixelSet: function() {
+    getPixelSet: function () {
     },
-    setPixel: function() {
+    setPixel: function () {
     },
-    setPixels: function() {
+    setPixels: function () {
     },
-    switchBuffer: function() {
+    switchBuffer: function () {
     }
 });
 NyARRgbPixelReader_INT1D_X8R8G8B8_32 = ASKlass('NyARRgbPixelReader_INT1D_X8R8G8B8_32', INyARRgbPixelReader,
         {
             _ref_buf: null,
             _size: null,
-            NyARRgbPixelReader_INT1D_X8R8G8B8_32: function(i_buf, i_size)
+            NyARRgbPixelReader_INT1D_X8R8G8B8_32: function (i_buf, i_size)
             {
                 this._ref_buf = i_buf;
                 this._size = i_size;
             }
-            , getPixel: function(i_x, i_y, o_rgb)
+            , getPixel: function (i_x, i_y, o_rgb)
             {
                 var rgb = this._ref_buf[i_x + i_y * this._size.w];
                 o_rgb[0] = (rgb >> 16) & 0xff;// R
@@ -1139,7 +1138,7 @@ NyARRgbPixelReader_INT1D_X8R8G8B8_32 = ASKlass('NyARRgbPixelReader_INT1D_X8R8G8B
                 o_rgb[2] = rgb & 0xff;// B
                 return;
             }
-            , getPixelSet: function(i_x, i_y, i_num, o_rgb)
+            , getPixelSet: function (i_x, i_y, i_num, o_rgb)
             {
                 var width = this._size.w;
                 var ref_buf = this._ref_buf;
@@ -1151,11 +1150,11 @@ NyARRgbPixelReader_INT1D_X8R8G8B8_32 = ASKlass('NyARRgbPixelReader_INT1D_X8R8G8B
                 }
                 return;
             }
-            , setPixel: function(i_x, i_y, i_rgb)
+            , setPixel: function (i_x, i_y, i_rgb)
             {
                 this._ref_buf[i_x + i_y * this._size.w] = ((i_rgb[0] << 16) & 0xff) | ((i_rgb[1] << 8) & 0xff) | ((i_rgb[2]) & 0xff);
             }
-            , setPixels: function(i_x, i_y, i_num, i_intrgb)
+            , setPixels: function (i_x, i_y, i_num, i_intrgb)
             {
                 throw new NyARException();
             }
@@ -1165,7 +1164,7 @@ NyARRgbPixelReader_INT1D_X8R8G8B8_32 = ASKlass('NyARRgbPixelReader_INT1D_X8R8G8B
              * @param i_ref_buffer
              * @throws NyARException
              */
-            , switchBuffer: function(i_ref_buffer)
+            , switchBuffer: function (i_ref_buffer)
             {
                 NyAS3Utils.assert(i_ref_buffer.length >= this._size.w * this._size.h);
                 this._ref_buf = (i_ref_buffer);
@@ -1177,11 +1176,11 @@ NyARRgbPixelReader_Canvas2D = ASKlass("NyARRgbPixelReader_Canvas2D", INyARRgbPix
         {
             _ref_canvas: null,
             _data: null,
-            NyARRgbPixelReader_Canvas2D: function(i_canvas)
+            NyARRgbPixelReader_Canvas2D: function (i_canvas)
             {
                 this._ref_canvas = i_canvas;
             },
-            getData: function() {
+            getData: function () {
                 if (this._ref_canvas.changed || !this._data) {
                     var canvas = this._ref_canvas;
                     var ctx = canvas.getContext('2d');
@@ -1190,7 +1189,7 @@ NyARRgbPixelReader_Canvas2D = ASKlass("NyARRgbPixelReader_Canvas2D", INyARRgbPix
                 }
                 return this._data;
             },
-            getPixel: function(i_x, i_y, o_rgb)
+            getPixel: function (i_x, i_y, o_rgb)
             {
                 var idata = this.getData();
                 var w = idata.width;
@@ -1201,7 +1200,7 @@ NyARRgbPixelReader_Canvas2D = ASKlass("NyARRgbPixelReader_Canvas2D", INyARRgbPix
                 o_rgb[2] = d[i_y * w + i_x + 2];// B
                 return;
             },
-            getPixelSet: function(i_x, i_y, i_num, o_rgb)
+            getPixelSet: function (i_x, i_y, i_num, o_rgb)
             {
                 var idata = this.getData();
                 var w = idata.width;
@@ -1214,15 +1213,15 @@ NyARRgbPixelReader_Canvas2D = ASKlass("NyARRgbPixelReader_Canvas2D", INyARRgbPix
                     o_rgb[i * 3 + 2] = d[idx + 2];
                 }
             },
-            setPixel: function(i_x, i_y, i_rgb)
+            setPixel: function (i_x, i_y, i_rgb)
             {
                 NyARException.notImplement();
             },
-            setPixels: function(i_x, i_y, i_num, i_intrgb)
+            setPixels: function (i_x, i_y, i_num, i_intrgb)
             {
                 NyARException.notImplement();
             },
-            switchBuffer: function(i_canvas)
+            switchBuffer: function (i_canvas)
             {
                 NyARException.notImplement();
             }
@@ -1230,9 +1229,9 @@ NyARRgbPixelReader_Canvas2D = ASKlass("NyARRgbPixelReader_Canvas2D", INyARRgbPix
         });
 
 INyARDoubleMatrix = Klass({
-    setValue: function() {
+    setValue: function () {
     },
-    getValue: function() {
+    getValue: function () {
     }
 });
 
@@ -1245,7 +1244,7 @@ NyARDoubleMatrix22 = Klass(INyARDoubleMatrix,
             /**
              * 遅いからあんまり使わないでね。
              */
-            setValue: function(i_value)
+            setValue: function (i_value)
             {
                 this.m00 = i_value[0];
                 this.m01 = i_value[1];
@@ -1256,7 +1255,7 @@ NyARDoubleMatrix22 = Klass(INyARDoubleMatrix,
             /**
              * 遅いからあんまり使わないでね。
              */
-            , getValue: function(o_value)
+            , getValue: function (o_value)
             {
                 o_value[0] = this.m00;
                 o_value[1] = this.m01;
@@ -1264,7 +1263,7 @@ NyARDoubleMatrix22 = Klass(INyARDoubleMatrix,
                 o_value[4] = this.m11;
                 return;
             }
-            , inverse: function(i_src)
+            , inverse: function (i_src)
             {
                 var a11, a12, a21, a22;
                 a11 = i_src.m00;
@@ -1301,7 +1300,7 @@ NyARDoubleMatrix33 = Klass(INyARDoubleMatrix,
             m20: 0,
             m21: 0,
             m22: 0,
-            createArray: function(i_number)
+            createArray: function (i_number)
             {
                 var ret = new Array(i_number);
                 for (var i = 0; i < i_number; i++)
@@ -1313,7 +1312,7 @@ NyARDoubleMatrix33 = Klass(INyARDoubleMatrix,
             /**
              * 遅いからあんまり使わないでね。
              */
-            , setValue: function(i_value)
+            , setValue: function (i_value)
             {
                 this.m00 = i_value[0];
                 this.m01 = i_value[1];
@@ -1326,7 +1325,7 @@ NyARDoubleMatrix33 = Klass(INyARDoubleMatrix,
                 this.m22 = i_value[8];
                 return;
             }
-            , setValue_NyARDoubleMatrix33: function(i_value)
+            , setValue_NyARDoubleMatrix33: function (i_value)
             {
                 this.m00 = i_value.m00;
                 this.m01 = i_value.m01;
@@ -1342,7 +1341,7 @@ NyARDoubleMatrix33 = Klass(INyARDoubleMatrix,
             /**
              * 遅いからあんまり使わないでね。
              */
-            , getValue: function(o_value)
+            , getValue: function (o_value)
             {
                 o_value[0] = this.m00;
                 o_value[1] = this.m01;
@@ -1355,7 +1354,7 @@ NyARDoubleMatrix33 = Klass(INyARDoubleMatrix,
                 o_value[8] = this.m22;
                 return;
             }
-            , inverse: function(i_src)
+            , inverse: function (i_src)
             {
                 var a11, a12, a13, a21, a22, a23, a31, a32, a33;
                 var b11, b12, b13, b21, b22, b23, b31, b32, b33;
@@ -1405,7 +1404,7 @@ NyARDoubleMatrix33 = Klass(INyARDoubleMatrix,
              * この関数は、0-PIの間で値を返します。
              * @param o_out
              */
-            , getZXYAngle: function(o_out)
+            , getZXYAngle: function (o_out)
             {
                 var sina = this.m21;
                 if (sina >= 1.0) {
@@ -1422,12 +1421,12 @@ NyARDoubleMatrix33 = Klass(INyARDoubleMatrix,
                     o_out.y = Math.atan2(-this.m20, this.m22);
                 }
             }
-            , setZXYAngle_NyARDoublePoint3d: function(i_angle)
+            , setZXYAngle_NyARDoublePoint3d: function (i_angle)
             {
                 this.setZXYAngle_Number(i_angle.x, i_angle.y, i_angle.z);
                 return;
             }
-            , setZXYAngle_Number: function(i_x, i_y, i_z)
+            , setZXYAngle_Number: function (i_x, i_y, i_z)
             {
                 var sina = Math.sin(i_x);
                 var cosa = Math.cos(i_x);
@@ -1451,13 +1450,13 @@ NyARDoubleMatrix33 = Klass(INyARDoubleMatrix,
              * @param i_angle
              * @param o_out
              */
-            , transformVertex_NyARDoublePoint3d: function(i_position, o_out)
+            , transformVertex_NyARDoublePoint3d: function (i_position, o_out)
             {
                 transformVertex_double(i_position.x, i_position.y, i_position.z, o_out);
                 return;
             }
 
-            , transformVertex_double: function(i_x, i_y, i_z, o_out)
+            , transformVertex_double: function (i_x, i_y, i_z, o_out)
             {
                 o_out.x = this.m00 * i_x + this.m01 * i_y + this.m02 * i_z;
                 o_out.y = this.m10 * i_x + this.m11 * i_y + this.m12 * i_z;
@@ -1484,7 +1483,7 @@ NyARDoubleMatrix34 = Klass(INyARDoubleMatrix,
             m21: 0,
             m22: 0,
             m23: 0,
-            setValue: function(i_value)
+            setValue: function (i_value)
             {
                 this.m00 = i_value[0];
                 this.m01 = i_value[1];
@@ -1500,7 +1499,7 @@ NyARDoubleMatrix34 = Klass(INyARDoubleMatrix,
                 this.m23 = i_value[11];
                 return;
             }
-            , setValue_NyARDoubleMatrix34: function(i_value)
+            , setValue_NyARDoubleMatrix34: function (i_value)
             {
                 this.m00 = i_value.m00;
                 this.m01 = i_value.m01;
@@ -1517,7 +1516,7 @@ NyARDoubleMatrix34 = Klass(INyARDoubleMatrix,
                 return;
             }
 
-            , getValue: function(o_value)
+            , getValue: function (o_value)
             {
                 o_value[0] = this.m00;
                 o_value[1] = this.m01;
@@ -1555,7 +1554,7 @@ NyARDoubleMatrix44 = Klass(INyARDoubleMatrix,
             m31: 0,
             m32: 0,
             m33: 0,
-            createArray: function(i_number)
+            createArray: function (i_number)
             {
                 var ret = new Array(i_number);
                 for (var i = 0; i < i_number; i++)
@@ -1567,7 +1566,7 @@ NyARDoubleMatrix44 = Klass(INyARDoubleMatrix,
             /**
              * 遅いからあんまり使わないでね。
              */
-            , setValue: function(i_value)
+            , setValue: function (i_value)
             {
                 this.m00 = i_value[ 0];
                 this.m01 = i_value[ 1];
@@ -1590,7 +1589,7 @@ NyARDoubleMatrix44 = Klass(INyARDoubleMatrix,
             /**
              * 遅いからあんまり使わないでね。
              */
-            , getValue: function(o_value)
+            , getValue: function (o_value)
             {
                 o_value[ 0] = this.m00;
                 o_value[ 1] = this.m01;
@@ -1610,7 +1609,7 @@ NyARDoubleMatrix44 = Klass(INyARDoubleMatrix,
                 o_value[15] = this.m33;
                 return;
             }
-            , inverse: function(i_src)
+            , inverse: function (i_src)
             {
                 var a11, a12, a13, a14, a21, a22, a23, a24, a31, a32, a33, a34, a41, a42, a43, a44;
                 var b11, b12, b13, b14, b21, b22, b23, b24, b31, b32, b33, b34, b41, b42, b43, b44;
@@ -1735,7 +1734,7 @@ NyARObjectStack = Klass(
              * @param i_array
              * @param i_element_type
              */
-            initialize: function(i_length)
+            initialize: function (i_length)
             {
                 //領域確保
                 i_length = toInt(i_length);
@@ -1750,7 +1749,7 @@ NyARObjectStack = Klass(
              * この関数を上書きしてください。
              *
              */
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 throw new NyARException();
             }
@@ -1761,7 +1760,7 @@ NyARObjectStack = Klass(
              * 失敗するとnull
              * @throws NyARException
              */
-            , prePush: function()
+            , prePush: function ()
             {
                 // 必要に応じてアロケート
                 if (this._length >= this._items.length) {
@@ -1779,7 +1778,7 @@ NyARObjectStack = Klass(
              * 使用済みにするサイズ
              * @return
              */
-            , init: function(i_reserv_length)
+            , init: function (i_reserv_length)
             {
                 // 必要に応じてアロケート
                 if (i_reserv_length >= this._items.length) {
@@ -1793,7 +1792,7 @@ NyARObjectStack = Klass(
              * 返却したオブジェクトの内容は、次回のpushまで有効です。
              * @return
              */
-            , pop: function()
+            , pop: function ()
             {
                 NyAS3Utils.assert(this._length >= 1);
                 this._length--;
@@ -1805,7 +1804,7 @@ NyARObjectStack = Klass(
              * @param i_count
              * @return
              */
-            , pops: function(i_count)
+            , pops: function (i_count)
             {
                 NyAS3Utils.assert(this._length >= i_count);
                 this._length -= i_count;
@@ -1817,12 +1816,12 @@ NyARObjectStack = Klass(
              *
              * @return
              */
-            , getArray: function()
+            , getArray: function ()
             {
                 return this._items;
             }
 
-            , getItem: function(i_index)
+            , getItem: function (i_index)
             {
                 return this._items[i_index];
             }
@@ -1831,7 +1830,7 @@ NyARObjectStack = Klass(
              * 配列の見かけ上の要素数を返却します。
              * @return
              */
-            , getLength: function()
+            , getLength: function ()
             {
                 return this._length;
             }
@@ -1839,7 +1838,7 @@ NyARObjectStack = Klass(
             /**
              * 見かけ上の要素数をリセットします。
              */
-            , clear: function()
+            , clear: function ()
             {
                 this._length = 0;
             }
@@ -1851,11 +1850,11 @@ NyARObjectStack = Klass(
  */
 NyARIntPointStack = Klass(NyARObjectStack,
         {
-            initialize: function(i_length)
+            initialize: function (i_length)
             {
                 NyARObjectStack.initialize.call(this, i_length);
             }
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 var ret = new Array(i_length);
                 for (var i = 0; i < i_length; i++) {
@@ -1878,7 +1877,7 @@ NyARIntRectStack = Klass(//NyARObjectStack,
         {
             _items: null,
             _length: null,
-            initialize: function(i_length)
+            initialize: function (i_length)
             {
                 //領域確保
                 this._items = this.createArray(i_length);
@@ -1886,7 +1885,7 @@ NyARIntRectStack = Klass(//NyARObjectStack,
                 this._length = 0;
                 return;
             }
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 var ret = new Array(i_length);
                 for (var i = 0; i < i_length; i++) {
@@ -1900,7 +1899,7 @@ NyARIntRectStack = Klass(//NyARObjectStack,
              * 失敗するとnull
              * @throws NyARException
              */
-            , prePush: function()
+            , prePush: function ()
             {
                 // 必要に応じてアロケート
                 if (this._length >= this._items.length) {
@@ -1918,7 +1917,7 @@ NyARIntRectStack = Klass(//NyARObjectStack,
              * 使用済みにするサイズ
              * @return
              */
-            , init: function(i_reserv_length)
+            , init: function (i_reserv_length)
             {
                 // 必要に応じてアロケート
                 if (i_reserv_length >= this._items.length) {
@@ -1932,7 +1931,7 @@ NyARIntRectStack = Klass(//NyARObjectStack,
              * 返却したオブジェクトの内容は、次回のpushまで有効です。
              * @return
              */
-            , pop: function()
+            , pop: function ()
             {
                 NyAS3Utils.assert(this._length >= 1);
                 this._length--;
@@ -1944,7 +1943,7 @@ NyARIntRectStack = Klass(//NyARObjectStack,
              * @param i_count
              * @return
              */
-            , pops: function(i_count)
+            , pops: function (i_count)
             {
                 NyAS3Utils.assert(this._length >= i_count);
                 this._length -= i_count;
@@ -1956,12 +1955,12 @@ NyARIntRectStack = Klass(//NyARObjectStack,
              *
              * @return
              */
-            , getArray: function()
+            , getArray: function ()
             {
                 return this._items;
             }
 
-            , getItem: function(i_index)
+            , getItem: function (i_index)
             {
                 return this._items[i_index];
             }
@@ -1970,7 +1969,7 @@ NyARIntRectStack = Klass(//NyARObjectStack,
              * 配列の見かけ上の要素数を返却します。
              * @return
              */
-            , getLength: function()
+            , getLength: function ()
             {
                 return this._length;
             }
@@ -1978,7 +1977,7 @@ NyARIntRectStack = Klass(//NyARObjectStack,
             /**
              * 見かけ上の要素数をリセットします。
              */
-            , clear: function()
+            , clear: function ()
             {
                 this._length = 0;
             }
@@ -1993,7 +1992,7 @@ NyARIntRectStack = Klass(//NyARObjectStack,
 
 
 NyARBufferType = Klass(
-        (function() {
+        (function () {
             var T_BYTE1D = 0x00010000;
             var T_INT2D = 0x00020000;
             var T_SHORT1D = 0x00030000;
@@ -2110,7 +2109,7 @@ NyARDoublePoint2d = Klass(
              * @param i_number
              * @return
              */
-            createArray: function(i_number)
+            createArray: function (i_number)
             {
                 var ret = new Array(i_number);
                 for (var i = 0; i < i_number; i++)
@@ -2119,7 +2118,7 @@ NyARDoublePoint2d = Klass(
                 }
                 return ret;
             }
-            , initialize: function()
+            , initialize: function ()
             {
                 switch (arguments.length) {
                     case 0:
@@ -2134,23 +2133,23 @@ NyARDoublePoint2d = Klass(
                         return;
                         break;
                     case 2:
-                        {	//public function NyARDoublePoint2d(i_x,i_y)
-                            this.x = Number(args[0]);
-                            this.y = Number(args[1]);
-                            return;
-                        }
+                    {	//public function NyARDoublePoint2d(i_x,i_y)
+                        this.x = Number(args[0]);
+                        this.y = Number(args[1]);
+                        return;
+                    }
                     default:
                         break;
                 }
                 throw new NyARException();
             }
-            , setValue_NyARDoublePoint2d: function(i_src)
+            , setValue_NyARDoublePoint2d: function (i_src)
             {
                 this.x = i_src.x;
                 this.y = i_src.y;
                 return;
             }
-            , setValue_NyARIntPoint2d: function(i_src)
+            , setValue_NyARIntPoint2d: function (i_src)
             {
                 this.x = (i_src.x);
                 this.y = (i_src.y);
@@ -2160,11 +2159,11 @@ NyARDoublePoint2d = Klass(
              * 格納値をベクトルとして、距離を返します。
              * @return
              */
-            , dist: function()
+            , dist: function ()
             {
                 return Math.sqrt(this.x * this.x + this.y + this.y);
             }
-            , sqNorm: function()
+            , sqNorm: function ()
             {
                 return this.x * this.x + this.y + this.y;
             }
@@ -2184,7 +2183,7 @@ NyARDoublePoint3d = Klass(
              * @param i_number
              * @return
              */
-            createArray: function(i_number)
+            createArray: function (i_number)
             {
                 var ret = new Array(i_number);
                 for (var i = 0; i < i_number; i++)
@@ -2193,7 +2192,7 @@ NyARDoublePoint3d = Klass(
                 }
                 return ret;
             }
-            , setValue: function(i_in)
+            , setValue: function (i_in)
             {
                 this.x = i_in.x;
                 this.y = i_in.y;
@@ -2204,7 +2203,7 @@ NyARDoublePoint3d = Klass(
              * i_pointとのベクトルから距離を計算します。
              * @return
              */
-            , dist: function(i_point)
+            , dist: function (i_point)
             {
                 var x, y, z;
                 x = this.x - i_point.x;
@@ -2234,7 +2233,7 @@ NyARHistogram = Klass(
              * 有効なサンプルの総数 data[i]
              */
             total_of_data: 0,
-            initialize: function(i_length)
+            initialize: function (i_length)
             {
                 this.data = new FloatVector(i_length);
                 this.length = i_length;
@@ -2246,7 +2245,7 @@ NyARHistogram = Klass(
              * @param i_ed
              * @return
              */
-            , getTotal: function(i_st, i_ed)
+            , getTotal: function (i_st, i_ed)
             {
                 NyAS3Utils.assert(i_st < i_ed && i_ed < this.length);
                 var result = 0;
@@ -2260,7 +2259,7 @@ NyARHistogram = Klass(
              * 指定したi_pos未満サンプルを０にします。
              * @param i_pos
              */
-            , lowCut: function(i_pos)
+            , lowCut: function (i_pos)
             {
                 var s = 0;
                 for (var i = 0; i < i_pos; i++) {
@@ -2273,7 +2272,7 @@ NyARHistogram = Klass(
              * 指定したi_pos以上のサンプルを０にします。
              * @param i_pos
              */
-            , highCut: function(i_pos)
+            , highCut: function (i_pos)
             {
                 var s = 0;
                 for (var i = this.length - 1; i >= i_pos; i--) {
@@ -2285,7 +2284,7 @@ NyARHistogram = Klass(
             /**
              * 最小の値が格納されているサンプル番号を返します。
              */
-            , getMinSample: function()
+            , getMinSample: function ()
             {
                 var data = this.data;
                 var ret = this.length - 1;
@@ -2303,7 +2302,7 @@ NyARHistogram = Klass(
              * サンプルの中で最小の値を返します。
              * @return
              */
-            , getMinData: function()
+            , getMinData: function ()
             {
                 return this.data[this.getMinSample()];
             }
@@ -2311,7 +2310,7 @@ NyARHistogram = Klass(
              * 平均値を計算します。
              * @return
              */
-            , getAverage: function()
+            , getAverage: function ()
             {
                 var sum = 0;
                 for (var i = this.length - 1; i >= 0; i--)
@@ -2336,7 +2335,7 @@ NyARIntPoint2d = Klass(
              * @param i_number
              * @return
              */
-            createArray: function(i_number)
+            createArray: function (i_number)
             {
                 var ret = new Array(i_number);
                 for (var i = 0; i < i_number; i++)
@@ -2345,7 +2344,7 @@ NyARIntPoint2d = Klass(
                 }
                 return ret;
             }
-            , copyArray: function(i_from, i_to)
+            , copyArray: function (i_from, i_to)
             {
                 for (var i = i_from.length - 1; i >= 0; i--)
                 {
@@ -2380,15 +2379,15 @@ NyARIntSize = Klass(
              * 	public function NyARIntSize(i_width,i_height)
              *	public function NyARIntSize(i_ref_object)
              */
-            initialize: function()
+            initialize: function ()
             {
                 switch (arguments.length) {
                     case 0:
-                        {//public function NyARIntSize()
-                            this.w = 0;
-                            this.h = 0;
-                            return;
-                        }
+                    {//public function NyARIntSize()
+                        this.w = 0;
+                        this.h = 0;
+                        return;
+                    }
                     case 1:
                         this.w = arguments[0].w;
                         this.h = arguments[0].h;
@@ -2415,7 +2414,7 @@ NyARIntSize = Klass(
              * @return
              * @throws NyARException
              */
-            , isEqualSize_int: function(i_width, i_height)
+            , isEqualSize_int: function (i_width, i_height)
             {
                 if (i_width == this.w && i_height == this.h) {
                     return true;
@@ -2431,7 +2430,7 @@ NyARIntSize = Klass(
              * @return
              * @throws NyARException
              */
-            , isEqualSize_NyARIntSize: function(i_size)
+            , isEqualSize_NyARIntSize: function (i_size)
             {
                 if (i_size.w == this.w && i_size.h == this.h) {
                     return true;
@@ -2454,7 +2453,7 @@ NyARLinear = Klass(
             dx: 0, //dx軸の増加量
             dy: 0, //dy軸の増加量
             c: 0, //切片
-            createArray: function(i_number)
+            createArray: function (i_number)
             {
                 var ret = new Array(i_number);
                 for (var i = 0; i < i_number; i++)
@@ -2463,7 +2462,7 @@ NyARLinear = Klass(
                 }
                 return ret;
             }
-            , copyFrom: function(i_source)
+            , copyFrom: function (i_source)
             {
                 this.dx = i_source.dx;
                 this.dy = i_source.dy;
@@ -2477,7 +2476,7 @@ NyARLinear = Klass(
              * @param o_point
              * @return
              */
-            , crossPos: function(l_line_i, l_line_2, o_point)
+            , crossPos: function (l_line_i, l_line_2, o_point)
             {
                 var w1 = l_line_2.dy * l_line_i.dx - l_line_i.dy * l_line_2.dx;
                 if (w1 == 0.0) {
@@ -2525,7 +2524,7 @@ NyARLinear = Klass(
  */
 IFLdoThFilterImpl = ASKlass('IFLdoThFilterImpl',
         {
-            doThFilter: function(i_input, i_output, i_size, i_threshold) {
+            doThFilter: function (i_input, i_output, i_size, i_threshold) {
             }
         }
 )
@@ -2539,17 +2538,17 @@ FLARRasterFilter_Threshold = ASKlass('FLARRasterFilter_Threshold',
         {
             _threshold: 0
             , _do_threshold_impl: null
-            , FLARRasterFilter_Threshold: function(i_threshold)
+            , FLARRasterFilter_Threshold: function (i_threshold)
             {
             }
             /**
              * 画像を２値化するための閾値。暗点&lt;=th&lt;明点となります。
              * @param i_threshold
              */
-            , setThreshold: function(i_threshold) {
+            , setThreshold: function (i_threshold) {
                 this._threshold = i_threshold;
             }
-            , doFilter: function(i_input, i_output) {
+            , doFilter: function (i_input, i_output) {
                 NyAS3Utils.assert(i_input._width == i_output._width && i_input._height == i_output._height);
                 var out_buf = (i_output.getBuffer());
                 var in_reader = i_input.getRgbPixelReader();
@@ -2581,12 +2580,12 @@ FLARRasterFilter_Threshold = ASKlass('FLARRasterFilter_Threshold',
             }
         }
 );
-Point = function(x, y) {
+Point = function (x, y) {
     this.x = x || 0;
     this.y = y || 0;
 };
 doThFilterImpl_BUFFERFORMAT_OBJECT_AS_BitmapData = {
-    doThFilter: function(i_input, i_output, i_threshold)
+    doThFilter: function (i_input, i_output, i_threshold)
     {
         var out_buf = (i_output.getBuffer());
         var in_buf = (i_input.getBuffer());
@@ -2678,7 +2677,7 @@ NyARLabelInfo = ASKlass('NyARLabelInfo',
             clip_t: 0,
             pos_x: 0,
             pos_y: 0,
-            NyARLabelInfo: function()
+            NyARLabelInfo: function ()
             {
             }
         })
@@ -2689,7 +2688,7 @@ NyARLabelInfoStack = ASKlass('NyARLabelInfoStack', // NyARObjectStack,
         {
             _items: null,
             _length: 0,
-            NyARLabelInfoStack: function(i_length)
+            NyARLabelInfoStack: function (i_length)
             {
                 //領域確保
                 this._items = this.createArray(i_length);
@@ -2697,7 +2696,7 @@ NyARLabelInfoStack = ASKlass('NyARLabelInfoStack', // NyARObjectStack,
                 this._length = 0;
                 return;
             }
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 var ret = new Array(i_length);
                 for (var i = 0; i < i_length; i++) {
@@ -2708,7 +2707,7 @@ NyARLabelInfoStack = ASKlass('NyARLabelInfoStack', // NyARObjectStack,
             /**
              * エリアの大きい順にラベルをソートします。
              */
-            , sortByArea: function()
+            , sortByArea: function ()
             {
                 var len = this._length;
                 if (len < 1) {
@@ -2741,7 +2740,7 @@ NyARLabelInfoStack = ASKlass('NyARLabelInfoStack', // NyARObjectStack,
              * 失敗するとnull
              * @throws NyARException
              */
-            , prePush: function()
+            , prePush: function ()
             {
                 // 必要に応じてアロケート
                 if (this._length >= this._items.length) {
@@ -2758,7 +2757,7 @@ NyARLabelInfoStack = ASKlass('NyARLabelInfoStack', // NyARObjectStack,
              * 使用済みにするサイズ
              * @return
              */
-            , init: function(i_reserv_length)
+            , init: function (i_reserv_length)
             {
                 // 必要に応じてアロケート
                 if (i_reserv_length >= this._items.length) {
@@ -2771,7 +2770,7 @@ NyARLabelInfoStack = ASKlass('NyARLabelInfoStack', // NyARObjectStack,
              * 返却したオブジェクトの内容は、次回のpushまで有効です。
              * @return
              */
-            , pop: function()
+            , pop: function ()
             {
                 NyAS3Utils.assert(this._length >= 1);
                 this._length--;
@@ -2782,7 +2781,7 @@ NyARLabelInfoStack = ASKlass('NyARLabelInfoStack', // NyARObjectStack,
              * @param i_count
              * @return
              */
-            , pops: function(i_count)
+            , pops: function (i_count)
             {
                 NyAS3Utils.assert(this._length >= i_count);
                 this._length -= i_count;
@@ -2793,11 +2792,11 @@ NyARLabelInfoStack = ASKlass('NyARLabelInfoStack', // NyARObjectStack,
              *
              * @return
              */
-            , getArray: function()
+            , getArray: function ()
             {
                 return this._items;
             }
-            , getItem: function(i_index)
+            , getItem: function (i_index)
             {
                 return this._items[i_index];
             }
@@ -2805,14 +2804,14 @@ NyARLabelInfoStack = ASKlass('NyARLabelInfoStack', // NyARObjectStack,
              * 配列の見かけ上の要素数を返却します。
              * @return
              */
-            , getLength: function()
+            , getLength: function ()
             {
                 return this._length;
             }
             /**
              * 見かけ上の要素数をリセットします。
              */
-            , clear: function()
+            , clear: function ()
             {
                 this._length = 0;
             }
@@ -2823,11 +2822,11 @@ NyARLabelOverlapChecker = ASKlass('NyARLabelOverlapChecker',
             _length: 0,
             /*
              */
-            NyARLabelOverlapChecker: function(i_max_label)
+            NyARLabelOverlapChecker: function (i_max_label)
             {
                 this._labels = this.createArray(i_max_label);
             }
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 return new Array(i_length);
             }
@@ -2836,7 +2835,7 @@ NyARLabelOverlapChecker = ASKlass('NyARLabelOverlapChecker',
              *
              * @param i_label_ref
              */
-            , push: function(i_label_ref)
+            , push: function (i_label_ref)
             {
                 this._labels[this._length] = i_label_ref;
                 this._length++;
@@ -2847,7 +2846,7 @@ NyARLabelOverlapChecker = ASKlass('NyARLabelOverlapChecker',
              * @param i_label
              * @return 何れかのラベルの内側にあるならばfalse,独立したラベルである可能性が高ければtrueです．
              */
-            , check: function(i_label)
+            , check: function (i_label)
             {
                 // 重なり処理かな？
                 var label_pt = this._labels;
@@ -2870,7 +2869,7 @@ NyARLabelOverlapChecker = ASKlass('NyARLabelOverlapChecker',
              *
              * @param i_max_label
              */
-            , setMaxLabels: function(i_max_label)
+            , setMaxLabels: function (i_max_label)
             {
                 if (i_max_label > this._labels.length) {
                     this._labels = this.createArray(i_max_label);
@@ -2892,7 +2891,7 @@ NyARLabeling_Rle = ASKlass('NyARLabeling_Rle',
             _rle2: null,
             _max_area: 0,
             _min_area: 0,
-            NyARLabeling_Rle: function(i_width, i_height)
+            NyARLabeling_Rle: function (i_width, i_height)
             {
                 this._rlestack = new RleInfoStack(i_width * i_height * 2048 / (320 * 240) + 32);
                 this._rle1 = RleElement.createArray(i_width / 2 + 1);
@@ -2905,7 +2904,7 @@ NyARLabeling_Rle = ASKlass('NyARLabeling_Rle',
              * @param i_max
              * @param i_min
              */
-            , setAreaRange: function(i_max, i_min)
+            , setAreaRange: function (i_max, i_min)
             {
                 this._max_area = i_max;
                 this._min_area = i_min;
@@ -2923,7 +2922,7 @@ NyARLabeling_Rle = ASKlass('NyARLabeling_Rle',
              * 暗点<=th<明点
              * @return
              */
-            , toRLE: function(i_bin_buf, i_st, i_len, i_out, i_th)
+            , toRLE: function (i_bin_buf, i_st, i_len, i_out, i_th)
             {
                 var current = 0;
                 var lidx = 0, ridx = 1, fidx = 2, off = 3;
@@ -2978,7 +2977,7 @@ NyARLabeling_Rle = ASKlass('NyARLabeling_Rle',
                 // 行確定
                 return current / off;
             }
-            , addFragment: function(i_rel_img, i_img_idx, i_nof, i_row_index, o_stack)
+            , addFragment: function (i_rel_img, i_img_idx, i_nof, i_row_index, o_stack)
             {
                 var lidx = 0, ridx = 1, fidx = 2, off = 3;
                 var l = i_rel_img[i_img_idx + lidx];
@@ -3006,7 +3005,7 @@ NyARLabeling_Rle = ASKlass('NyARLabeling_Rle',
              * @return
              * @throws NyARException
              */
-            , labeling_NyARBinRaster: function(i_bin_raster, i_top, i_bottom, o_stack)
+            , labeling_NyARBinRaster: function (i_bin_raster, i_top, i_bottom, o_stack)
             {
                 NyAS3Utils.assert(i_bin_raster.isEqualBufferType(NyARBufferType.INT1D_BIN_8));
                 return this.imple_labeling(i_bin_raster, 0, i_top, i_bottom, o_stack);
@@ -3022,16 +3021,16 @@ NyARLabeling_Rle = ASKlass('NyARLabeling_Rle',
              * @return
              * @throws NyARException
              */
-            , labeling_NyARGrayscaleRaster: function(i_gs_raster, i_th, i_top, i_bottom, o_stack)
+            , labeling_NyARGrayscaleRaster: function (i_gs_raster, i_th, i_top, i_bottom, o_stack)
             {
                 NyAS3Utils.assert(i_gs_raster.isEqualBufferType(NyARBufferType.INT1D_GRAY_8));
                 return this.imple_labeling(i_gs_raster, i_th, i_top, i_bottom, o_stack);
             }
-            , labeling: function(i_bin_raster, o_stack)
+            , labeling: function (i_bin_raster, o_stack)
             {
                 return this.imple_labeling(i_bin_raster, 0, 0, i_bin_raster.getHeight(), o_stack);
             }
-            , imple_labeling: function(i_raster, i_th, i_top, i_bottom, o_stack)
+            , imple_labeling: function (i_raster, i_th, i_top, i_bottom, o_stack)
             {
                 // リセット処理
                 var rlestack = this._rlestack;
@@ -3222,12 +3221,12 @@ RleInfo = ASKlass('RleInfo',
 
 RleInfoStack = ASKlass('RleInfoStack', NyARObjectStack,
         {
-            RleInfoStack: function(i_length)
+            RleInfoStack: function (i_length)
             {
                 NyARObjectStack.initialize.call(this, i_length);
                 return;
             }
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 var ret = new Array(toInt(i_length));
                 for (var i = 0; i < i_length; i++) {
@@ -3241,7 +3240,7 @@ RleElement = ASKlass('RleElement',
             l: 0,
             r: 0,
             fid: 0,
-            createArray: function(i_length)
+            createArray: function (i_length)
             {
                 return new IntVector(toInt(i_length) * 3);
                 var ret = new Array(toInt(i_length));
@@ -3259,12 +3258,12 @@ NyARRleLabelFragmentInfo = ASKlass('NyARRleLabelFragmentInfo', NyARLabelInfo,
         })
 NyARRleLabelFragmentInfoStack = ASKlass('NyARRleLabelFragmentInfoStack', NyARLabelInfoStack,
         {
-            NyARRleLabelFragmentInfoStack: function(i_length)
+            NyARRleLabelFragmentInfoStack: function (i_length)
             {
                 NyARLabelInfoStack.initialize.call(this, i_length);
                 return;
             }
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 var ret = new Array(toInt(i_length));
                 for (var i = 0; i < i_length; i++) {
@@ -3312,7 +3311,7 @@ FLARLabeling = ASKlass('FLARLabeling',
             , _tmp_bmp: null
             , areaMax: 0
             , areaMin: 0
-            , FLARLabeling: function(i_width, i_height)
+            , FLARLabeling: function (i_width, i_height)
             {
                 this._tmp_bmp = new BitmapData(i_width, i_height, false, 0x00);
                 this.hSearch = new BitmapData(i_width, 1, false, 0x000000);
@@ -3328,12 +3327,12 @@ FLARLabeling = ASKlass('FLARLabeling',
              * @param i_max 解析対象とする白領域の最大pixel数(一辺の二乗)
              * @param i_min 解析対象とする白領域の最小pixel数(一辺の二乗)
              */
-            , setAreaRange: function(i_max, i_min)
+            , setAreaRange: function (i_max, i_min)
             {
                 this.areaMax = i_max;
                 this.areaMin = i_min;
             }
-            , labeling: function(i_bin_raster, o_stack)
+            , labeling: function (i_bin_raster, o_stack)
             {
                 var label_img = this._tmp_bmp;
                 label_img.fillRect(label_img.rect, 0x0);
@@ -3384,7 +3383,7 @@ FLARLabeling = ASKlass('FLARLabeling',
                  }*/
                 return o_stack.getLength();
             }
-            , getTopClipTangentX: function(i_image, i_index, i_label)
+            , getTopClipTangentX: function (i_image, i_index, i_label)
             {
                 var w;
                 var clip1 = i_label.clip_r;
@@ -3433,13 +3432,13 @@ FLARLabeling = ASKlass('FLARLabeling',
  */
 INyARCameraDistortionFactor = ASKlass('INyARCameraDistortionFactor',
         {
-            ideal2Observ: function(i_in, o_out) {
+            ideal2Observ: function (i_in, o_out) {
             },
-            ideal2ObservBatch: function(i_in, o_out, i_size) {
+            ideal2ObservBatch: function (i_in, o_out, i_size) {
             },
-            observ2Ideal: function(ix, iy, o_point) {
+            observ2Ideal: function (ix, iy, o_point) {
             },
-            observ2IdealBatch: function(i_x_coord, i_y_coord, i_start, i_num, o_x_coord, o_y_coord) {
+            observ2IdealBatch: function (i_x_coord, i_y_coord, i_start, i_num, o_x_coord, o_y_coord) {
             }
         })
 
@@ -3460,7 +3459,7 @@ NyARCameraDistortionFactor = ASKlass('NyARCameraDistortionFactor', INyARCameraDi
             _f1: 0, //y0
             _f2: 0, //100000000.0*ｆ
             _f3: 0, //s
-            copyFrom: function(i_ref)
+            copyFrom: function (i_ref)
             {
                 this._f0 = i_ref._f0;
                 this._f1 = i_ref._f1;
@@ -3473,7 +3472,7 @@ NyARCameraDistortionFactor = ASKlass('NyARCameraDistortionFactor', INyARCameraDi
              * @param i_factor
              * 4要素以上の配列
              */
-            , setValue: function(i_factor)
+            , setValue: function (i_factor)
             {
                 this._f0 = i_factor[0];
                 this._f1 = i_factor[1];
@@ -3481,7 +3480,7 @@ NyARCameraDistortionFactor = ASKlass('NyARCameraDistortionFactor', INyARCameraDi
                 this._f3 = i_factor[3];
                 return;
             }
-            , getValue: function(o_factor)
+            , getValue: function (o_factor)
             {
                 o_factor[0] = this._f0;
                 o_factor[1] = this._f1;
@@ -3489,7 +3488,7 @@ NyARCameraDistortionFactor = ASKlass('NyARCameraDistortionFactor', INyARCameraDi
                 o_factor[3] = this._f3;
                 return;
             }
-            , changeScale: function(i_scale)
+            , changeScale: function (i_scale)
             {
                 this._f0 = this._f0 * i_scale;// newparam->dist_factor[0] =source->dist_factor[0] *scale;
                 this._f1 = this._f1 * i_scale;// newparam->dist_factor[1] =source->dist_factor[1] *scale;
@@ -3503,7 +3502,7 @@ NyARCameraDistortionFactor = ASKlass('NyARCameraDistortionFactor', INyARCameraDi
              * @param i_in
              * @param o_out
              */
-            , ideal2Observ: function(i_in, o_out)
+            , ideal2Observ: function (i_in, o_out)
             {
                 var x = (i_in.x - this._f0) * this._f3;
                 var y = (i_in.y - this._f1) * this._f3;
@@ -3522,7 +3521,7 @@ NyARCameraDistortionFactor = ASKlass('NyARCameraDistortionFactor', INyARCameraDi
              * @param i_in
              * @param o_out
              */
-            , ideal2ObservBatch: function(i_in, o_out, i_size)
+            , ideal2ObservBatch: function (i_in, o_out, i_size)
             {
                 var x, y;
                 var d0 = this._f0;
@@ -3552,7 +3551,7 @@ NyARCameraDistortionFactor = ASKlass('NyARCameraDistortionFactor', INyARCameraDi
              * @param iy
              * @return
              */
-            , observ2Ideal: function(ix, iy, o_point)
+            , observ2Ideal: function (ix, iy, o_point)
             {
                 var z02, z0, p, q, z, px, py, opttmp_1;
                 var d0 = this._f0;
@@ -3595,7 +3594,7 @@ NyARCameraDistortionFactor = ASKlass('NyARCameraDistortionFactor', INyARCameraDi
              * @param o_ideal
              *            出力バッファ[i_num][2]であること。
              */
-            , observ2IdealBatch: function(i_x_coord, i_y_coord, i_start, i_num, o_x_coord, o_y_coord)
+            , observ2IdealBatch: function (i_x_coord, i_y_coord, i_start, i_num, o_x_coord, o_y_coord)
             {
                 var z02, z0, q, z, px, py, opttmp_1;
                 var d0 = this._f0;
@@ -3636,7 +3635,7 @@ NyARObserv2IdealMap = ASKlass('NyARObserv2IdealMap',
             _stride: 0,
             _mapx: null,
             _mapy: null,
-            NyARObserv2IdealMap: function(i_distfactor, i_screen_size)
+            NyARObserv2IdealMap: function (i_distfactor, i_screen_size)
             {
                 var opoint = new NyARDoublePoint2d();
                 this._mapx = new FloatVector(i_screen_size.w * i_screen_size.h);
@@ -3656,14 +3655,14 @@ NyARObserv2IdealMap = ASKlass('NyARObserv2IdealMap',
                 }
                 return;
             }
-            , observ2Ideal: function(ix, iy, o_point)
+            , observ2Ideal: function (ix, iy, o_point)
             {
                 var idx = ix + iy * this._stride;
                 o_point.x = this._mapx[idx];
                 o_point.y = this._mapy[idx];
                 return;
             }
-            , observ2IdealBatch: function(i_x_coord, i_y_coord, i_start, i_num, o_x_coord, o_y_coord, i_out_start_index)
+            , observ2IdealBatch: function (i_x_coord, i_y_coord, i_start, i_num, o_x_coord, o_y_coord, i_out_start_index)
             {
                 var idx;
                 var ptr = i_out_start_index;
@@ -3685,12 +3684,12 @@ NyARPerspectiveProjectionMatrix = ASKlass('NyARPerspectiveProjectionMatrix', NyA
             /*
              * static double dot( double a1, double a2, double a3,double b1, double b2,double b3 )
              */
-            dot: function(a1, a2, a3, b1, b2, b3)
+            dot: function (a1, a2, a3, b1, b2, b3)
             {
                 return (a1 * b1 + a2 * b2 + a3 * b3);
             }
             /* static double norm( double a, double b, double c ) */
-            , norm: function(a, b, c)
+            , norm: function (a, b, c)
             {
                 return Math.sqrt(a * a + b * b + c * c);
             }
@@ -3703,7 +3702,7 @@ NyARPerspectiveProjectionMatrix = ASKlass('NyARPerspectiveProjectionMatrix', NyA
              *            戻り引数。3x4のマトリクスを指定すること。
              * @return
              */
-            , decompMat: function(o_cpara, o_trans)
+            , decompMat: function (o_cpara, o_trans)
             {
                 var r, c;
                 var rem1, rem2, rem3;
@@ -3791,7 +3790,7 @@ NyARPerspectiveProjectionMatrix = ASKlass('NyARPerspectiveProjectionMatrix', NyA
              * @param i_scale
              *
              */
-            , changeScale: function(i_scale)
+            , changeScale: function (i_scale)
             {
                 this.m00 = this.m00 * i_scale;
                 this.m10 = this.m10 * i_scale;
@@ -3813,14 +3812,14 @@ NyARPerspectiveProjectionMatrix = ASKlass('NyARPerspectiveProjectionMatrix', NyA
              * @param i_3dvertex
              * @param o_2d
              */
-            , projectionConvert_NyARDoublePoint3d: function(i_3dvertex, o_2d)
+            , projectionConvert_NyARDoublePoint3d: function (i_3dvertex, o_2d)
             {
                 var w = i_3dvertex.z * this.m22;
                 o_2d.x = (i_3dvertex.x * this.m00 + i_3dvertex.y * this.m01 + i_3dvertex.z * this.m02) / w;
                 o_2d.y = (i_3dvertex.y * this.m11 + i_3dvertex.z * this.m12) / w;
                 return;
             }
-            , projectionConvert_Number: function(i_x, i_y, i_z, o_2d)
+            , projectionConvert_Number: function (i_x, i_y, i_z, o_2d)
             {
                 var w = i_z * this.m22;
                 o_2d.x = (i_x * this.m00 + i_y * this.m01 + i_z * this.m02) / w;
@@ -3841,23 +3840,23 @@ NyARParam = ASKlass('NyARParam',
             SIZE_OF_PARAM_SET: 4 + 4 + (3 * 4 * 8) + (4 * 8),
             _dist: new NyARCameraDistortionFactor(),
             _projection_matrix: new NyARPerspectiveProjectionMatrix(),
-            getScreenSize: function()
+            getScreenSize: function ()
             {
                 return this._screen_size;
             }
-            , getPerspectiveProjectionMatrix: function()
+            , getPerspectiveProjectionMatrix: function ()
             {
                 console.log(123)
                 return this._projection_matrix;
             }
-            , getDistortionFactor: function()
+            , getDistortionFactor: function ()
             {
                 return this._dist;
             }
             /**
              * Copy the perspective projection matrix to the given m_projection FloatVector GL camera matrix.
              */
-            , copyCameraMatrix: function(m_projection, NEAR_CLIP, FAR_CLIP) {
+            , copyCameraMatrix: function (m_projection, NEAR_CLIP, FAR_CLIP) {
                 var trans_mat = new FLARMat(3, 4);
                 var icpara_mat = new FLARMat(3, 4);
                 var p = ArrayUtil.createJaggedArray(3, 3);
@@ -3924,7 +3923,7 @@ NyARParam = ASKlass('NyARParam',
              * @param i_projection
              * NyARPerspectiveProjectionMatrixセットする配列を指定する。要素数は12であること。
              */
-            , setValue: function(i_factor, i_projection)
+            , setValue: function (i_factor, i_projection)
             {
                 console.log("i_projection = ");
                 console.log(i_projection);
@@ -3941,7 +3940,7 @@ NyARParam = ASKlass('NyARParam',
              * @return
              *
              */
-            , changeScreenSize: function(i_xsize, i_ysize)
+            , changeScreenSize: function (i_xsize, i_ysize)
             {
                 var scale = i_xsize / this._screen_size.w;// scale = (double)xsize / (double)(source->xsize);
                 //スケールを変更
@@ -3951,7 +3950,7 @@ NyARParam = ASKlass('NyARParam',
                 this._screen_size.h = i_ysize;// newparam->ysize = ysize;
                 return;
             }
-            , loadARParam: function(i_stream)
+            , loadARParam: function (i_stream)
             {
                 var tmp = new FloatVector(12);//new double[12];
                 i_stream.endian = Endian.BIG_ENDIAN;
@@ -4010,7 +4009,7 @@ NyARParam = ASKlass('NyARParam',
  */
 FLARParam = ASKlass('FLARParam', NyARParam,
         {
-            FLARParam: function(w, h)
+            FLARParam: function (w, h)
             {
                 w = w || 640;
                 h = h || 480;
@@ -4060,23 +4059,23 @@ FLARParam = ASKlass('FLARParam', NyARParam,
 
 INyARRaster = ASKlass('INyARRaster',
         {
-            getWidth: function() {
+            getWidth: function () {
             },
-            getHeight: function() {
+            getHeight: function () {
             },
-            getSize: function() {
+            getSize: function () {
             },
             /**
              * バッファオブジェクトを返します。
              * @return
              */
-            getBuffer: function() {
+            getBuffer: function () {
             },
             /**
              * バッファオブジェクトのタイプを返します。
              * @return
              */
-            getBufferType: function() {
+            getBufferType: function () {
             },
             /**
              * バッファのタイプがi_type_valueであるか、チェックします。
@@ -4084,20 +4083,20 @@ INyARRaster = ASKlass('INyARRaster',
              * @param i_type_value
              * @return
              */
-            isEqualBufferType: function(i_type_value) {
+            isEqualBufferType: function (i_type_value) {
             },
             /**
              * getBufferがオブジェクトを返せるかの真偽値です。
              * @return
              */
-            hasBuffer: function() {
+            hasBuffer: function () {
             },
             /**
              * i_ref_bufをラップします。できる限り整合性チェックを行います。
              * バッファの再ラッピングが可能な関数のみ、この関数を実装してください。
              * @param i_ref_buf
              */
-            wrapBuffer: function(i_ref_buf) {
+            wrapBuffer: function (i_ref_buf) {
             }
         })
 
@@ -4108,7 +4107,7 @@ NyARRaster_BasicClass = ASKlass('NyARRaster_BasicClass', INyARRaster,
             /*
              * ,NyARRaster_BasicClass : function(int i_width,int i_height,int i_buffer_type)
              */
-            NyARRaster_BasicClass: function()
+            NyARRaster_BasicClass: function ()
             {
                 switch (arguments.length) {
                     case 1:
@@ -4123,40 +4122,40 @@ NyARRaster_BasicClass = ASKlass('NyARRaster_BasicClass', INyARRaster,
                         throw new NyARException();
                 }
             }
-            , overload_NyARRaster_BasicClass: function(i_width, i_height, i_buffer_type)
+            , overload_NyARRaster_BasicClass: function (i_width, i_height, i_buffer_type)
             {
                 this._size = new NyARIntSize(i_width, i_height);
                 this._buffer_type = i_buffer_type;
             }
-            , getWidth: function()
+            , getWidth: function ()
             {
                 return this._size.w;
             }
-            , getHeight: function()
+            , getHeight: function ()
             {
                 return this._size.h;
             }
-            , getSize: function()
+            , getSize: function ()
             {
                 return this._size;
             }
-            , getBufferType: function()
+            , getBufferType: function ()
             {
                 return this._buffer_type;
             }
-            , isEqualBufferType: function(i_type_value)
+            , isEqualBufferType: function (i_type_value)
             {
                 return this._buffer_type == i_type_value;
             }
-            , getBuffer: function()
+            , getBuffer: function ()
             {
                 throw new NyARException();
             }
-            , hasBuffer: function()
+            , hasBuffer: function ()
             {
                 throw new NyARException();
             }
-            , wrapBuffer: function(i_ref_buf)
+            , wrapBuffer: function (i_ref_buf)
             {
                 throw new NyARException();
             }
@@ -4172,7 +4171,7 @@ NyARBinRaster = ASKlass('NyARBinRaster', NyARRaster_BasicClass,
             /**
              *
              */
-            NyARBinRaster: function()
+            NyARBinRaster: function ()
             {
                 NyARRaster_BasicClass.initialize.call(this, NyAS3Const_Inherited);
                 switch (arguments.length) {
@@ -4206,28 +4205,28 @@ NyARBinRaster = ASKlass('NyARBinRaster', NyARRaster_BasicClass,
              * @param i_is_alloc
              * @throws NyARException
              */
-            , override_NyARBinRaster4: function(i_width, i_height, i_raster_type, i_is_alloc)
+            , override_NyARBinRaster4: function (i_width, i_height, i_raster_type, i_is_alloc)
             {
                 NyARRaster_BasicClass.overload_NyARRaster_BasicClass.call(this, i_width, i_height, i_raster_type);
                 if (!this.initInstance(this._size, i_raster_type, i_is_alloc)) {
                     throw new NyARException();
                 }
             }
-            , override_NyARBinRaster3: function(i_width, i_height, i_is_alloc)
+            , override_NyARBinRaster3: function (i_width, i_height, i_is_alloc)
             {
                 NyARRaster_BasicClass.overload_NyARRaster_BasicClass.call(this, i_width, i_height, NyARBufferType.INT1D_BIN_8);
                 if (!this.initInstance(this._size, NyARBufferType.INT1D_BIN_8, i_is_alloc)) {
                     throw new NyARException();
                 }
             }
-            , override_NyARBinRaster2: function(i_width, i_height)
+            , override_NyARBinRaster2: function (i_width, i_height)
             {
                 NyARRaster_BasicClass.overload_NyARRaster_BasicClass.call(this, i_width, i_height, NyARBufferType.INT1D_BIN_8);
                 if (!this.initInstance(this._size, NyARBufferType.INT1D_BIN_8, true)) {
                     throw new NyARException();
                 }
             }
-            , initInstance: function(i_size, i_buf_type, i_is_alloc)
+            , initInstance: function (i_size, i_buf_type, i_is_alloc)
             {
                 switch (i_buf_type)
                 {
@@ -4240,7 +4239,7 @@ NyARBinRaster = ASKlass('NyARBinRaster', NyARRaster_BasicClass,
                 this._is_attached_buffer = i_is_alloc;
                 return true;
             }
-            , getBuffer: function()
+            , getBuffer: function ()
             {
                 return this._buf;
             }
@@ -4250,11 +4249,11 @@ NyARBinRaster = ASKlass('NyARBinRaster', NyARRaster_BasicClass,
              * バッファにアクセスするまえに、バッファの有無をこの関数でチェックしてください。
              * @return
              */
-            , hasBuffer: function()
+            , hasBuffer: function ()
             {
                 return this._buf != null;
             }
-            , wrapBuffer: function(i_ref_buf)
+            , wrapBuffer: function (i_ref_buf)
             {
                 NyAS3Utils.assert(!this._is_attached_buffer);//バッファがアタッチされていたら機能しない。
                 this._buf = i_ref_buf;
@@ -4272,7 +4271,7 @@ NyARGrayscaleRaster = ASKlass('NyARGrayscaleRaster', NyARRaster_BasicClass,
              * バッファオブジェクトがアタッチされていればtrue
              */
             _is_attached_buffer: null,
-            NyARGrayscaleRaster: function()
+            NyARGrayscaleRaster: function ()
             {
                 NyARRaster_BasicClass.initialize.call(this, NyAS3Const_Inherited);
                 switch (arguments.length) {
@@ -4297,14 +4296,14 @@ NyARGrayscaleRaster = ASKlass('NyARGrayscaleRaster', NyARRaster_BasicClass,
                         throw new NyARException();
                 }
             }
-            , overload_NyARGrayscaleRaster2: function(i_width, i_height)
+            , overload_NyARGrayscaleRaster2: function (i_width, i_height)
             {
                 NyARRaster_BasicClass.overload_NyARRaster_BasicClass.call(this, i_width, i_height, NyARBufferType.INT1D_GRAY_8);
                 if (!this.initInstance(this._size, NyARBufferType.INT1D_GRAY_8, true)) {
                     throw new NyARException();
                 }
             }
-            , overload_NyARGrayscaleRaster3: function(i_width, i_height, i_is_alloc)
+            , overload_NyARGrayscaleRaster3: function (i_width, i_height, i_is_alloc)
             {
                 NyARRaster_BasicClass.overload_NyARRaster_BasicClass.call(this, i_width, i_height, NyARBufferType.INT1D_GRAY_8);
                 if (!this.initInstance(this._size, NyARBufferType.INT1D_GRAY_8, i_is_alloc)) {
@@ -4319,14 +4318,14 @@ NyARGrayscaleRaster = ASKlass('NyARGrayscaleRaster', NyARRaster_BasicClass,
              * @param i_is_alloc
              * @throws NyARException
              */
-            , overload_NyARGrayscaleRaster4: function(i_width, i_height, i_raster_type, i_is_alloc)
+            , overload_NyARGrayscaleRaster4: function (i_width, i_height, i_raster_type, i_is_alloc)
             {
                 NyARRaster_BasicClass.overload_NyARRaster_BasicClass.call(this, i_width, i_height, i_raster_type);
                 if (!this.initInstance(this._size, i_raster_type, i_is_alloc)) {
                     throw new NyARException();
                 }
             }
-            , initInstance: function(i_size, i_buf_type, i_is_alloc)
+            , initInstance: function (i_size, i_buf_type, i_is_alloc)
             {
                 switch (i_buf_type)
                 {
@@ -4339,7 +4338,7 @@ NyARGrayscaleRaster = ASKlass('NyARGrayscaleRaster', NyARRaster_BasicClass,
                 this._is_attached_buffer = i_is_alloc;
                 return true;
             }
-            , getBuffer: function()
+            , getBuffer: function ()
             {
                 return this._buf;
             }
@@ -4349,11 +4348,11 @@ NyARGrayscaleRaster = ASKlass('NyARGrayscaleRaster', NyARRaster_BasicClass,
              * バッファにアクセスするまえに、バッファの有無をこの関数でチェックしてください。
              * @return
              */
-            , hasBuffer: function()
+            , hasBuffer: function ()
             {
                 return this._buf != null;
             }
-            , wrapBuffer: function(i_ref_buf)
+            , wrapBuffer: function (i_ref_buf)
             {
                 NyAS3Utils.assert(!this._is_attached_buffer);//バッファがアタッチされていたら機能しない。
                 this._buf = i_ref_buf;
@@ -4374,7 +4373,7 @@ NyARRaster = ASKlass('NyARRaster', NyARRaster_BasicClass,
              * バッファオブジェクトがアタッチされていればtrue
              */
             _is_attached_buffer: null,
-            NyARRaster: function()
+            NyARRaster: function ()
             {
                 NyARRaster_BasicClass.initialize.call(this, NyAS3Const_Inherited);
                 switch (arguments.length) {
@@ -4402,7 +4401,7 @@ NyARRaster = ASKlass('NyARRaster', NyARRaster_BasicClass,
              * @param i_is_alloc
              * @throws NyARException
              */
-            , overload_NyARRaster4: function(i_width, i_height, i_buffer_type, i_is_alloc)
+            , overload_NyARRaster4: function (i_width, i_height, i_buffer_type, i_is_alloc)
             {
                 NyARRaster_BasicClass.overload_NyARRaster_BasicClass.call(this, i_width, i_height, i_buffer_type);
                 if (!this.initInstance(this._size, i_buffer_type, i_is_alloc)) {
@@ -4410,7 +4409,7 @@ NyARRaster = ASKlass('NyARRaster', NyARRaster_BasicClass,
                 }
                 return;
             }
-            , overload_NyARRaster3: function(i_width, i_height, i_buffer_type)
+            , overload_NyARRaster3: function (i_width, i_height, i_buffer_type)
             {
                 NyARRaster_BasicClass.overload_NyARRaster_BasicClass.call(this, i_width, i_height, i_buffer_type);
                 if (!this.initInstance(this._size, i_buffer_type, true)) {
@@ -4418,7 +4417,7 @@ NyARRaster = ASKlass('NyARRaster', NyARRaster_BasicClass,
                 }
                 return;
             }
-            , initInstance: function(i_size, i_buf_type, i_is_alloc)
+            , initInstance: function (i_size, i_buf_type, i_is_alloc)
             {
                 switch (i_buf_type)
                 {
@@ -4431,7 +4430,7 @@ NyARRaster = ASKlass('NyARRaster', NyARRaster_BasicClass,
                 this._is_attached_buffer = i_is_alloc;
                 return true;
             }
-            , getBuffer: function()
+            , getBuffer: function ()
             {
                 return this._buf;
             }
@@ -4441,11 +4440,11 @@ NyARRaster = ASKlass('NyARRaster', NyARRaster_BasicClass,
              * バッファにアクセスするまえに、バッファの有無をこの関数でチェックしてください。
              * @return
              */
-            , hasBuffer: function()
+            , hasBuffer: function ()
             {
                 return this._buf != null;
             }
-            , wrapBuffer: function(i_ref_buf)
+            , wrapBuffer: function (i_ref_buf)
             {
                 NyAS3Utils.assert(!this._is_attached_buffer);//バッファがアタッチされていたら機能しない。
                 this._buf = i_ref_buf;
@@ -4458,7 +4457,7 @@ NyARRaster = ASKlass('NyARRaster', NyARRaster_BasicClass,
  *
  */
 INyARRgbRaster = ASKlass('INyARRgbRaster', INyARRaster, {
-    getRgbPixelReader: function() {
+    getRgbPixelReader: function () {
     }
 })
 /**
@@ -4470,7 +4469,7 @@ NyARRgbRaster_BasicClass = ASKlass('NyARRgbRaster_BasicClass', INyARRgbRaster,
         {
             _size: null,
             _buffer_type: 0,
-            NyARRgbRaster_BasicClass: function()
+            NyARRgbRaster_BasicClass: function ()
             {
                 switch (arguments.length) {
                     case 1:
@@ -4486,44 +4485,44 @@ NyARRgbRaster_BasicClass = ASKlass('NyARRgbRaster_BasicClass', INyARRgbRaster,
                         throw new NyARException();
                 }
             }
-            , overload_NyARRgbRaster_BasicClass: function(i_width, i_height, i_buffer_type)
+            , overload_NyARRgbRaster_BasicClass: function (i_width, i_height, i_buffer_type)
             {
                 this._size = new NyARIntSize(i_width, i_height);
                 this._buffer_type = i_buffer_type;
             }
-            , getWidth: function()
+            , getWidth: function ()
             {
                 return this._size.w;
             }
-            , getHeight: function()
+            , getHeight: function ()
             {
                 return this._size.h;
             }
-            , getSize: function()
+            , getSize: function ()
             {
                 return this._size;
             }
-            , getBufferType: function()
+            , getBufferType: function ()
             {
                 return this._buffer_type;
             }
-            , isEqualBufferType: function(i_type_value)
+            , isEqualBufferType: function (i_type_value)
             {
                 return this._buffer_type == i_type_value;
             }
-            , getRgbPixelReader: function()
+            , getRgbPixelReader: function ()
             {
                 throw new NyARException();
             }
-            , getBuffer: function()
+            , getBuffer: function ()
             {
                 throw new NyARException();
             }
-            , hasBuffer: function()
+            , hasBuffer: function ()
             {
                 throw new NyARException();
             }
-            , wrapBuffer: function(i_ref_buf)
+            , wrapBuffer: function (i_ref_buf)
             {
                 throw new NyARException();
             }
@@ -4537,7 +4536,7 @@ NyARRgbRaster = ASKlass('NyARRgbRaster', NyARRgbRaster_BasicClass,
              * バッファオブジェクトがアタッチされていればtrue
              */
             _is_attached_buffer: null,
-            NyARRgbRaster: function()
+            NyARRgbRaster: function ()
             {
                 NyARRgbRaster_BasicClass.initialize.call(this, NyAS3Const_Inherited);
                 switch (arguments.length) {
@@ -4565,7 +4564,7 @@ NyARRgbRaster = ASKlass('NyARRgbRaster', NyARRgbRaster_BasicClass,
              * @param i_is_alloc
              * @throws NyARException
              */
-            , overload_NyARRgbRaster4: function(i_width, i_height, i_raster_type, i_is_alloc)
+            , overload_NyARRgbRaster4: function (i_width, i_height, i_raster_type, i_is_alloc)
             {
                 NyARRgbRaster_BasicClass.overload_NyARRgbRaster_BasicClass.call(this, i_width, i_height, i_raster_type);
                 if (!this.initInstance(this._size, i_raster_type, i_is_alloc)) {
@@ -4580,14 +4579,14 @@ NyARRgbRaster = ASKlass('NyARRgbRaster', NyARRgbRaster_BasicClass,
              * NyARBufferTypeに定義された定数値を指定してください。
              * @throws NyARException
              */
-            , overload_NyARRgbRaster3: function(i_width, i_height, i_raster_type)
+            , overload_NyARRgbRaster3: function (i_width, i_height, i_raster_type)
             {
                 NyARRgbRaster_BasicClass.overload_NyARRgbRaster_BasicClass.call(this, i_width, i_height, i_raster_type);
                 if (!this.initInstance(this._size, i_raster_type, true)) {
                     throw new NyARException();
                 }
             }
-            , initInstance: function(i_size, i_raster_type, i_is_alloc)
+            , initInstance: function (i_size, i_raster_type, i_is_alloc)
             {
                 switch (i_raster_type)
                 {
@@ -4603,19 +4602,19 @@ NyARRgbRaster = ASKlass('NyARRgbRaster', NyARRgbRaster_BasicClass,
                 this._is_attached_buffer = i_is_alloc;
                 return true;
             }
-            , getRgbPixelReader: function()
+            , getRgbPixelReader: function ()
             {
                 return this._reader;
             }
-            , getBuffer: function()
+            , getBuffer: function ()
             {
                 return this._buf;
             }
-            , hasBuffer: function()
+            , hasBuffer: function ()
             {
                 return this._buf != null;
             }
-            , wrapBuffer: function(i_ref_buf)
+            , wrapBuffer: function (i_ref_buf)
             {
                 NyAS3Utils.assert(!this._is_attached_buffer);//バッファがアタッチされていたら機能しない。
                 this._buf = i_ref_buf;
@@ -4630,20 +4629,20 @@ NyARRgbRaster_Canvas2D = ASKlass("NyARRgbRaster_Canvas2D", NyARRgbRaster_BasicCl
         {
             _canvas: null,
             _rgb_reader: null,
-            NyARRgbRaster_Canvas2D: function(canvas) {
+            NyARRgbRaster_Canvas2D: function (canvas) {
                 NyARRgbRaster_BasicClass.initialize.call(this, canvas.width, canvas.height, NyARBufferType.OBJECT_JS_Canvas);
                 this._canvas = canvas;
                 this._rgb_reader = new NyARRgbPixelReader_Canvas2D(this._canvas);
             },
-            getRgbPixelReader: function()
+            getRgbPixelReader: function ()
             {
                 return this._rgb_reader;
             },
-            getBuffer: function()
+            getBuffer: function ()
             {
                 return this._canvas;
             },
-            hasBuffer: function()
+            hasBuffer: function ()
             {
                 return this._bitmapData != null;
             }
@@ -4679,59 +4678,58 @@ NyARRgbRaster_Canvas2D = ASKlass("NyARRgbRaster_Canvas2D", NyARRgbRaster_BasicCl
  */
 
 
-FLARCanvas = function(w, h) {
+FLARCanvas = function (w, h) {
     var c = document.createElement('canvas');
     c.width = w;
     c.height = h;
     return c;
-}
+};
 
 
-
-FLARBinRaster = ASKlass('FLARBinRaster', NyARBinRaster,
-        {
-            FLARBinRaster: function(i_width, i_height)
-            {
-                NyARBinRaster.initialize.call(this, i_width, i_height, NyARBufferType.OBJECT_AS3_BitmapData, true);
-                this._gray_reader = new FLARGrayPixelReader_BitmapData(this._buf);
-            }
-            , initInstance: function(i_size, i_buf_type, i_is_alloc)
-            {
-                this._buf = i_is_alloc ? new BitmapData(i_size.w, i_size.h, 0x00) : null;
-                return true;
-            }
-            , getGrayPixelReader: function() {
-                return this._gray_reader;
-            }
-        })
+FLARBinRaster = ASKlass('FLARBinRaster', NyARBinRaster, {
+    FLARBinRaster: function (i_width, i_height) {
+        NyARBinRaster.initialize.call(this, i_width, i_height, NyARBufferType.OBJECT_AS3_BitmapData, true);
+        this._gray_reader = new FLARGrayPixelReader_BitmapData(this._buf);
+    }
+    ,
+    initInstance: function (i_size, i_buf_type, i_is_alloc) {
+        this._buf = i_is_alloc ? new BitmapData(i_size.w, i_size.h, 0x00) : null;
+        return true;
+    }
+    ,
+    getGrayPixelReader: function () {
+        return this._gray_reader;
+    }
+});
 
 
-FLARRgbRaster_BitmapData = ASKlass('FLARRgbRaster_BitmapData', NyARRgbRaster_BasicClass,
-        {
-            _bitmapData: null
-            , _rgb_reader: null
-                    /**
-                     *
-                     * @deprecated 次バージョンで次のように変更されます。 FLARRgbRaster_BitmapData(i_width,i_height)
-                     */
-            , FLARRgbRaster_BitmapData: function(bitmapData) {
-                NyARRgbRaster_BasicClass.initialize.call(this, bitmapData.width, bitmapData.height, NyARBufferType.OBJECT_AS3_BitmapData);
-                this._bitmapData = bitmapData;
-                this._rgb_reader = new FLARRgbPixelReader_BitmapData(this._bitmapData);
-            }
-            , getRgbPixelReader: function()
-            {
-                return this._rgb_reader;
-            }
-            , getBuffer: function()
-            {
-                return this._bitmapData;
-            }
-            , hasBuffer: function()
-            {
-                return this._bitmapData != null;
-            }
-        })
+FLARRgbRaster_BitmapData = ASKlass('FLARRgbRaster_BitmapData', NyARRgbRaster_BasicClass, {
+    _bitmapData: null
+    , _rgb_reader: null
+            /**
+             *
+             * @deprecated 次バージョンで次のように変更されます。 FLARRgbRaster_BitmapData(i_width,i_height)
+             */
+    ,
+    FLARRgbRaster_BitmapData: function (bitmapData) {
+        NyARRgbRaster_BasicClass.initialize.call(this, bitmapData.width, bitmapData.height, NyARBufferType.OBJECT_AS3_BitmapData);
+        this._bitmapData = bitmapData;
+        this._rgb_reader = new FLARRgbPixelReader_BitmapData(this._bitmapData);
+    }
+    ,
+    getRgbPixelReader: function () {
+        return this._rgb_reader;
+    }
+    ,
+    getBuffer: function () {
+        return this._bitmapData;
+    }
+    ,
+    hasBuffer: function () {
+        return this._bitmapData != null;
+    }
+});
+
 /*
  * JSARToolkit
  * --------------------------------------------------------------------------------
@@ -4772,15 +4770,15 @@ NyARMatchPattDeviationBlackWhiteData = ASKlass('NyARMatchPattDeviationBlackWhite
             _pow: 0,
             //
             _number_of_pixels: 0,
-            refData: function()
+            refData: function ()
             {
                 return this._data;
             }
-            , getPow: function()
+            , getPow: function ()
             {
                 return this._pow;
             }
-            , NyARMatchPattDeviationBlackWhiteData: function(i_width, i_height)
+            , NyARMatchPattDeviationBlackWhiteData: function (i_width, i_height)
             {
                 this._number_of_pixels = i_height * i_width;
                 this._data = new IntVector(this._number_of_pixels);
@@ -4790,7 +4788,7 @@ NyARMatchPattDeviationBlackWhiteData = ASKlass('NyARMatchPattDeviationBlackWhite
              * XRGB[width*height]の配列から、パターンデータを構築。
              * @param i_buffer
              */
-            , setRaster: function(i_raster)
+            , setRaster: function (i_raster)
             {
                 //i_buffer[XRGB]→差分[BW]変換
                 var i;
@@ -4828,15 +4826,15 @@ NyARMatchPattDeviationColorData = ASKlass('NyARMatchPattDeviationColorData',
             //
             _number_of_pixels: 0,
             _optimize_for_mod: 0,
-            refData: function()
+            refData: function ()
             {
                 return this._data;
             }
-            , getPow: function()
+            , getPow: function ()
             {
                 return this._pow;
             }
-            , NyARMatchPattDeviationColorData: function(i_width, i_height)
+            , NyARMatchPattDeviationColorData: function (i_width, i_height)
             {
                 this._number_of_pixels = i_height * i_width;
                 this._data = new IntVector(this._number_of_pixels * 3);
@@ -4848,7 +4846,7 @@ NyARMatchPattDeviationColorData = ASKlass('NyARMatchPattDeviationColorData',
              * この関数は、データを元に所有するデータ領域を更新します。
              * @param i_buffer
              */
-            , setRaster: function(i_raster)
+            , setRaster: function (i_raster)
             {
                 //画素フォーマット、サイズ制限
                 NyAS3Utils.assert(i_raster.isEqualBufferType(NyARBufferType.INT1D_X8R8G8B8_32));
@@ -5027,7 +5025,7 @@ NyARCode = ASKlass('NyARCode',
             _bw_pat: new Array(4),
             _width: 0,
             _height: 0,
-            NyARCode: function(i_width, i_height)
+            NyARCode: function (i_width, i_height)
             {
                 this._width = i_width;
                 this._height = i_height;
@@ -5038,28 +5036,28 @@ NyARCode = ASKlass('NyARCode',
                 }
                 return;
             }
-            , getColorData: function(i_index)
+            , getColorData: function (i_index)
             {
                 return this._color_pat[i_index];
             }
-            , getBlackWhiteData: function(i_index)
+            , getBlackWhiteData: function (i_index)
             {
                 return this._bw_pat[i_index];
             }
-            , getWidth: function()
+            , getWidth: function ()
             {
                 return this._width;
             }
-            , getHeight: function()
+            , getHeight: function ()
             {
                 return this._height;
             }
-            , loadARPattFromFile: function(i_stream)
+            , loadARPattFromFile: function (i_stream)
             {
                 NyARCodeFileReader.loadFromARToolKitFormFile(i_stream, this);
                 return;
             }
-            , setRaster: function(i_raster)
+            , setRaster: function (i_raster)
             {
                 NyAS3Utils.assert(i_raster.length != 4);
                 //ラスタにパターンをロードする。
@@ -5083,7 +5081,7 @@ NyARCodeFileReader = ASKlass('NyARCodeFileReader',
              * @param o_code
              * @throws NyARException
              */
-            loadFromARToolKitFormFile: function(i_stream, o_code)
+            loadFromARToolKitFormFile: function (i_stream, o_code)
             {
                 var width = o_code.getWidth();
                 var height = o_code.getHeight();
@@ -5106,7 +5104,7 @@ NyARCodeFileReader = ASKlass('NyARCodeFileReader',
              * @param i_st
              * @param o_buf
              */
-            , readBlock: function(i_st, i_width, i_height, o_buf)
+            , readBlock: function (i_st, i_width, i_height, o_buf)
             {
                 var pixels = i_width * i_height;
                 var i3;
@@ -5166,13 +5164,13 @@ FLARCode = ASKlass('FLARCode', NyARCode,
                      * @param  i_markerPercentWidth  マーカ全体(本体＋枠)における、マーカ本体部分の割合(幅)
                      * @param  i_markerPercentHeight  マーカ全体(本体＋枠)における、マーカ本体部分の割合(高さ)
                      */
-            , FLARCode: function(i_width, i_height, i_markerPercentWidth, i_markerPercentHeight)
+            , FLARCode: function (i_width, i_height, i_markerPercentWidth, i_markerPercentHeight)
             {
                 NyARCode.initialize.call(this, i_width, i_height);
                 this.markerPercentWidth = i_markerPercentWidth == null ? 50 : i_markerPercentWidth;
                 this.markerPercentHeight = i_markerPercentHeight == null ? 50 : i_markerPercentHeight;
             }
-            , loadARPatt: function(i_stream)
+            , loadARPatt: function (i_stream)
             {
                 NyARCode.loadARPattFromFile.call(this, i_stream);
                 return;
@@ -5218,7 +5216,7 @@ FLARCode = ASKlass('FLARCode', NyARCode,
  */
 INyARMatchPatt = ASKlass('INyARMatchPatt',
         {
-            setARCode: function(i_code) {
+            setARCode: function (i_code) {
             }
         })
 NyARMatchPatt_Color_WITHOUT_PCA = ASKlass('NyARMatchPatt_Color_WITHOUT_PCA', INyARMatchPatt,
@@ -5226,7 +5224,7 @@ NyARMatchPatt_Color_WITHOUT_PCA = ASKlass('NyARMatchPatt_Color_WITHOUT_PCA', INy
             _code_patt: null,
             _optimize_for_mod: 0,
             _rgbpixels: 0,
-            NyARMatchPatt_Color_WITHOUT_PCA: function()
+            NyARMatchPatt_Color_WITHOUT_PCA: function ()
             {
                 switch (arguments.length) {
                     case 1:
@@ -5259,7 +5257,7 @@ NyARMatchPatt_Color_WITHOUT_PCA = ASKlass('NyARMatchPatt_Color_WITHOUT_PCA', INy
              * 比較対象のARCodeをセットします。
              * @throws NyARException
              */
-            , setARCode: function(i_code_ref)
+            , setARCode: function (i_code_ref)
             {
                 this._code_patt = i_code_ref;
                 return;
@@ -5267,7 +5265,7 @@ NyARMatchPatt_Color_WITHOUT_PCA = ASKlass('NyARMatchPatt_Color_WITHOUT_PCA', INy
             /**
              * 現在セットされているARコードとi_pattを比較します。
              */
-            , evaluate: function(i_patt, o_result)
+            , evaluate: function (i_patt, o_result)
             {
                 NyAS3Utils.assert(this._code_patt != null);
                 //
@@ -5372,13 +5370,13 @@ NyARRasterAnalyzer_Histogram = ASKlass('NyARRasterAnalyzer_Histogram',
              * スキップしながらヒストグラム計算を行うこと。
              */
             _vertical_skip: 0,
-            NyARRasterAnalyzer_Histogram: function(i_raster_format, i_vertical_interval)
+            NyARRasterAnalyzer_Histogram: function (i_raster_format, i_vertical_interval)
             {
                 if (!this.initInstance(i_raster_format, i_vertical_interval)) {
                     throw new NyARException();
                 }
             }
-            , initInstance: function(i_raster_format, i_vertical_interval)
+            , initInstance: function (i_raster_format, i_vertical_interval)
             {
                 switch (i_raster_format) {
                     case NyARBufferType.INT1D_GRAY_8:
@@ -5394,7 +5392,7 @@ NyARRasterAnalyzer_Histogram = ASKlass('NyARRasterAnalyzer_Histogram',
                 this._vertical_skip = i_vertical_interval;
                 return true;
             }
-            , setVerticalInterval: function(i_step)
+            , setVerticalInterval: function (i_step)
             {
                 this._vertical_skip = i_step;
                 return;
@@ -5406,7 +5404,7 @@ NyARRasterAnalyzer_Histogram = ASKlass('NyARRasterAnalyzer_Histogram',
              * @return
              * @throws NyARException
              */
-            , analyzeRaster: function(i_input, o_histgram)
+            , analyzeRaster: function (i_input, o_histgram)
             {
                 var size = i_input.getSize();
                 //最大画像サイズの制限
@@ -5423,13 +5421,13 @@ NyARRasterAnalyzer_Histogram = ASKlass('NyARRasterAnalyzer_Histogram',
         })
 ICreateHistogramImpl = ASKlass('ICreateHistogramImpl',
         {
-            createHistogram: function(i_reader, i_size, o_histgram, i_skip) {
+            createHistogram: function (i_reader, i_size, o_histgram, i_skip) {
             }
         })
 
 NyARRasterThresholdAnalyzer_Histogram_INT1D_GRAY_8 = ASKlass('NyARRasterThresholdAnalyzer_Histogram_INT1D_GRAY_8', ICreateHistogramImpl,
         {
-            createHistogram: function(i_reader, i_size, o_histgram, i_skip)
+            createHistogram: function (i_reader, i_size, o_histgram, i_skip)
             {
                 NyAS3Utils.assert(i_reader.isEqualBufferType(NyARBufferType.INT1D_GRAY_8));
                 var input = (IntVector)(i_reader.getBuffer());
@@ -5445,7 +5443,7 @@ NyARRasterThresholdAnalyzer_Histogram_INT1D_GRAY_8 = ASKlass('NyARRasterThreshol
         })
 NyARRasterThresholdAnalyzer_Histogram_INT1D_X8R8G8B8_32 = ASKlass('NyARRasterThresholdAnalyzer_Histogram_INT1D_X8R8G8B8_32', ICreateHistogramImpl,
         {
-            createHistogram: function(i_reader, i_size, o_histgram, i_skip)
+            createHistogram: function (i_reader, i_size, o_histgram, i_skip)
             {
                 NyAS3Utils.assert(i_reader.isEqualBufferType(NyARBufferType.INT1D_X8R8G8B8_32));
                 var input = (i_reader.getBuffer());
@@ -5462,7 +5460,7 @@ NyARRasterThresholdAnalyzer_Histogram_INT1D_X8R8G8B8_32 = ASKlass('NyARRasterThr
         })
 INyARRasterThresholdAnalyzer = ASKlass('INyARRasterThresholdAnalyzer',
         {
-            analyzeRaster: function(i_input) {
+            analyzeRaster: function (i_input) {
             }
         })
 NyARRasterThresholdAnalyzer_SlidePTile = ASKlass('NyARRasterThresholdAnalyzer_SlidePTile', INyARRasterThresholdAnalyzer,
@@ -5470,7 +5468,7 @@ NyARRasterThresholdAnalyzer_SlidePTile = ASKlass('NyARRasterThresholdAnalyzer_Sl
             _raster_analyzer: null,
             _sptile: null,
             _histgram: null,
-            NyARRasterThresholdAnalyzer_SlidePTile: function(i_persentage, i_raster_format, i_vertical_interval)
+            NyARRasterThresholdAnalyzer_SlidePTile: function (i_persentage, i_raster_format, i_vertical_interval)
             {
                 NyAS3Utils.assert(0 <= i_persentage && i_persentage <= 50);
                 //初期化
@@ -5480,17 +5478,17 @@ NyARRasterThresholdAnalyzer_SlidePTile = ASKlass('NyARRasterThresholdAnalyzer_Sl
                 this._sptile = new NyARHistogramAnalyzer_SlidePTile(i_persentage);
                 this._histgram = new NyARHistogram(256);
             }
-            , initInstance: function(i_raster_format, i_vertical_interval)
+            , initInstance: function (i_raster_format, i_vertical_interval)
             {
                 this._raster_analyzer = new NyARRasterAnalyzer_Histogram(i_raster_format, i_vertical_interval);
                 return true;
             }
-            , setVerticalInterval: function(i_step)
+            , setVerticalInterval: function (i_step)
             {
                 this._raster_analyzer.setVerticalInterval(i_step);
                 return;
             }
-            , analyzeRaster: function(i_input)
+            , analyzeRaster: function (i_input)
             {
                 this._raster_analyzer.analyzeRaster(i_input, this._histgram);
                 return this._sptile.getThreshold(this._histgram);
@@ -5526,11 +5524,11 @@ NyARRasterThresholdAnalyzer_SlidePTile = ASKlass('NyARRasterThresholdAnalyzer_Sl
  */
 FLARRasterAnalyzer_Histogram = ASKlass('FLARRasterAnalyzer_Histogram', NyARRasterAnalyzer_Histogram,
         {
-            FLARRasterAnalyzer_Histogram: function(i_vertical_interval)
+            FLARRasterAnalyzer_Histogram: function (i_vertical_interval)
             {
                 NyARRasterAnalyzer_Histogram.initialize.call(this, NyARBufferType.OBJECT_AS3_BitmapData, i_vertical_interval);
             }
-            , initInstance: function(i_raster_format, i_vertical_interval)
+            , initInstance: function (i_raster_format, i_vertical_interval)
             {
                 if (i_raster_format != NyARBufferType.OBJECT_AS3_BitmapData) {
                     return false;
@@ -5546,7 +5544,7 @@ FLARRasterAnalyzer_Histogram = ASKlass('FLARRasterAnalyzer_Histogram', NyARRaste
              * @return
              * @throws NyARException
              */
-            , analyzeRaster: function(i_input, o_histgram)
+            , analyzeRaster: function (i_input, o_histgram)
             {
                 var size = i_input.getSize();
                 //最大画像サイズの制限
@@ -5560,7 +5558,7 @@ FLARRasterAnalyzer_Histogram = ASKlass('FLARRasterAnalyzer_Histogram', NyARRaste
                 o_histgram.total_of_data = size.w * size.h / this._vertical_skip;
                 return this.createHistgram_AS3_BitmapData(i_input, size, h, this._vertical_skip);
             }
-            , createHistgram_AS3_BitmapData: function(i_reader, i_size, o_histgram, i_skip)
+            , createHistgram_AS3_BitmapData: function (i_reader, i_size, o_histgram, i_skip)
             {
                 //[Todo:]この方法だとパフォーマンスでないから、Bitmapdataの
                 NyAS3Utils.assert(i_reader.isEqualBufferType(NyARBufferType.OBJECT_AS3_BitmapData));
@@ -5607,11 +5605,11 @@ FLARRasterAnalyzer_Histogram = ASKlass('FLARRasterAnalyzer_Histogram', NyARRaste
  */
 FLARRasterThresholdAnalyzer_SlidePTile = ASKlass('FLARRasterThresholdAnalyzer_SlidePTile', NyARRasterThresholdAnalyzer_SlidePTile,
         {
-            FLARRasterThresholdAnalyzer_SlidePTile: function(i_persentage, i_vertical_interval)
+            FLARRasterThresholdAnalyzer_SlidePTile: function (i_persentage, i_vertical_interval)
             {
                 NyARRasterThresholdAnalyzer_SlidePTile.initialize.call(this, i_persentage, NyARBufferType.OBJECT_AS3_BitmapData, i_vertical_interval);
             }
-            , initInstance: function(i_raster_format, i_vertical_interval)
+            , initInstance: function (i_raster_format, i_vertical_interval)
             {
                 if (i_raster_format != NyARBufferType.OBJECT_AS3_BitmapData) {
                     return false;
@@ -5654,22 +5652,22 @@ FLARRasterThresholdAnalyzer_SlidePTile = ASKlass('FLARRasterThresholdAnalyzer_Sl
  */
 INyARRasterFilter = ASKlass('INyARRasterFilter',
         {
-            doFilter: function(i_input, i_output) {
+            doFilter: function (i_input, i_output) {
             }
         })
 INyARRasterFilter_Gs2Bin = ASKlass('INyARRasterFilter_Gs2Bin',
         {
-            doFilter: function(i_input, i_output) {
+            doFilter: function (i_input, i_output) {
             }
         })
 INyARRasterFilter_Rgb2Gs = ASKlass('INyARRasterFilter_Rgb2Gs',
         {
-            doFilter: function(i_input, i_output) {
+            doFilter: function (i_input, i_output) {
             }
         })
 INyARRasterFilter_Rgb2Bin = ASKlass('INyARRasterFilter_Rgb2Bin',
         {
-            doFilter: function(i_input, i_output) {
+            doFilter: function (i_input, i_output) {
             }
         })
 
@@ -5686,7 +5684,7 @@ NyARRasterFilter_ARToolkitThreshold = ASKlass('NyARRasterFilter_ARToolkitThresho
         {
             _threshold: 0,
             _do_threshold_impl: null,
-            NyARRasterFilter_ARToolkitThreshold: function(i_threshold, i_input_raster_type)
+            NyARRasterFilter_ARToolkitThreshold: function (i_threshold, i_input_raster_type)
             {
                 this._threshold = i_threshold;
                 switch (i_input_raster_type) {
@@ -5701,11 +5699,11 @@ NyARRasterFilter_ARToolkitThreshold = ASKlass('NyARRasterFilter_ARToolkitThresho
              * 画像を２値化するための閾値。暗点&lt;=th&lt;明点となります。
              * @param i_threshold
              */
-            , setThreshold: function(i_threshold)
+            , setThreshold: function (i_threshold)
             {
                 this._threshold = i_threshold;
             }
-            , doFilter: function(i_input, i_output)
+            , doFilter: function (i_input, i_output)
             {
                 NyAS3Utils.assert(i_output.isEqualBufferType(NyARBufferType.INT1D_BIN_8));
                 NyAS3Utils.assert(i_input.getSize().isEqualSize_NyARIntSize(i_output.getSize()) == true);
@@ -5723,13 +5721,13 @@ NyARRasterFilter_ARToolkitThreshold = ASKlass('NyARRasterFilter_ARToolkitThresho
  */
 IdoThFilterImpl = ASKlass('IdoThFilterImpl',
         {
-            doThFilter: function(i_input, i_output, i_size, i_threshold) {
+            doThFilter: function (i_input, i_output, i_size, i_threshold) {
             },
         })
 
 doThFilterImpl_BUFFERFORMAT_INT1D_X8R8G8B8_32 = ASKlass('doThFilterImpl_BUFFERFORMAT_INT1D_X8R8G8B8_32', IdoThFilterImpl,
         {
-            doThFilter: function(i_input, i_output, i_size, i_threshold)
+            doThFilter: function (i_input, i_output, i_size, i_threshold)
             {
                 NyAS3Utils.assert(i_output.isEqualBufferType(NyARBufferType.INT1D_BIN_8));
                 var out_buf = (IntVector)(i_output.getBuffer());
@@ -5810,7 +5808,7 @@ NyARContourPickup = ASKlass('NyARContourPickup',
             //                                           0  1  2  3  4  5  6  7   0  1  2  3  4  5  6
             _getContour_xdir: new IntVector([0, 1, 1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1]),
             _getContour_ydir: new IntVector([-1, -1, 0, 1, 1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0]),
-            getContour_NyARBinRaster: function(i_raster, i_entry_x, i_entry_y, i_array_size, o_coord_x, o_coord_y)
+            getContour_NyARBinRaster: function (i_raster, i_entry_x, i_entry_y, i_array_size, o_coord_x, o_coord_y)
             {
                 return this.impl_getContour(i_raster, 0, i_entry_x, i_entry_y, i_array_size, o_coord_x, o_coord_y);
             }
@@ -5828,7 +5826,7 @@ NyARContourPickup = ASKlass('NyARContourPickup',
              * @return
              * @throws NyARException
              */
-            , getContour_NyARGrayscaleRaster: function(i_raster, i_th, i_entry_x, i_entry_y, i_array_size, o_coord_x, o_coord_y)
+            , getContour_NyARGrayscaleRaster: function (i_raster, i_th, i_entry_x, i_entry_y, i_array_size, o_coord_x, o_coord_y)
             {
                 return this.impl_getContour(i_raster, i_th, i_entry_x, i_entry_y, i_array_size, o_coord_x, o_coord_y);
             }
@@ -5846,7 +5844,7 @@ NyARContourPickup = ASKlass('NyARContourPickup',
              * 輪郭線の長さを返します。
              * @throws NyARException
              */
-            , impl_getContour: function(i_raster, i_th, i_entry_x, i_entry_y, i_array_size, o_coord_x, o_coord_y)
+            , impl_getContour: function (i_raster, i_th, i_entry_x, i_entry_y, i_array_size, o_coord_x, o_coord_y)
             {
                 var xdir = this._getContour_xdir;// static int xdir[8] = { 0, 1, 1, 1, 0,-1,-1,-1};
                 var ydir = this._getContour_ydir;// static int ydir[8] = {-1,-1, 0, 1, 1, 1, 0,-1};
@@ -5956,7 +5954,7 @@ NyARCoord2Linear = ASKlass('NyARCoord2Linear',
             __getSquareLine_mean: new FloatVector(2),
             __getSquareLine_ev: new FloatVector(2),
             _dist_factor: null,
-            NyARCoord2Linear: function(i_size, i_distfactor_ref)
+            NyARCoord2Linear: function (i_size, i_distfactor_ref)
             {
                 //歪み計算テーブルを作ると、8*width/height*2の領域を消費します。
                 //領域を取りたくない場合は、i_dist_factor_refの値をそのまま使ってください。
@@ -5978,7 +5976,7 @@ NyARCoord2Linear = ASKlass('NyARCoord2Linear',
              * @return
              * @throws NyARException
              */
-            , coord2Line: function(i_st, i_ed, i_xcoord, i_ycoord, i_cood_num, o_line)
+            , coord2Line: function (i_st, i_ed, i_xcoord, i_ycoord, i_cood_num, o_line)
             {
                 //頂点を取得
                 var n, st, ed;
@@ -6035,7 +6033,7 @@ NyARVertexCounter = ASKlass('NyARVertexCounter',
             thresh: 0,
             x_coord: null,
             y_coord: null,
-            getVertex: function(i_x_coord, i_y_coord, i_coord_len, st, ed, i_thresh)
+            getVertex: function (i_x_coord, i_y_coord, i_coord_len, st, ed, i_thresh)
             {
                 this.number_of_vertex = 0;
                 this.thresh = i_thresh;
@@ -6053,7 +6051,7 @@ NyARVertexCounter = ASKlass('NyARVertexCounter',
              * @param thresh
              * @return
              */
-            , get_vertex: function(st, ed, i_coord_len)
+            , get_vertex: function (st, ed, i_coord_len)
             {
                 var i;
                 var d;
@@ -6114,7 +6112,7 @@ NyARCoord2SquareVertexIndexes = ASKlass('NyARCoord2SquareVertexIndexes',
             VERTEX_FACTOR: 1.0, // 線検出のファクタ
             __getSquareVertex_wv1: new NyARVertexCounter(),
             __getSquareVertex_wv2: new NyARVertexCounter(),
-            NyARCoord2SquareVertexIndexes: function()
+            NyARCoord2SquareVertexIndexes: function ()
             {
                 return;
             }
@@ -6127,7 +6125,7 @@ NyARCoord2SquareVertexIndexes = ASKlass('NyARCoord2SquareVertexIndexes',
              * @param o_vertex
              * @return
              */
-            , getVertexIndexes: function(i_x_coord, i_y_coord, i_coord_num, i_area, o_vertex)
+            , getVertexIndexes: function (i_x_coord, i_y_coord, i_coord_num, i_area, o_vertex)
             {
                 var wv1 = this.__getSquareVertex_wv1;
                 var wv2 = this.__getSquareVertex_wv2;
@@ -6199,7 +6197,7 @@ NyARCoord2SquareVertexIndexes = ASKlass('NyARCoord2SquareVertexIndexes',
              * @param i_coord_num
              * @return
              */
-            , getFarPoint: function(i_coord_x, i_coord_y, i_coord_num, i_point)
+            , getFarPoint: function (i_coord_x, i_coord_y, i_coord_num, i_point)
             {
                 //
                 var sx = i_coord_x[i_point];
@@ -6239,7 +6237,7 @@ NyARSquare = ASKlass('NyARSquare',
         {
             line: NyARLinear.createArray(4),
             sqvertex: NyARDoublePoint2d.createArray(4),
-            getCenter2d: function(o_out)
+            getCenter2d: function (o_out)
             {
                 o_out.x = (this.sqvertex[0].x + this.sqvertex[1].x + this.sqvertex[2].x + this.sqvertex[3].x) / 4;
                 o_out.y = (this.sqvertex[0].y + this.sqvertex[1].y + this.sqvertex[2].y + this.sqvertex[3].y) / 4;
@@ -6254,23 +6252,23 @@ NyARSquareContourDetector = ASKlass('NyARSquareContourDetector',
              * @param i_callback
              * @throws NyARException
              */
-            detectMarkerCB: function(i_raster, i_callback)
+            detectMarkerCB: function (i_raster, i_callback)
             {
                 NyARException.trap("getRgbPixelReader not implemented.");
             }
         })
 NyARSquareContourDetector_IDetectMarkerCallback = ASKlass('NyARSquareContourDetector_IDetectMarkerCallback',
         {
-            onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index) {
+            onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index) {
             }
         })
 RleLabelOverlapChecker = ASKlass('RleLabelOverlapChecker', NyARLabelOverlapChecker,
         {
-            RleLabelOverlapChecker: function(i_max_label)
+            RleLabelOverlapChecker: function (i_max_label)
             {
                 NyARLabelOverlapChecker.initialize.call(this, i_max_label);
             }
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 return new Array(i_length);
             }
@@ -6294,7 +6292,7 @@ NyARSquareContourDetector_Rle = ASKlass('NyARSquareContourDetector_Rle', NyARSqu
              *
              * @param i_param
              */
-            NyARSquareContourDetector_Rle: function(i_size)
+            NyARSquareContourDetector_Rle: function (i_size)
             {
                 this._width = i_size.w;
                 this._height = i_size.h;
@@ -6311,7 +6309,7 @@ NyARSquareContourDetector_Rle = ASKlass('NyARSquareContourDetector_Rle', NyARSqu
                 return;
             },
             __detectMarker_mkvertex: new IntVector(4)
-            , detectMarkerCB: function(i_raster, i_callback)
+            , detectMarkerCB: function (i_raster, i_callback)
             {
                 var flagment = this._stack;
                 var overlap = this._overlap_checker;
@@ -6368,11 +6366,11 @@ NyARSquareContourDetector_Rle = ASKlass('NyARSquareContourDetector_Rle', NyARSqu
         })
 NyARSquareStack = ASKlass('NyARSquareStack', NyARObjectStack,
         {
-            NyARSquareStack: function(i_length)
+            NyARSquareStack: function (i_length)
             {
                 NyARObjectStack.initialize.call(this, i_length);
             }
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 var ret = new Array(i_length);
                 for (var i = 0; i < i_length; i++) {
@@ -6409,223 +6407,225 @@ NyARSquareStack = ASKlass('NyARSquareStack', NyARObjectStack,
  *  <saq(at)saqoosha.net>
  *
  */
+
 FLARSquare = NyARSquare;
 Cxdir = new IntVector([0, 1, 1, 1, 0, -1, -1, -1]);
 Cydir = new IntVector([-1, -1, 0, 1, 1, 1, 0, -1]);
-FLContourPickup = ASKlass('FLContourPickup', NyARContourPickup,
-        {
-            FLContourPickup: function()
-            {
-            }
-            , getContour_FLARBinRaster: function(i_raster, i_entry_x, i_entry_y, i_array_size, o_coord_x, o_coord_y)
-            {
-                var xdir = this._getContour_xdir;// static int xdir[8] = { 0, 1, 1, 1, 0,-1,-1,-1};
-                var ydir = this._getContour_ydir;// static int ydir[8] = {-1,-1, 0, 1, 1, 1, 0,-1};
-                var i_buf = i_raster.getBuffer();
-                var width = i_raster.getWidth();
-                var height = i_raster.getHeight();
-                //クリップ領域の上端に接しているポイントを得る。
-                var coord_num = 1;
-                o_coord_x[0] = i_entry_x;
-                o_coord_y[0] = i_entry_y;
-                var dir = 5;
-                var c = i_entry_x;
-                var r = i_entry_y;
-                for (; ; ) {
-                    dir = (dir + 5) % 8;//dirの正規化
-                    //ここは頑張ればもっと最適化できると思うよ。
-                    //4隅以外の境界接地の場合に、境界チェックを省略するとかね。
-                    if (c >= 1 && c < width - 1 && r >= 1 && r < height - 1) {
-                        for (; ; ) {//gotoのエミュレート用のfor文
-                            //境界に接していないとき(暗点判定)
-                            if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
-                                break;
-                            }
-                            dir++;
-                            if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
-                                break;
-                            }
-                            dir++;
-                            if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
-                                break;
-                            }
-                            dir++;
-                            if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
-                                break;
-                            }
-                            dir++;
-                            if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
-                                break;
-                            }
-                            dir++;
-                            if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
-                                break;
-                            }
-                            dir++;
-                            if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
-                                break;
-                            }
-                            dir++;
-                            if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
-                                break;
-                            }
-                            //8方向全て調べたけどラベルが無いよ？
-                            return -1;
-                        }
-                    } else {
-                        //境界に接しているとき
-                        var i;
-                        for (i = 0; i < 8; i++) {
-                            var x = c + xdir[dir];
-                            var y = r + ydir[dir];
-                            //境界チェック
-                            if (x >= 0 && x < width && y >= 0 && y < height) {
-                                if (i_buf.getPixel(y, x) > 0) {
-                                    break;
-                                }
-                            }
-                            dir++;//倍長テーブルを参照するので問題なし
-                        }
-                        if (i == 8) {
-                            //8方向全て調べたけどラベルが無いよ？
-                            return -1;
-                        }
-                    }
-                    dir = dir % 8;//dirの正規化
-                    // xcoordとycoordをc,rにも保存
-                    c = c + xdir[dir];
-                    r = r + ydir[dir];
-                    o_coord_x[coord_num] = c;
-                    o_coord_y[coord_num] = r;
-                    // 終了条件判定
-                    if (c == i_entry_x && r == i_entry_y) {
-                        coord_num++;
+FLContourPickup = ASKlass('FLContourPickup', NyARContourPickup, {
+    FLContourPickup: function () {
+        //
+    }
+    ,
+    getContour_FLARBinRaster: function (i_raster, i_entry_x, i_entry_y, i_array_size, o_coord_x, o_coord_y) {
+        var xdir = this._getContour_xdir; //static int xdir[8] = { 0, 1, 1, 1, 0,-1,-1,-1};
+        var ydir = this._getContour_ydir; //static int ydir[8] = {-1,-1, 0, 1, 1, 1, 0,-1};
+        var i_buf = i_raster.getBuffer();
+        var width = i_raster.getWidth();
+        var height = i_raster.getHeight();
+
+        //Get the point touching the top edge of the clip area.
+        var coord_num = 1;
+        o_coord_x[0] = i_entry_x;
+        o_coord_y[0] = i_entry_y;
+        var dir = 5;
+        var c = i_entry_x;
+        var r = i_entry_y;
+
+        while (true) {
+            dir = (dir + 5) % 8; //Normalization of dir
+            //I think we can optimize it if you do your best here.
+            //In the case of boundary grounding other than the four corners, you may omit boundary checking.
+            if (c >= 1 && c < width - 1 && r >= 1 && r < height - 1) {
+                while (true) { //or statement for emulating goto
+
+                    //When not touching boundary (dark spot judgment)
+                    if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
                         break;
                     }
-                    coord_num++;
-                    if (coord_num == i_array_size) {
-                        //輪郭が末端に達した
-                        return coord_num;
+                    dir++;
+                    if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
+                        break;
                     }
+                    dir++;
+                    if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
+                        break;
+                    }
+                    dir++;
+                    if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
+                        break;
+                    }
+                    dir++;
+                    if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
+                        break;
+                    }
+                    dir++;
+                    if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
+                        break;
+                    }
+                    dir++;
+                    if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
+                        break;
+                    }
+                    dir++;
+                    if (i_buf.getPixel(c + xdir[dir], r + ydir[dir]) > 0) {
+                        break;
+                    }
+                    //I studied all 8 directions, but there is no label?
+                    return -1;
                 }
+            } else {
+                //When touching the boundary
+                var i;
+                for (i = 0; i < 8; i++) {
+                    var x = c + xdir[dir];
+                    var y = r + ydir[dir];
+                    //Boundary check
+                    if (x >= 0 && x < width && y >= 0 && y < height) {
+                        if (i_buf.getPixel(y, x) > 0) {
+                            break;
+                        }
+                    }
+                    dir++; //Since it refers to the double table, there is no problem
+                }
+                if (i == 8) {
+                    //I studied all 8 directions, but there is no label?
+                    return -1;
+                }
+            }
+            dir = dir % 8; //Normalization of dir
+            // Save xcoord and ycoord to c, r as well
+            c = c + xdir[dir];
+            r = r + ydir[dir];
+            o_coord_x[coord_num] = c;
+            o_coord_y[coord_num] = r;
+            // End condition judgment
+            if (c == i_entry_x && r == i_entry_y) {
+                coord_num++;
+                break;
+            }
+            coord_num++;
+            if (coord_num == i_array_size) {
+                // The contour reached the end
                 return coord_num;
             }
-        })
+        }
+        return coord_num;
+    }
+});
 
-FLARSquareContourDetector = ASKlass('FLARSquareContourDetector', NyARSquareContourDetector,
-        {
-            AR_AREA_MAX: 100000// #define AR_AREA_MAX 100000
-            , AR_AREA_MIN: 70// #define AR_AREA_MIN 70
-            , _width: 0
-            , _height: 0
-            , _labeling: null
-            , _overlap_checker: new NyARLabelOverlapChecker(32)
-            , _cpickup: new FLContourPickup()
-            , _stack: null
-            , _coord2vertex: new NyARCoord2SquareVertexIndexes()
-            , _max_coord: 0
-            , _xcoord: null
-            , _ycoord: null
-                    /**
-                     * 最大i_squre_max個のマーカーを検出するクラスを作成する。
-                     *
-                     * @param i_param
-                     */
-            , FLARSquareContourDetector: function(i_size)
-            {
-                this._width = i_size.w;
-                this._height = i_size.h;
-                //ラベリングのサイズを指定したいときはsetAreaRangeを使ってね。
-                this._labeling = new NyARLabeling_Rle(this._width, this._height);
-                this._stack = new NyARRleLabelFragmentInfoStack(i_size.w * i_size.h * 2048 / (320 * 240) + 32);//検出可能な最大ラベル数
-                // 輪郭の最大長は画面に映りうる最大の長方形サイズ。
-                var number_of_coord = (this._width + this._height) * 2;
-                // 輪郭バッファ
-                this._max_coord = number_of_coord;
-                this._xcoord = new IntVector(number_of_coord);
-                this._ycoord = new IntVector(number_of_coord);
-                return;
-            }
+FLARSquareContourDetector = ASKlass('FLARSquareContourDetector', NyARSquareContourDetector, {
+    AR_AREA_MAX: 100000// #define AR_AREA_MAX 100000
+    , AR_AREA_MIN: 70// #define AR_AREA_MIN 70
+    , _width: 0
+    , _height: 0
+    , _labeling: null
+    , _overlap_checker: new NyARLabelOverlapChecker(32)
+    , _cpickup: new FLContourPickup()
+    , _stack: null
+    , _coord2vertex: new NyARCoord2SquareVertexIndexes()
+    , _max_coord: 0
+    , _xcoord: null
+    , _ycoord: null
             /**
-             * 白領域の検査対象サイズ
-             *  最大サイズは 一辺約320px、最小サイズは 一辺約 8px まで解析対象としている
-             *  解析画像中で上記範囲内であれば解析対象となるが、最小サイズは小さすぎて意味をなさない。
+             * 最大i_squre_max個のマーカーを検出するクラスを作成する。
              *
-             * @param i_max 解析対象とする白領域の最大pixel数(一辺の二乗)
-             * @param i_min 解析対象とする白領域の最小pixel数(一辺の二乗)
+             * @param i_param
              */
-            , setAreaRange: function(i_max, i_min)
-            {
-                this._labeling.setAreaRange(i_max, i_min);
+    , FLARSquareContourDetector: function (i_size)
+    {
+        this._width = i_size.w;
+        this._height = i_size.h;
+        //ラベリングのサイズを指定したいときはsetAreaRangeを使ってね。
+        this._labeling = new NyARLabeling_Rle(this._width, this._height);
+        this._stack = new NyARRleLabelFragmentInfoStack(i_size.w * i_size.h * 2048 / (320 * 240) + 32);//検出可能な最大ラベル数
+        // 輪郭の最大長は画面に映りうる最大の長方形サイズ。
+        var number_of_coord = (this._width + this._height) * 2;
+        // 輪郭バッファ
+        this._max_coord = number_of_coord;
+        this._xcoord = new IntVector(number_of_coord);
+        this._ycoord = new IntVector(number_of_coord);
+        return;
+    }
+    /**
+     * 白領域の検査対象サイズ
+     *  最大サイズは 一辺約320px、最小サイズは 一辺約 8px まで解析対象としている
+     *  解析画像中で上記範囲内であれば解析対象となるが、最小サイズは小さすぎて意味をなさない。
+     *
+     * @param i_max 解析対象とする白領域の最大pixel数(一辺の二乗)
+     * @param i_min 解析対象とする白領域の最小pixel数(一辺の二乗)
+     */
+    , setAreaRange: function (i_max, i_min)
+    {
+        this._labeling.setAreaRange(i_max, i_min);
+    }
+    , __detectMarker_mkvertex: new IntVector(4)
+    , detectMarkerCB: function (i_raster, i_callback)
+    {
+        var flagment = this._stack;
+        var overlap = this._overlap_checker;
+        // ラベル数が0ならここまで
+        var label_num = this._labeling.labeling(i_raster, flagment);
+        if (label_num < 1) {
+            return;
+        }
+        //ラベルをソートしておく
+        flagment.sortByArea();
+        //ラベルリストを取得
+        var labels = flagment.getArray();
+        var xsize = this._width;
+        var ysize = this._height;
+        var xcoord = this._xcoord;
+        var ycoord = this._ycoord;
+        var coord_max = this._max_coord;
+        var mkvertex = this.__detectMarker_mkvertex;
+        //重なりチェッカの最大数を設定
+        overlap.setMaxLabels(label_num);
+        for (var i = 0; i < label_num; i++) {
+            var label_pt = labels[i];
+            var label_area = label_pt.area;
+            // クリップ領域が画面の枠に接していれば除外
+            if (label_pt.clip_l == 0 || label_pt.clip_r == xsize - 1) {
+                continue;
             }
-            , __detectMarker_mkvertex: new IntVector(4)
-            , detectMarkerCB: function(i_raster, i_callback)
-            {
-                var flagment = this._stack;
-                var overlap = this._overlap_checker;
-                // ラベル数が0ならここまで
-                var label_num = this._labeling.labeling(i_raster, flagment);
-                if (label_num < 1) {
-                    return;
-                }
-                //ラベルをソートしておく
-                flagment.sortByArea();
-                //ラベルリストを取得
-                var labels = flagment.getArray();
-                var xsize = this._width;
-                var ysize = this._height;
-                var xcoord = this._xcoord;
-                var ycoord = this._ycoord;
-                var coord_max = this._max_coord;
-                var mkvertex = this.__detectMarker_mkvertex;
-                //重なりチェッカの最大数を設定
-                overlap.setMaxLabels(label_num);
-                for (var i = 0; i < label_num; i++) {
-                    var label_pt = labels[i];
-                    var label_area = label_pt.area;
-                    // クリップ領域が画面の枠に接していれば除外
-                    if (label_pt.clip_l == 0 || label_pt.clip_r == xsize - 1) {
-                        continue;
-                    }
-                    if (label_pt.clip_t == 0 || label_pt.clip_b == ysize - 1) {
-                        continue;
-                    }
-                    // 既に検出された矩形との重なりを確認
-                    if (!overlap.check(label_pt)) {
-                        // 重なっているようだ。
-                        continue;
-                    }
-                    if (window.DEBUG) {
-                        var cv = document.getElementById('debugCanvas').getContext('2d');
-                        cv.strokeStyle = 'red';
-                        cv.strokeRect(label_pt.clip_l, label_pt.clip_t, label_pt.clip_r - label_pt.clip_l, label_pt.clip_b - label_pt.clip_t);
-                        cv.fillStyle = 'red';
-                        cv.fillRect(label_pt.entry_x - 1, label_pt.clip_t - 1, 3, 3);
-                        cv.fillStyle = 'cyan';
-                        cv.fillRect(label_pt.pos_x - 1, label_pt.pos_y - 1, 3, 3);
-                    }
-                    //輪郭を取得
-                    var coord_num = this._cpickup.getContour_FLARBinRaster(i_raster, label_pt.entry_x, label_pt.clip_t, coord_max, xcoord, ycoord);
-                    if (coord_num == -1)
-                        return -1;
-                    if (coord_num == coord_max) {
-                        // 輪郭が大きすぎる。
-                        continue;
-                    }
-                    //輪郭線をチェックして、矩形かどうかを判定。矩形ならばmkvertexに取得
-                    var v = this._coord2vertex.getVertexIndexes(xcoord, ycoord, coord_num, label_area, mkvertex);
-                    if (!v) {
-                        // 頂点の取得が出来なかった
-                        continue;
-                    }
-                    //矩形を発見したことをコールバック関数で通知
-                    i_callback.onSquareDetect(this, xcoord, ycoord, coord_num, mkvertex);
-                    // 検出済の矩形の属したラベルを重なりチェックに追加する。
-                    overlap.push(label_pt);
-                }
-                return;
+            if (label_pt.clip_t == 0 || label_pt.clip_b == ysize - 1) {
+                continue;
             }
-        })
+            // 既に検出された矩形との重なりを確認
+            if (!overlap.check(label_pt)) {
+                // 重なっているようだ。
+                continue;
+            }
+            if (window.DEBUG) {
+                var cv = document.getElementById('debugCanvas').getContext('2d');
+                cv.strokeStyle = 'red';
+                cv.strokeRect(label_pt.clip_l, label_pt.clip_t, label_pt.clip_r - label_pt.clip_l, label_pt.clip_b - label_pt.clip_t);
+                cv.fillStyle = 'red';
+                cv.fillRect(label_pt.entry_x - 1, label_pt.clip_t - 1, 3, 3);
+                cv.fillStyle = 'cyan';
+                cv.fillRect(label_pt.pos_x - 1, label_pt.pos_y - 1, 3, 3);
+            }
+            //輪郭を取得
+            var coord_num = this._cpickup.getContour_FLARBinRaster(i_raster, label_pt.entry_x, label_pt.clip_t, coord_max, xcoord, ycoord);
+            if (coord_num == -1)
+                return -1;
+            if (coord_num == coord_max) {
+                // 輪郭が大きすぎる。
+                continue;
+            }
+            //輪郭線をチェックして、矩形かどうかを判定。矩形ならばmkvertexに取得
+            var v = this._coord2vertex.getVertexIndexes(xcoord, ycoord, coord_num, label_area, mkvertex);
+            if (!v) {
+                // 頂点の取得が出来なかった
+                continue;
+            }
+            //矩形を発見したことをコールバック関数で通知
+            i_callback.onSquareDetect(this, xcoord, ycoord, coord_num, mkvertex);
+            // 検出済の矩形の属したラベルを重なりチェックに追加する。
+            overlap.push(label_pt);
+        }
+        return;
+    }
+})
 
 /*
  * JSARToolkit
@@ -6666,9 +6666,9 @@ FLARSquareContourDetector = ASKlass('FLARSquareContourDetector', NyARSquareConto
  *
  */
 INyARTransMat = Klass({
-    transMat: function(i_square, i_offset, o_result) {
+    transMat: function (i_square, i_offset, o_result) {
     },
-    transMatContinue: function(i_square, i_offset, io_result_conv) {
+    transMatContinue: function (i_square, i_offset, io_result_conv) {
     }
 })
 
@@ -6677,7 +6677,7 @@ INyARTransMat = Klass({
  */
 NyARRectOffset = ASKlass('NyARRectOffset', {
     vertex: NyARDoublePoint3d.createArray(4),
-    createArray: function(i_number)
+    createArray: function (i_number)
     {
         var ret = new Array(i_number);
         for (var i = 0; i < i_number; i++)
@@ -6690,7 +6690,7 @@ NyARRectOffset = ASKlass('NyARRectOffset', {
      * 中心位置と辺長から、オフセット情報を作成して設定する。
      * @param i_width
      */
-    setSquare: function(i_width)
+    setSquare: function (i_width)
     {
         var w_2 = i_width / 2.0;
         var vertex3d_ptr;
@@ -6732,7 +6732,7 @@ NyARTransMat = ASKlass('NyARTransMat', INyARTransMat,
             _transsolver: null,
             _mat_optimize: null,
             _ref_dist_factor: null,
-            NyARTransMat: function(i_param)
+            NyARTransMat: function (i_param)
             {
                 var dist = i_param.getDistortionFactor();
                 var pmat = i_param.getPerspectiveProjectionMatrix();
@@ -6752,7 +6752,7 @@ NyARTransMat = ASKlass('NyARTransMat', INyARTransMat,
              * 頂点情報を元に、エラー閾値を計算します。
              * @param i_vertex
              */
-            makeErrThreshold: function(i_vertex)
+            makeErrThreshold: function (i_vertex)
             {
                 var a, b, l1, l2;
                 a = i_vertex[0].x - i_vertex[2].x;
@@ -6773,7 +6773,7 @@ NyARTransMat = ASKlass('NyARTransMat', INyARTransMat,
              * @return
              * @throws NyARException
              */
-            transMat: function(i_square, i_offset, o_result_conv)
+            transMat: function (i_square, i_offset, o_result_conv)
             {
                 var trans = this.__transMat_trans;
                 var err_threshold = this.makeErrThreshold(i_square.sqvertex);
@@ -6797,7 +6797,7 @@ NyARTransMat = ASKlass('NyARTransMat', INyARTransMat,
              * (non-Javadoc)
              * @see jp.nyatla.nyartoolkit.core.transmat.INyARTransMat#transMatContinue(jp.nyatla.nyartoolkit.core.NyARSquare, int, double, jp.nyatla.nyartoolkit.core.transmat.NyARTransMatResult)
              */
-            transMatContinue: function(i_square, i_offset, o_result_conv)
+            transMatContinue: function (i_square, i_offset, o_result_conv)
             {
                 var trans = this.__transMat_trans;
                 // io_result_convが初期値なら、transMatで計算する。
@@ -6851,7 +6851,7 @@ NyARTransMat = ASKlass('NyARTransMat', INyARTransMat,
                 o_result_conv.error = min_err;
                 return;
             },
-            optimize: function(io_rotmat, io_transvec, i_solver, i_offset_3d, i_2d_vertex, i_err_threshold)
+            optimize: function (io_rotmat, io_transvec, i_solver, i_offset_3d, i_2d_vertex, i_err_threshold)
             {
                 //System.out.println("START");
                 var vertex_3d = this.__transMat_vertex_3d;
@@ -6876,7 +6876,7 @@ NyARTransMat = ASKlass('NyARTransMat', INyARTransMat,
                 return min_err;
             },
             //エラーレート計算機
-            errRate: function(io_rot, i_trans, i_vertex3d, i_vertex2d, i_number_of_vertex, o_rot_vertex)
+            errRate: function (io_rot, i_trans, i_vertex3d, i_vertex2d, i_number_of_vertex, o_rot_vertex)
             {
                 var cp = this._projection_mat_ref;
                 var cp00 = cp.m00;
@@ -6911,7 +6911,7 @@ NyARTransMat = ASKlass('NyARTransMat', INyARTransMat,
              * @param i_off
              * @param i_trans
              */
-            updateMatrixValue: function(i_rot, i_trans, o_result)
+            updateMatrixValue: function (i_rot, i_trans, o_result)
             {
                 o_result.m00 = i_rot.m00;
                 o_result.m01 = i_rot.m01;
@@ -6942,7 +6942,7 @@ NyARTransMatResult = ASKlass('NyARTransMatResult', NyARDoubleMatrix34,
              * この関数は、0-PIの間で値を返します。
              * @param o_out
              */
-            getZXYAngle: function(o_out)
+            getZXYAngle: function (o_out)
             {
                 var sina = this.m21;
                 if (sina >= 1.0) {
@@ -6959,14 +6959,14 @@ NyARTransMatResult = ASKlass('NyARTransMatResult', NyARDoubleMatrix34,
                     o_out.y = Math.atan2(-this.m20, this.m22);
                 }
             },
-            transformVertex_Number: function(i_x, i_y, i_z, o_out)
+            transformVertex_Number: function (i_x, i_y, i_z, o_out)
             {
                 o_out.x = this.m00 * i_x + this.m01 * i_y + this.m02 * i_z + this.m03;
                 o_out.y = this.m10 * i_x + this.m11 * i_y + this.m12 * i_z + this.m13;
                 o_out.z = this.m20 * i_x + this.m21 * i_y + this.m22 * i_z + this.m23;
                 return;
             },
-            transformVertex_NyARDoublePoint3d: function(i_in, o_out)
+            transformVertex_NyARDoublePoint3d: function (i_in, o_out)
             {
                 this.transformVertex_Number(i_in.x, i_in.y, i_in.z, o_out);
             }
@@ -6983,7 +6983,7 @@ NyARTransMatResult = ASKlass('NyARTransMatResult', NyARDoubleMatrix34,
 NyARPartialDifferentiationOptimize = ASKlass('NyARPartialDifferentiationOptimize',
         {
             _projection_mat_ref: null,
-            NyARPartialDifferentiationOptimize: function(i_projection_mat_ref)
+            NyARPartialDifferentiationOptimize: function (i_projection_mat_ref)
             {
                 this._projection_mat_ref = i_projection_mat_ref;
                 this.__angles_in = TSinCosValue.createArray(3);
@@ -6991,7 +6991,7 @@ NyARPartialDifferentiationOptimize = ASKlass('NyARPartialDifferentiationOptimize
                 this.__sin_table = new FloatVector(4);
                 return;
             },
-            sincos2Rotation_ZXY: function(i_sincos, i_rot_matrix)
+            sincos2Rotation_ZXY: function (i_sincos, i_rot_matrix)
             {
                 var sina = i_sincos[0].sin_val;
                 var cosa = i_sincos[0].cos_val;
@@ -7009,7 +7009,7 @@ NyARPartialDifferentiationOptimize = ASKlass('NyARPartialDifferentiationOptimize
                 i_rot_matrix.m21 = sina;
                 i_rot_matrix.m22 = cosb * cosa;
             },
-            rotation2Sincos_ZXY: function(i_rot_matrix, o_out, o_ang)
+            rotation2Sincos_ZXY: function (i_rot_matrix, o_out, o_ang)
             {
                 var x, y, z;
                 var sina = i_rot_matrix.m21;
@@ -7057,7 +7057,7 @@ NyARPartialDifferentiationOptimize = ASKlass('NyARPartialDifferentiationOptimize
              * J=2*Σ(d[n]*f[n]+a[n]*c[n])/L K=2*Σ(-e[n]*f[n]+b[n]*c[n])/L M=Σ(-e[n]^2+d[n]^2-b[n]^2+a[n]^2)/L 偏微分式 +J*cos(x) +K*sin(x) -sin(x)^2 +cos(x)^2
              * +2*M*cos(x)*sin(x)
              */
-            optimizeParamX: function(i_angle_y, i_angle_z, i_trans, i_vertex3d, i_vertex2d, i_number_of_vertex, i_hint_angle)
+            optimizeParamX: function (i_angle_y, i_angle_z, i_trans, i_vertex3d, i_vertex2d, i_number_of_vertex, i_hint_angle)
             {
                 var cp = this._projection_mat_ref;
                 var sinb = i_angle_y.sin_val;
@@ -7106,7 +7106,7 @@ NyARPartialDifferentiationOptimize = ASKlass('NyARPartialDifferentiationOptimize
                 K *= 2;
                 return this.getMinimumErrorAngleFromParam(L, J, K, M, N, O, i_hint_angle);
             },
-            optimizeParamY: function(i_angle_x, i_angle_z, i_trans, i_vertex3d, i_vertex2d, i_number_of_vertex, i_hint_angle)
+            optimizeParamY: function (i_angle_x, i_angle_z, i_trans, i_vertex3d, i_vertex2d, i_number_of_vertex, i_hint_angle)
             {
                 var cp = this._projection_mat_ref;
                 var sina = i_angle_x.sin_val;
@@ -7155,7 +7155,7 @@ NyARPartialDifferentiationOptimize = ASKlass('NyARPartialDifferentiationOptimize
                 K *= 2;
                 return this.getMinimumErrorAngleFromParam(L, J, K, M, N, O, i_hint_angle);
             },
-            optimizeParamZ: function(i_angle_x, i_angle_y, i_trans, i_vertex3d, i_vertex2d, i_number_of_vertex, i_hint_angle)
+            optimizeParamZ: function (i_angle_x, i_angle_y, i_trans, i_vertex3d, i_vertex2d, i_number_of_vertex, i_hint_angle)
             {
                 var cp = this._projection_mat_ref;
                 var sina = i_angle_x.sin_val;
@@ -7204,7 +7204,7 @@ NyARPartialDifferentiationOptimize = ASKlass('NyARPartialDifferentiationOptimize
                 K *= 2;
                 return this.getMinimumErrorAngleFromParam(L, J, K, M, N, O, i_hint_angle);
             },
-            modifyMatrix: function(io_rot, i_trans, i_vertex3d, i_vertex2d, i_number_of_vertex)
+            modifyMatrix: function (io_rot, i_trans, i_vertex3d, i_vertex2d, i_number_of_vertex)
             {
                 var angles_in = this.__angles_in;// x,y,z
                 var ang = this.__ang;
@@ -7219,7 +7219,7 @@ NyARPartialDifferentiationOptimize = ASKlass('NyARPartialDifferentiationOptimize
             /**
              * エラーレートが最小になる点を得る。
              */
-            getMinimumErrorAngleFromParam: function(iL, iJ, iK, iM, iN, iO, i_hint_angle)
+            getMinimumErrorAngleFromParam: function (iL, iJ, iK, iM, iN, iO, i_hint_angle)
             {
                 var sin_table = this.__sin_table;
                 var M = (iN - iM) / iL;
@@ -7282,7 +7282,7 @@ NyARPartialDifferentiationOptimize = ASKlass('NyARPartialDifferentiationOptimize
 TSinCosValue = ASKlass('TSinCosValue', {
     cos_val: 0,
     sin_val: 0,
-    createArray: function(i_size)
+    createArray: function (i_size)
     {
         var result = new Array(i_size);
         for (var i = 0; i < i_size; i++) {
@@ -7306,7 +7306,7 @@ NyARRotMatrix = ASKlass('NyARRotMatrix', NyARDoubleMatrix33,
              *
              * @param i_param
              */
-            NyARRotMatrix: function(i_matrix)
+            NyARRotMatrix: function (i_matrix)
             {
                 this.__initRot_vec1 = new NyARRotVector(i_matrix);
                 this.__initRot_vec2 = new NyARRotVector(i_matrix);
@@ -7318,7 +7318,7 @@ NyARRotMatrix = ASKlass('NyARRotMatrix', NyARDoubleMatrix33,
              * NyARTransMatResultの内容からNyARRotMatrixを復元します。
              * @param i_prev_result
              */
-            initRotByPrevResult: function(i_prev_result)
+            initRotByPrevResult: function (i_prev_result)
             {
                 this.m00 = i_prev_result.m00;
                 this.m01 = i_prev_result.m01;
@@ -7337,11 +7337,11 @@ NyARRotMatrix = ASKlass('NyARRotMatrix', NyARDoubleMatrix33,
              * @param i_sqvertex
              * @throws NyARException
              */
-            initRotBySquare: function(i_linear, i_sqvertex)
+            initRotBySquare: function (i_linear, i_sqvertex)
             {
-                
+
                 console.log(123)
-                
+
                 var vec1 = this.__initRot_vec1;
                 var vec2 = this.__initRot_vec2;
                 //向かい合った辺から、２本のベクトルを計算
@@ -7374,7 +7374,7 @@ NyARRotMatrix = ASKlass('NyARRotMatrix', NyARDoubleMatrix33,
              * @param i_in_point
              * @param i_out_point
              */
-            getPoint3d: function(i_in_point, i_out_point)
+            getPoint3d: function (i_in_point, i_out_point)
             {
                 var x = i_in_point.x;
                 var y = i_in_point.y;
@@ -7390,7 +7390,7 @@ NyARRotMatrix = ASKlass('NyARRotMatrix', NyARDoubleMatrix33,
              * @param i_out_point
              * @param i_number_of_vertex
              */
-            getPoint3dBatch: function(i_in_point, i_out_point, i_number_of_vertex)
+            getPoint3dBatch: function (i_in_point, i_out_point, i_number_of_vertex)
             {
                 for (var i = i_number_of_vertex - 1; i >= 0; i--) {
                     var out_ptr = i_out_point[i];
@@ -7418,7 +7418,7 @@ NyARRotVector = ASKlass('NyARRotVector',
             //privateメンバ達
             _projection_mat_ref: null,
             _inv_cpara_array_ref: null,
-            NyARRotVector: function(i_cmat)
+            NyARRotVector: function (i_cmat)
             {
                 var mat_a = new NyARMat(3, 3);
                 var a_array = mat_a.getArray();
@@ -7441,7 +7441,7 @@ NyARRotVector = ASKlass('NyARRotVector',
              * @param i_linear1
              * @param i_linear2
              */
-            exteriorProductFromLinear: function(i_linear1, i_linear2)
+            exteriorProductFromLinear: function (i_linear1, i_linear2)
             {
                 //1行目
                 var cmat = this._projection_mat_ref;
@@ -7464,7 +7464,7 @@ NyARRotVector = ASKlass('NyARRotVector',
              * @param i_end_vertex
              * @param cpara
              */
-            checkVectorByVertex: function(i_start_vertex, i_end_vertex)
+            checkVectorByVertex: function (i_start_vertex, i_end_vertex)
             {
                 var h;
                 var inv_cpara = this._inv_cpara_array_ref;
@@ -7509,7 +7509,7 @@ NyARRotVector = ASKlass('NyARRotVector',
              * @param i_r
              * @throws NyARException
              */
-            checkRotation: function(io_vec1, io_vec2)
+            checkRotation: function (io_vec1, io_vec2)
             {
                 var w;
                 var f;
@@ -7773,7 +7773,7 @@ NyARRotVector = ASKlass('NyARRotVector',
 
 INyARTransportVectorSolver = ASKlass('INyARTransportVectorSolver',
         {
-            set2dVertex: function(i_ref_vertex_2d, i_number_of_vertex) {
+            set2dVertex: function (i_ref_vertex_2d, i_number_of_vertex) {
             },
             /**
              * 画面座標群と3次元座標群から、平行移動量を計算します。
@@ -7785,7 +7785,7 @@ INyARTransportVectorSolver = ASKlass('INyARTransportVectorSolver',
              * @param o_transfer
              * @throws NyARException
              */
-            solveTransportVector: function(i_vertex3d, o_transfer) {
+            solveTransportVector: function (i_vertex3d, o_transfer) {
             }
         })
 
@@ -7806,7 +7806,7 @@ NyARTransportVectorSolver = ASKlass('NyARTransportVectorSolver', INyARTransportV
             _cy: null,
             _projection_mat: null,
             _nmber_of_vertex: 0,
-            NyARTransportVectorSolver: function(i_projection_mat_ref, i_max_vertex)
+            NyARTransportVectorSolver: function (i_projection_mat_ref, i_max_vertex)
             {
                 this._projection_mat = i_projection_mat_ref;
                 this._cx = new FloatVector(i_max_vertex);
@@ -7821,7 +7821,7 @@ NyARTransportVectorSolver = ASKlass('NyARTransportVectorSolver', INyARTransportV
              * @throws NyARException
              *
              */
-            set2dVertex: function(i_ref_vertex_2d, i_number_of_vertex)
+            set2dVertex: function (i_ref_vertex_2d, i_number_of_vertex)
             {
                 //3x2nと2n*3の行列から、最小二乗法計算するために3x3マトリクスを作る。
                 //行列[A]の3列目のキャッシュ
@@ -7864,7 +7864,7 @@ NyARTransportVectorSolver = ASKlass('NyARTransportVectorSolver', INyARTransportV
              * @param o_transfer
              * @throws NyARException
              */
-            solveTransportVector: function(i_vertex3d, o_transfer)
+            solveTransportVector: function (i_vertex3d, o_transfer)
             {
                 var number_of_vertex = this._nmber_of_vertex;
                 var p00 = this._projection_mat.m00;
@@ -7983,14 +7983,14 @@ NyARMath = Klass(
              * @param i_p2
              * @return
              */
-            sqNorm_NyARDoublePoint2d: function(i_p1, i_p2)
+            sqNorm_NyARDoublePoint2d: function (i_p1, i_p2)
             {
                 var x, y;
                 x = i_p2.x - i_p1.x;
                 y = i_p2.y - i_p1.y;
                 return x * x + y * y;
             },
-            sqNorm_Number: function(i_p1x, i_p1y, i_p2x, i_p2y)
+            sqNorm_Number: function (i_p1x, i_p1y, i_p2x, i_p2y)
             {
                 var x, y;
                 x = i_p2x - i_p1x;
@@ -8003,7 +8003,7 @@ NyARMath = Klass(
              * @param i_p2
              * @return
              */
-            sqNorm_NyARDoublePoint3d: function(i_p1, i_p2)
+            sqNorm_NyARDoublePoint3d: function (i_p1, i_p2)
             {
                 var x, y, z;
                 x = i_p2.x - i_p1.x;
@@ -8017,7 +8017,7 @@ NyARMath = Klass(
              * @param i_in
              * @return
              */
-            cubeRoot: function(i_in)
+            cubeRoot: function (i_in)
             {
                 var res = Math.pow(Math.abs(i_in), 1.0 / 3.0);
                 return (i_in >= 0) ? res : -res;
@@ -8025,442 +8025,451 @@ NyARMath = Klass(
         })
 
 
-NyAREquationSolver = Klass(
-        {
-            solve2Equation_3: function(i_a, i_b, i_c, o_result)
-            {
-                NyAS3Utils.assert(i_a != 0);
-                return this.solve2Equation_2b(i_b / i_a, i_c / i_a, o_result, 0);
-            },
-            solve2Equation_2a: function(i_b, i_c, o_result)
-            {
-                return this.solve2Equation_2b(i_b, i_c, o_result, 0);
-            },
-            solve2Equation_2b: function(i_b, i_c, o_result, i_result_st)
-            {
-                var t = i_b * i_b - 4 * i_c;
-                if (t < 0) {
-                    //虚数根
+NyAREquationSolver = Klass({
+    solve2Equation_3: function (i_a, i_b, i_c, o_result)
+    {
+        NyAS3Utils.assert(i_a != 0);
+        return this.solve2Equation_2b(i_b / i_a, i_c / i_a, o_result, 0);
+    },
+    solve2Equation_2a: function (i_b, i_c, o_result)
+    {
+        return this.solve2Equation_2b(i_b, i_c, o_result, 0);
+    },
+    solve2Equation_2b: function (i_b, i_c, o_result, i_result_st)
+    {
+        var t = i_b * i_b - 4 * i_c;
+        if (t < 0) {
+            //虚数根
+            return 0;
+        }
+        if (t == 0) {
+            //重根
+            o_result[i_result_st + 0] = -i_b / (2);
+            return 1;
+        }
+        //実根２個
+        t = Math.sqrt(t);
+        o_result[i_result_st + 0] = (-i_b + t) / (2);
+        o_result[i_result_st + 1] = (-i_b - t) / (2);
+        return 2;
+    },
+    /**
+     * ３次方程式 a*x^3+b*x^2+c*x+d=0の実根を求める。
+     * http://aoki2.si.gunma-u.ac.jp/JavaScript/src/3jisiki.html
+     * のコードを基にしてます。
+     * @param i_a
+     * X^3の係数
+     * @param i_b
+     * X^2の係数
+     * @param i_c
+     * X^1の係数
+     * @param i_d
+     * X^0の係数
+     * @param o_result
+     * 実根。double[3]を指定すること。
+     * @return
+     */
+    solve3Equation_4: function (i_a, i_b, i_c, i_d, o_result)
+    {
+        NyAS3Utils.assert(i_a != 0);
+        return this.solve3Equation_3(i_b / i_a, i_c / i_a, i_d / i_a, o_result);
+    },
+    /**
+     * ３次方程式 x^3+b*x^2+c*x+d=0の実根を求める。
+     * だけを求める。
+     * http://aoki2.si.gunma-u.ac.jp/JavaScript/src/3jisiki.html
+     * のコードを基にしてます。
+     * @param i_b
+     * X^2の係数
+     * @param i_c
+     * X^1の係数
+     * @param i_d
+     * X^0の係数
+     * @param o_result
+     * 実根。double[1]以上を指定すること。
+     * @return
+     */
+    solve3Equation_3: function (i_b, i_c, i_d, o_result)
+    {
+        var tmp, b, p, q;
+        b = i_b / (3);
+        p = b * b - i_c / 3;
+        q = (b * (i_c - 2 * b * b) - i_d) / 2;
+        if ((tmp = q * q - p * p * p) == 0) {
+            // 重根
+            q = NyARMath.cubeRoot(q);
+            o_result[0] = 2 * q - b;
+            o_result[1] = -q - b;
+            return 2;
+        } else if (tmp > 0) {
+            // 実根1,虚根2
+            var a3 = NyARMath.cubeRoot(q + ((q > 0) ? 1 : -1) * Math.sqrt(tmp));
+            var b3 = p / a3;
+            o_result[0] = a3 + b3 - b;
+            // 虚根:-0.5*(a3+b3)-b,Math.abs(a3-b3)*Math.sqrt(3.0)/2
+            return 1;
+        } else {
+            // 実根3
+            tmp = 2 * Math.sqrt(p);
+            var t = Math.acos(q / (p * tmp / 2));
+            o_result[0] = tmp * Math.cos(t / 3) - b;
+            o_result[1] = tmp * Math.cos((t + 2 * Math.PI) / 3) - b;
+            o_result[2] = tmp * Math.cos((t + 4 * Math.PI) / 3) - b;
+            return 3;
+        }
+    },
+    /**
+     * ４次方程式の実根だけを求める。
+     * @param i_a
+     * X^3の係数
+     * @param i_b
+     * X^2の係数
+     * @param i_c
+     * X^1の係数
+     * @param i_d
+     * X^0の係数
+     * @param o_result
+     * 実根。double[3]を指定すること。
+     * @return
+     */
+    solve4Equation: function (i_a, i_b, i_c, i_d, i_e, o_result)
+    {
+        NyAS3Utils.assert(i_a != 0);
+        var A3, A2, A1, A0, B3;
+        A3 = i_b / i_a;
+        A2 = i_c / i_a;
+        A1 = i_d / i_a;
+        A0 = i_e / i_a;
+        B3 = A3 / 4;
+        var p, q, r;
+        var B3_2 = B3 * B3;
+        p = A2 - 6 * B3_2;//A2-6*B3*B3;
+        q = A1 + B3 * (-2 * A2 + 8 * B3_2);//A1-2*A2*B3+8*B3*B3*B3;
+        r = A0 + B3 * (-A1 + A2 * B3) - 3 * B3_2 * B3_2;//A0-A1*B3+A2*B3*B3-3*B3*B3*B3*B3;
+        if (q == 0) {
+            var result_0, result_1;
+            //複二次式
+            var res = this.solve2Equation_2b(p, r, o_result, 0);
+            switch (res) {
+                case 0:
+                    //全て虚数解
                     return 0;
-                }
-                if (t == 0) {
+                case 1:
                     //重根
-                    o_result[i_result_st + 0] = -i_b / (2);
-                    return 1;
-                }
-                //実根２個
-                t = Math.sqrt(t);
-                o_result[i_result_st + 0] = (-i_b + t) / (2);
-                o_result[i_result_st + 1] = (-i_b - t) / (2);
-                return 2;
-            },
-            /**
-             * ３次方程式 a*x^3+b*x^2+c*x+d=0の実根を求める。
-             * http://aoki2.si.gunma-u.ac.jp/JavaScript/src/3jisiki.html
-             * のコードを基にしてます。
-             * @param i_a
-             * X^3の係数
-             * @param i_b
-             * X^2の係数
-             * @param i_c
-             * X^1の係数
-             * @param i_d
-             * X^0の係数
-             * @param o_result
-             * 実根。double[3]を指定すること。
-             * @return
-             */
-            solve3Equation_4: function(i_a, i_b, i_c, i_d, o_result)
-            {
-                NyAS3Utils.assert(i_a != 0);
-                return this.solve3Equation_3(i_b / i_a, i_c / i_a, i_d / i_a, o_result);
-            },
-            /**
-             * ３次方程式 x^3+b*x^2+c*x+d=0の実根を求める。
-             * だけを求める。
-             * http://aoki2.si.gunma-u.ac.jp/JavaScript/src/3jisiki.html
-             * のコードを基にしてます。
-             * @param i_b
-             * X^2の係数
-             * @param i_c
-             * X^1の係数
-             * @param i_d
-             * X^0の係数
-             * @param o_result
-             * 実根。double[1]以上を指定すること。
-             * @return
-             */
-            solve3Equation_3: function(i_b, i_c, i_d, o_result)
-            {
-                var tmp, b, p, q;
-                b = i_b / (3);
-                p = b * b - i_c / 3;
-                q = (b * (i_c - 2 * b * b) - i_d) / 2;
-                if ((tmp = q * q - p * p * p) == 0) {
-                    // 重根
-                    q = NyARMath.cubeRoot(q);
-                    o_result[0] = 2 * q - b;
-                    o_result[1] = -q - b;
-                    return 2;
-                } else if (tmp > 0) {
-                    // 実根1,虚根2
-                    var a3 = NyARMath.cubeRoot(q + ((q > 0) ? 1 : -1) * Math.sqrt(tmp));
-                    var b3 = p / a3;
-                    o_result[0] = a3 + b3 - b;
-                    // 虚根:-0.5*(a3+b3)-b,Math.abs(a3-b3)*Math.sqrt(3.0)/2
-                    return 1;
-                } else {
-                    // 実根3
-                    tmp = 2 * Math.sqrt(p);
-                    var t = Math.acos(q / (p * tmp / 2));
-                    o_result[0] = tmp * Math.cos(t / 3) - b;
-                    o_result[1] = tmp * Math.cos((t + 2 * Math.PI) / 3) - b;
-                    o_result[2] = tmp * Math.cos((t + 4 * Math.PI) / 3) - b;
-                    return 3;
-                }
-            },
-            /**
-             * ４次方程式の実根だけを求める。
-             * @param i_a
-             * X^3の係数
-             * @param i_b
-             * X^2の係数
-             * @param i_c
-             * X^1の係数
-             * @param i_d
-             * X^0の係数
-             * @param o_result
-             * 実根。double[3]を指定すること。
-             * @return
-             */
-            solve4Equation: function(i_a, i_b, i_c, i_d, i_e, o_result)
-            {
-                NyAS3Utils.assert(i_a != 0);
-                var A3, A2, A1, A0, B3;
-                A3 = i_b / i_a;
-                A2 = i_c / i_a;
-                A1 = i_d / i_a;
-                A0 = i_e / i_a;
-                B3 = A3 / 4;
-                var p, q, r;
-                var B3_2 = B3 * B3;
-                p = A2 - 6 * B3_2;//A2-6*B3*B3;
-                q = A1 + B3 * (-2 * A2 + 8 * B3_2);//A1-2*A2*B3+8*B3*B3*B3;
-                r = A0 + B3 * (-A1 + A2 * B3) - 3 * B3_2 * B3_2;//A0-A1*B3+A2*B3*B3-3*B3*B3*B3*B3;
-                if (q == 0) {
-                    var result_0, result_1;
-                    //複二次式
-                    var res = this.solve2Equation_2b(p, r, o_result, 0);
-                    switch (res) {
-                        case 0:
-                            //全て虚数解
-                            return 0;
-                        case 1:
-                            //重根
-                            //解は0,1,2の何れか。
-                            result_0 = o_result[0];
-                            if (result_0 < 0) {
-                                //全て虚数解
-                                return 0;
-                            }
-                            //実根1個
-                            if (result_0 == 0) {
-                                //NC
-                                o_result[0] = 0 - B3;
-                                return 1;
-                            }
-                            //実根2個
-                            result_0 = Math.sqrt(result_0);
-                            o_result[0] = result_0 - B3;
-                            o_result[1] = -result_0 - B3;
-                            return 2;
-                        case 2:
-                            //実根２個だからt==t2==0はありえない。(case1)
-                            //解は、0,2,4の何れか。
-                            result_0 = o_result[0];
-                            result_1 = o_result[1];
-                            var number_of_result = 0;
-                            if (result_0 > 0) {
-                                //NC
-                                result_0 = Math.sqrt(result_0);
-                                o_result[0] = result_0 - B3;
-                                o_result[1] = -result_0 - B3;
-                                number_of_result += 2;
-                            }
-                            if (result_1 > 0)
-                            {
-                                //NC
-                                result_1 = Math.sqrt(result_1);
-                                o_result[number_of_result + 0] = result_1 - B3;
-                                o_result[number_of_result + 1] = -result_1 - B3;
-                                number_of_result += 2;
-                            }
-                            return number_of_result;
-                        default:
-                            throw new NyARException();
-                    }
-                } else {
-                    //それ以外
-                    //最適化ポイント:
-                    //u^3  + (2*p)*u^2  +((- 4*r)+(p^2))*u -q^2= 0
-                    var u = this.solve3Equation_1((2 * p), (-4 * r) + (p * p), -q * q);
-                    if (u < 0) {
+                    //解は0,1,2の何れか。
+                    result_0 = o_result[0];
+                    if (result_0 < 0) {
                         //全て虚数解
                         return 0;
                     }
-                    var ru = Math.sqrt(u);
-                    //2次方程式を解いてyを計算(最適化ポイント)
-                    var result_1st, result_2nd;
-                    result_1st = this.solve2Equation_2b(-ru, (p + u) / 2 + ru * q / (2 * u), o_result, 0);
-                    //配列使い回しのために、変数に退避
-                    switch (result_1st) {
-                        case 0:
-                            break;
-                        case 1:
-                            o_result[0] = o_result[0] - B3;
-                            break;
-                        case 2:
-                            o_result[0] = o_result[0] - B3;
-                            o_result[1] = o_result[1] - B3;
-                            break;
-                        default:
-                            throw new NyARException();
+                    //実根1個
+                    if (result_0 == 0) {
+                        //NC
+                        o_result[0] = 0 - B3;
+                        return 1;
                     }
-                    result_2nd = this.solve2Equation_2b(ru, (p + u) / 2 - ru * q / (2 * u), o_result, result_1st);
-                    //0,1番目に格納
-                    switch (result_2nd) {
-                        case 0:
-                            break;
-                        case 1:
-                            o_result[result_1st + 0] = o_result[result_1st + 0] - B3;
-                            break;
-                        case 2:
-                            o_result[result_1st + 0] = o_result[result_1st + 0] - B3;
-                            o_result[result_1st + 1] = o_result[result_1st + 1] - B3;
-                            break;
-                        default:
-                            throw new NyARException();
+                    //実根2個
+                    result_0 = Math.sqrt(result_0);
+                    o_result[0] = result_0 - B3;
+                    o_result[1] = -result_0 - B3;
+                    return 2;
+                case 2:
+                    //実根２個だからt==t2==0はありえない。(case1)
+                    //解は、0,2,4の何れか。
+                    result_0 = o_result[0];
+                    result_1 = o_result[1];
+                    var number_of_result = 0;
+                    if (result_0 > 0) {
+                        //NC
+                        result_0 = Math.sqrt(result_0);
+                        o_result[0] = result_0 - B3;
+                        o_result[1] = -result_0 - B3;
+                        number_of_result += 2;
                     }
-                    return result_1st + result_2nd;
-                }
-            },
-            /**
-             * 3次方程式の実根を１個だけ求める。
-             * 4字方程式で使う。
-             * @param i_b
-             * @param i_c
-             * @param i_d
-             * @param o_result
-             * @return
-             */
-            solve3Equation_1: function(i_b, i_c, i_d)
-            {
-                var tmp, b, p, q;
-                b = i_b / (3);
-                p = b * b - i_c / 3;
-                q = (b * (i_c - 2 * b * b) - i_d) / 2;
-                if ((tmp = q * q - p * p * p) == 0) {
-                    // 重根
-                    q = NyARMath.cubeRoot(q);
-                    return 2 * q - b;
-                } else if (tmp > 0) {
-                    // 実根1,虚根2
-                    var a3 = NyARMath.cubeRoot(q + ((q > 0) ? 1 : -1) * Math.sqrt(tmp));
-                    var b3 = p / a3;
-                    return a3 + b3 - b;
-                } else {
-                    // 実根3
-                    tmp = 2 * Math.sqrt(p);
-                    var t = Math.acos(q / (p * tmp / 2));
-                    return tmp * Math.cos(t / 3) - b;
-                }
+                    if (result_1 > 0)
+                    {
+                        //NC
+                        result_1 = Math.sqrt(result_1);
+                        o_result[number_of_result + 0] = result_1 - B3;
+                        o_result[number_of_result + 1] = -result_1 - B3;
+                        number_of_result += 2;
+                    }
+                    return number_of_result;
+                default:
+                    throw new NyARException();
             }
-        })
+        } else {
+            //それ以外
+            //最適化ポイント:
+            //u^3  + (2*p)*u^2  +((- 4*r)+(p^2))*u -q^2= 0
+            var u = this.solve3Equation_1((2 * p), (-4 * r) + (p * p), -q * q);
+            if (u < 0) {
+                //全て虚数解
+                return 0;
+            }
+            var ru = Math.sqrt(u);
+            //2次方程式を解いてyを計算(最適化ポイント)
+            var result_1st, result_2nd;
+            result_1st = this.solve2Equation_2b(-ru, (p + u) / 2 + ru * q / (2 * u), o_result, 0);
+            //配列使い回しのために、変数に退避
+            switch (result_1st) {
+                case 0:
+                    break;
+                case 1:
+                    o_result[0] = o_result[0] - B3;
+                    break;
+                case 2:
+                    o_result[0] = o_result[0] - B3;
+                    o_result[1] = o_result[1] - B3;
+                    break;
+                default:
+                    throw new NyARException();
+            }
+            result_2nd = this.solve2Equation_2b(ru, (p + u) / 2 - ru * q / (2 * u), o_result, result_1st);
+            //0,1番目に格納
+            switch (result_2nd) {
+                case 0:
+                    break;
+                case 1:
+                    o_result[result_1st + 0] = o_result[result_1st + 0] - B3;
+                    break;
+                case 2:
+                    o_result[result_1st + 0] = o_result[result_1st + 0] - B3;
+                    o_result[result_1st + 1] = o_result[result_1st + 1] - B3;
+                    break;
+                default:
+                    throw new NyARException();
+            }
+            return result_1st + result_2nd;
+        }
+    },
+    /**
+     * 3次方程式の実根を１個だけ求める。
+     * 4字方程式で使う。
+     * @param i_b
+     * @param i_c
+     * @param i_d
+     * @param o_result
+     * @return
+     */
+    solve3Equation_1: function (i_b, i_c, i_d)
+    {
+        var tmp, b, p, q;
+        b = i_b / (3);
+        p = b * b - i_c / 3;
+        q = (b * (i_c - 2 * b * b) - i_d) / 2;
+        if ((tmp = q * q - p * p * p) == 0) {
+            // 重根
+            q = NyARMath.cubeRoot(q);
+            return 2 * q - b;
+        } else if (tmp > 0) {
+            // 実根1,虚根2
+            var a3 = NyARMath.cubeRoot(q + ((q > 0) ? 1 : -1) * Math.sqrt(tmp));
+            var b3 = p / a3;
+            return a3 + b3 - b;
+        } else {
+            // 実根3
+            tmp = 2 * Math.sqrt(p);
+            var t = Math.acos(q / (p * tmp / 2));
+            return tmp * Math.cos(t / 3) - b;
+        }
+    }
+});
 
-NyARPerspectiveParamGenerator_O1 = Klass(
+NyARPerspectiveParamGenerator_O1 = Klass({
+    _local_x: 0,
+    _local_y: 0,
+    _width: 0,
+    _height: 0
+    ,
+    initialize: function (i_local_x, i_local_y, i_width, i_height) {
+        this._height = i_height;
+        this._width = i_width;
+        this._local_x = i_local_x;
+        this._local_y = i_local_y;
+        return;
+    }
+    ,
+    //GET X & Y POSITION OF 4 CORNERS REFERENCE??
+    //return 8 values in o_param
+    getParam: function (i_vertex, o_param) {
+        var ltx = this._local_x;
+        var lty = this._local_y;
+        var rbx = ltx + this._width;
+        var rby = lty + this._height;
+
+        var det_1;
+        var a13, a14, a23, a24, a33, a34, a43, a44;
+        var b11, b12, b13, b14, b21, b22, b23, b24, b31, b32, b33, b34, b41, b42, b43, b44;
+        var t1, t2, t3, t4, t5, t6;
+        var v1, v2, v3, v4;
+        var kx0, kx1, kx2, kx3, kx4, kx5, kx6, kx7;
+        var ky0, ky1, ky2, ky3, ky4, ky5, ky6, ky7;
+
+        //X VAUES
         {
-            _local_x: 0,
-            _local_y: 0,
-            _width: 0,
-            _height: 0,
-            initialize: function(i_local_x, i_local_y, i_width, i_height)
-            {
-                this._height = i_height;
-                this._width = i_width;
-                this._local_x = i_local_x;
-                this._local_y = i_local_y;
-                return;
-            },
-            getParam: function(i_vertex, o_param)
-            {
-                var ltx = this._local_x;
-                var lty = this._local_y;
-                var rbx = ltx + this._width;
-                var rby = lty + this._height;
-                var det_1;
-                var a13, a14, a23, a24, a33, a34, a43, a44;
-                var b11, b12, b13, b14, b21, b22, b23, b24, b31, b32, b33, b34, b41, b42, b43, b44;
-                var t1, t2, t3, t4, t5, t6;
-                var v1, v2, v3, v4;
-                var kx0, kx1, kx2, kx3, kx4, kx5, kx6, kx7;
-                var ky0, ky1, ky2, ky3, ky4, ky5, ky6, ky7;
-                {
-                    v1 = i_vertex[0].x;
-                    v2 = i_vertex[1].x;
-                    v3 = i_vertex[2].x;
-                    v4 = i_vertex[3].x;
-                    a13 = -ltx * v1;
-                    a14 = -lty * v1;
-                    a23 = -rbx * v2;
-                    a24 = -lty * v2;
-                    a33 = -rbx * v3;
-                    a34 = -rby * v3;
-                    a43 = -ltx * v4;
-                    a44 = -rby * v4;
-                    t1 = a33 * a44 - a34 * a43;
-                    t4 = a34 * ltx - rbx * a44;
-                    t5 = rbx * a43 - a33 * ltx;
-                    t2 = rby * (a34 - a44);
-                    t3 = rby * (a43 - a33);
-                    t6 = rby * (rbx - ltx);
-                    b21 = -a23 * t4 - a24 * t5 - rbx * t1;
-                    b11 = (a23 * t2 + a24 * t3) + lty * t1;
-                    b31 = (a24 * t6 - rbx * t2) + lty * t4;
-                    b41 = (-rbx * t3 - a23 * t6) + lty * t5;
-                    t1 = a43 * a14 - a44 * a13;
-                    t2 = a44 * lty - rby * a14;
-                    t3 = rby * a13 - a43 * lty;
-                    t4 = ltx * (a44 - a14);
-                    t5 = ltx * (a13 - a43);
-                    t6 = ltx * (lty - rby);
-                    b12 = -rby * t1 - a33 * t2 - a34 * t3;
-                    b22 = (a33 * t4 + a34 * t5) + rbx * t1;
-                    b32 = (-a34 * t6 - rby * t4) + rbx * t2;
-                    b42 = (-rby * t5 + a33 * t6) + rbx * t3;
-                    t1 = a13 * a24 - a14 * a23;
-                    t4 = a14 * rbx - ltx * a24;
-                    t5 = ltx * a23 - a13 * rbx;
-                    t2 = lty * (a14 - a24);
-                    t3 = lty * (a23 - a13);
-                    t6 = lty * (ltx - rbx);
-                    b23 = -a43 * t4 - a44 * t5 - ltx * t1;
-                    b13 = (a43 * t2 + a44 * t3) + rby * t1;
-                    b33 = (a44 * t6 - ltx * t2) + rby * t4;
-                    b43 = (-ltx * t3 - a43 * t6) + rby * t5;
-                    t1 = a23 * a34 - a24 * a33;
-                    t2 = a24 * rby - lty * a34;
-                    t3 = lty * a33 - a23 * rby;
-                    t4 = rbx * (a24 - a34);
-                    t5 = rbx * (a33 - a23);
-                    t6 = rbx * (rby - lty);
-                    b14 = -lty * t1 - a13 * t2 - a14 * t3;
-                    b24 = a13 * t4 + a14 * t5 + ltx * t1;
-                    b34 = -a14 * t6 - lty * t4 + ltx * t2;
-                    b44 = -lty * t5 + a13 * t6 + ltx * t3;
-                    det_1 = (ltx * (b11 + b14) + rbx * (b12 + b13));
-                    if (det_1 == 0) {
-                        det_1 = 0.0001;
-                        //System.out.println("Could not get inverse matrix(1).");
-                        //return false;
-                    }
-                    det_1 = 1 / det_1;
-                    kx0 = (b11 * v1 + b12 * v2 + b13 * v3 + b14 * v4) * det_1;
-                    kx1 = (b11 + b12 + b13 + b14) * det_1;
-                    kx2 = (b21 * v1 + b22 * v2 + b23 * v3 + b24 * v4) * det_1;
-                    kx3 = (b21 + b22 + b23 + b24) * det_1;
-                    kx4 = (b31 * v1 + b32 * v2 + b33 * v3 + b34 * v4) * det_1;
-                    kx5 = (b31 + b32 + b33 + b34) * det_1;
-                    kx6 = (b41 * v1 + b42 * v2 + b43 * v3 + b44 * v4) * det_1;
-                    kx7 = (b41 + b42 + b43 + b44) * det_1;
-                }
-                {
-                    v1 = i_vertex[0].y;
-                    v2 = i_vertex[1].y;
-                    v3 = i_vertex[2].y;
-                    v4 = i_vertex[3].y;
-                    a13 = -ltx * v1;
-                    a14 = -lty * v1;
-                    a23 = -rbx * v2;
-                    a24 = -lty * v2;
-                    a33 = -rbx * v3;
-                    a34 = -rby * v3;
-                    a43 = -ltx * v4;
-                    a44 = -rby * v4;
-                    t1 = a33 * a44 - a34 * a43;
-                    t4 = a34 * ltx - rbx * a44;
-                    t5 = rbx * a43 - a33 * ltx;
-                    t2 = rby * (a34 - a44);
-                    t3 = rby * (a43 - a33);
-                    t6 = rby * (rbx - ltx);
-                    b21 = -a23 * t4 - a24 * t5 - rbx * t1;
-                    b11 = (a23 * t2 + a24 * t3) + lty * t1;
-                    b31 = (a24 * t6 - rbx * t2) + lty * t4;
-                    b41 = (-rbx * t3 - a23 * t6) + lty * t5;
-                    t1 = a43 * a14 - a44 * a13;
-                    t2 = a44 * lty - rby * a14;
-                    t3 = rby * a13 - a43 * lty;
-                    t4 = ltx * (a44 - a14);
-                    t5 = ltx * (a13 - a43);
-                    t6 = ltx * (lty - rby);
-                    b12 = -rby * t1 - a33 * t2 - a34 * t3;
-                    b22 = (a33 * t4 + a34 * t5) + rbx * t1;
-                    b32 = (-a34 * t6 - rby * t4) + rbx * t2;
-                    b42 = (-rby * t5 + a33 * t6) + rbx * t3;
-                    t1 = a13 * a24 - a14 * a23;
-                    t4 = a14 * rbx - ltx * a24;
-                    t5 = ltx * a23 - a13 * rbx;
-                    t2 = lty * (a14 - a24);
-                    t3 = lty * (a23 - a13);
-                    t6 = lty * (ltx - rbx);
-                    b23 = -a43 * t4 - a44 * t5 - ltx * t1;
-                    b13 = (a43 * t2 + a44 * t3) + rby * t1;
-                    b33 = (a44 * t6 - ltx * t2) + rby * t4;
-                    b43 = (-ltx * t3 - a43 * t6) + rby * t5;
-                    t1 = a23 * a34 - a24 * a33;
-                    t2 = a24 * rby - lty * a34;
-                    t3 = lty * a33 - a23 * rby;
-                    t4 = rbx * (a24 - a34);
-                    t5 = rbx * (a33 - a23);
-                    t6 = rbx * (rby - lty);
-                    b14 = -lty * t1 - a13 * t2 - a14 * t3;
-                    b24 = a13 * t4 + a14 * t5 + ltx * t1;
-                    b34 = -a14 * t6 - lty * t4 + ltx * t2;
-                    b44 = -lty * t5 + a13 * t6 + ltx * t3;
-                    det_1 = (ltx * (b11 + b14) + rbx * (b12 + b13));
-                    if (det_1 == 0) {
-                        det_1 = 0.0001;
-                        //System.out.println("Could not get inverse matrix(2).");
-                        //return false;
-                    }
-                    det_1 = 1 / det_1;
-                    ky0 = (b11 * v1 + b12 * v2 + b13 * v3 + b14 * v4) * det_1;
-                    ky1 = (b11 + b12 + b13 + b14) * det_1;
-                    ky2 = (b21 * v1 + b22 * v2 + b23 * v3 + b24 * v4) * det_1;
-                    ky3 = (b21 + b22 + b23 + b24) * det_1;
-                    ky4 = (b31 * v1 + b32 * v2 + b33 * v3 + b34 * v4) * det_1;
-                    ky5 = (b31 + b32 + b33 + b34) * det_1;
-                    ky6 = (b41 * v1 + b42 * v2 + b43 * v3 + b44 * v4) * det_1;
-                    ky7 = (b41 + b42 + b43 + b44) * det_1;
-                }
-                det_1 = kx5 * (-ky7) - (-ky5) * kx7;
-                if (det_1 == 0) {
-                    det_1 = 0.0001;
-                    //System.out.println("Could not get inverse matrix(3).");
-                    //return false;
-                }
-                det_1 = 1 / det_1;
-                var C, F;
-                o_param[2] = C = (-ky7 * det_1) * (kx4 - ky4) + (ky5 * det_1) * (kx6 - ky6); // C
-                o_param[5] = F = (-kx7 * det_1) * (kx4 - ky4) + (kx5 * det_1) * (kx6 - ky6); // F
-                o_param[6] = kx4 - C * kx5;
-                o_param[7] = kx6 - C * kx7;
-                o_param[0] = kx0 - C * kx1;
-                o_param[1] = kx2 - C * kx3;
-                o_param[3] = ky0 - F * ky1;
-                o_param[4] = ky2 - F * ky3;
-                return true;
+            v1 = i_vertex[0].x;
+            v2 = i_vertex[1].x;
+            v3 = i_vertex[2].x;
+            v4 = i_vertex[3].x;
+            a13 = -ltx * v1;
+            a14 = -lty * v1;
+            a23 = -rbx * v2;
+            a24 = -lty * v2;
+            a33 = -rbx * v3;
+            a34 = -rby * v3;
+            a43 = -ltx * v4;
+            a44 = -rby * v4;
+            t1 = a33 * a44 - a34 * a43;
+            t4 = a34 * ltx - rbx * a44;
+            t5 = rbx * a43 - a33 * ltx;
+            t2 = rby * (a34 - a44);
+            t3 = rby * (a43 - a33);
+            t6 = rby * (rbx - ltx);
+            b21 = -a23 * t4 - a24 * t5 - rbx * t1;
+            b11 = (a23 * t2 + a24 * t3) + lty * t1;
+            b31 = (a24 * t6 - rbx * t2) + lty * t4;
+            b41 = (-rbx * t3 - a23 * t6) + lty * t5;
+            t1 = a43 * a14 - a44 * a13;
+            t2 = a44 * lty - rby * a14;
+            t3 = rby * a13 - a43 * lty;
+            t4 = ltx * (a44 - a14);
+            t5 = ltx * (a13 - a43);
+            t6 = ltx * (lty - rby);
+            b12 = -rby * t1 - a33 * t2 - a34 * t3;
+            b22 = (a33 * t4 + a34 * t5) + rbx * t1;
+            b32 = (-a34 * t6 - rby * t4) + rbx * t2;
+            b42 = (-rby * t5 + a33 * t6) + rbx * t3;
+            t1 = a13 * a24 - a14 * a23;
+            t4 = a14 * rbx - ltx * a24;
+            t5 = ltx * a23 - a13 * rbx;
+            t2 = lty * (a14 - a24);
+            t3 = lty * (a23 - a13);
+            t6 = lty * (ltx - rbx);
+            b23 = -a43 * t4 - a44 * t5 - ltx * t1;
+            b13 = (a43 * t2 + a44 * t3) + rby * t1;
+            b33 = (a44 * t6 - ltx * t2) + rby * t4;
+            b43 = (-ltx * t3 - a43 * t6) + rby * t5;
+            t1 = a23 * a34 - a24 * a33;
+            t2 = a24 * rby - lty * a34;
+            t3 = lty * a33 - a23 * rby;
+            t4 = rbx * (a24 - a34);
+            t5 = rbx * (a33 - a23);
+            t6 = rbx * (rby - lty);
+            b14 = -lty * t1 - a13 * t2 - a14 * t3;
+            b24 = a13 * t4 + a14 * t5 + ltx * t1;
+            b34 = -a14 * t6 - lty * t4 + ltx * t2;
+            b44 = -lty * t5 + a13 * t6 + ltx * t3;
+            det_1 = (ltx * (b11 + b14) + rbx * (b12 + b13));
+            if (det_1 == 0) {
+                //det_1 = 0.0001;
+                //System.out.println("Could not get inverse matrix(1).");
+                return false;
             }
-        })
+            det_1 = 1 / det_1;
+            kx0 = (b11 * v1 + b12 * v2 + b13 * v3 + b14 * v4) * det_1;
+            kx1 = (b11 + b12 + b13 + b14) * det_1;
+            kx2 = (b21 * v1 + b22 * v2 + b23 * v3 + b24 * v4) * det_1;
+            kx3 = (b21 + b22 + b23 + b24) * det_1;
+            kx4 = (b31 * v1 + b32 * v2 + b33 * v3 + b34 * v4) * det_1;
+            kx5 = (b31 + b32 + b33 + b34) * det_1;
+            kx6 = (b41 * v1 + b42 * v2 + b43 * v3 + b44 * v4) * det_1;
+            kx7 = (b41 + b42 + b43 + b44) * det_1;
+        }
+
+        //Y VAUES
+        {
+            v1 = i_vertex[0].y;
+            v2 = i_vertex[1].y;
+            v3 = i_vertex[2].y;
+            v4 = i_vertex[3].y;
+            a13 = -ltx * v1;
+            a14 = -lty * v1;
+            a23 = -rbx * v2;
+            a24 = -lty * v2;
+            a33 = -rbx * v3;
+            a34 = -rby * v3;
+            a43 = -ltx * v4;
+            a44 = -rby * v4;
+            t1 = a33 * a44 - a34 * a43;
+            t4 = a34 * ltx - rbx * a44;
+            t5 = rbx * a43 - a33 * ltx;
+            t2 = rby * (a34 - a44);
+            t3 = rby * (a43 - a33);
+            t6 = rby * (rbx - ltx);
+            b21 = -a23 * t4 - a24 * t5 - rbx * t1;
+            b11 = (a23 * t2 + a24 * t3) + lty * t1;
+            b31 = (a24 * t6 - rbx * t2) + lty * t4;
+            b41 = (-rbx * t3 - a23 * t6) + lty * t5;
+            t1 = a43 * a14 - a44 * a13;
+            t2 = a44 * lty - rby * a14;
+            t3 = rby * a13 - a43 * lty;
+            t4 = ltx * (a44 - a14);
+            t5 = ltx * (a13 - a43);
+            t6 = ltx * (lty - rby);
+            b12 = -rby * t1 - a33 * t2 - a34 * t3;
+            b22 = (a33 * t4 + a34 * t5) + rbx * t1;
+            b32 = (-a34 * t6 - rby * t4) + rbx * t2;
+            b42 = (-rby * t5 + a33 * t6) + rbx * t3;
+            t1 = a13 * a24 - a14 * a23;
+            t4 = a14 * rbx - ltx * a24;
+            t5 = ltx * a23 - a13 * rbx;
+            t2 = lty * (a14 - a24);
+            t3 = lty * (a23 - a13);
+            t6 = lty * (ltx - rbx);
+            b23 = -a43 * t4 - a44 * t5 - ltx * t1;
+            b13 = (a43 * t2 + a44 * t3) + rby * t1;
+            b33 = (a44 * t6 - ltx * t2) + rby * t4;
+            b43 = (-ltx * t3 - a43 * t6) + rby * t5;
+            t1 = a23 * a34 - a24 * a33;
+            t2 = a24 * rby - lty * a34;
+            t3 = lty * a33 - a23 * rby;
+            t4 = rbx * (a24 - a34);
+            t5 = rbx * (a33 - a23);
+            t6 = rbx * (rby - lty);
+            b14 = -lty * t1 - a13 * t2 - a14 * t3;
+            b24 = a13 * t4 + a14 * t5 + ltx * t1;
+            b34 = -a14 * t6 - lty * t4 + ltx * t2;
+            b44 = -lty * t5 + a13 * t6 + ltx * t3;
+            det_1 = (ltx * (b11 + b14) + rbx * (b12 + b13));
+            if (det_1 == 0) {
+                //det_1 = 0.0001;
+                //System.out.println("Could not get inverse matrix(2).");
+                return false;
+            }
+            det_1 = 1 / det_1;
+            ky0 = (b11 * v1 + b12 * v2 + b13 * v3 + b14 * v4) * det_1;
+            ky1 = (b11 + b12 + b13 + b14) * det_1;
+            ky2 = (b21 * v1 + b22 * v2 + b23 * v3 + b24 * v4) * det_1;
+            ky3 = (b21 + b22 + b23 + b24) * det_1;
+            ky4 = (b31 * v1 + b32 * v2 + b33 * v3 + b34 * v4) * det_1;
+            ky5 = (b31 + b32 + b33 + b34) * det_1;
+            ky6 = (b41 * v1 + b42 * v2 + b43 * v3 + b44 * v4) * det_1;
+            ky7 = (b41 + b42 + b43 + b44) * det_1;
+        }
+
+        det_1 = kx5 * (-ky7) - (-ky5) * kx7;
+        if (det_1 == 0) {
+            //det_1 = 0.0001;
+            //System.out.println("Could not get inverse matrix(3).");
+            return false;
+        }
+
+        det_1 = 1 / det_1;
+        var C, F;
+        o_param[2] = C = (-ky7 * det_1) * (kx4 - ky4) + (ky5 * det_1) * (kx6 - ky6); // C
+        o_param[5] = F = (-kx7 * det_1) * (kx4 - ky4) + (kx5 * det_1) * (kx6 - ky6); // F
+
+        o_param[6] = kx4 - C * kx5;
+        o_param[7] = kx6 - C * kx7;
+        o_param[0] = kx0 - C * kx1;
+        o_param[1] = kx2 - C * kx3;
+        o_param[3] = ky0 - F * ky1;
+        o_param[4] = ky2 - F * ky3;
+
+        return true;
+    }
+});
 /*
  * JSARToolkit
  * --------------------------------------------------------------------------------
@@ -8566,7 +8575,7 @@ MarkerPattEncoder = ASKlass('MarkerPattEncoder',
             _bits: new IntVector(16),
             _work: new IntVector(16),
             _model: 0,
-            setBitByBitIndex: function(i_index_no, i_value)
+            setBitByBitIndex: function (i_index_no, i_value)
             {
                 NyAS3Utils.assert(i_value == 0 || i_value == 1);
                 var bit_no = this._bit_table[i_index_no];
@@ -8579,7 +8588,7 @@ MarkerPattEncoder = ASKlass('MarkerPattEncoder',
                 }
                 return;
             }
-            , setBit: function(i_bit_no, i_value)
+            , setBit: function (i_bit_no, i_value)
             {
                 NyAS3Utils.assert(i_value == 0 || i_value == 1);
                 if (i_bit_no == 0) {
@@ -8591,7 +8600,7 @@ MarkerPattEncoder = ASKlass('MarkerPattEncoder',
                 }
                 return;
             }
-            , getBit: function(i_bit_no)
+            , getBit: function (i_bit_no)
             {
                 if (i_bit_no == 0) {
                     return this._bits[0];
@@ -8601,11 +8610,11 @@ MarkerPattEncoder = ASKlass('MarkerPattEncoder',
                     return (this._bits[bidx] >> (sidx)) & (0x01);
                 }
             }
-            , getModel: function()
+            , getModel: function ()
             {
                 return this._model;
             }
-            , getControlValue: function(i_model, i_data)
+            , getControlValue: function (i_model, i_data)
             {
                 var v;
                 switch (i_model) {
@@ -8624,7 +8633,7 @@ MarkerPattEncoder = ASKlass('MarkerPattEncoder',
                 }
                 return -1;
             }
-            , getCheckValue: function(i_model, i_data)
+            , getCheckValue: function (i_model, i_data)
             {
                 var v;
                 switch (i_model) {
@@ -8643,7 +8652,7 @@ MarkerPattEncoder = ASKlass('MarkerPattEncoder',
                 }
                 return -1;
             }
-            , initEncoder: function(i_model)
+            , initEncoder: function (i_model)
             {
                 if (i_model > 3 || i_model < 2) {
                     //Lv4以降に対応する時は、この制限を変える。
@@ -8654,7 +8663,7 @@ MarkerPattEncoder = ASKlass('MarkerPattEncoder',
                 this._model = i_model;
                 return true;
             }
-            , getDirection: function()
+            , getDirection: function ()
             {
                 var l, t, r, b;
                 var timing_pat;
@@ -8703,7 +8712,7 @@ MarkerPattEncoder = ASKlass('MarkerPattEncoder',
              * 成功すればマーカの方位を返却します。失敗すると-1を返します。
              * On success, returns the marker direction. On failure, returns -1.
              */
-            , encode: function(o_out)
+            , encode: function (o_out)
             {
                 var d = this.getDirection();
                 if (d < 0) {
@@ -8728,7 +8737,7 @@ MarkerPattEncoder = ASKlass('MarkerPattEncoder',
                 // implement mask release
                 return d;
             }
-            , getRotatedBits: function(i_direction, o_out)
+            , getRotatedBits: function (i_direction, o_out)
             {
                 var sl = i_direction * 2;
                 var sr = 8 - sl;
@@ -8765,7 +8774,7 @@ MarkerPattEncoder = ASKlass('MarkerPattEncoder',
                 //    }
                 return;
             }
-            , shiftLeft: function(i_pack, i_start, i_length, i_ls)
+            , shiftLeft: function (i_pack, i_start, i_length, i_ls)
             {
                 var i;
                 var work = this._work;
@@ -8792,13 +8801,13 @@ INyIdMarkerData = ASKlass('INyIdMarkerData',
              * @return
              * 等しいかの真偽値
              */
-            isEqual: function(i_target) {
+            isEqual: function (i_target) {
             },
             /**
              * i_sourceからマーカデータをコピーします。
              * @param i_source
              */
-            copyFrom: function(i_source) {
+            copyFrom: function (i_source) {
             }
         })
 
@@ -8807,68 +8816,64 @@ INyIdMarkerData = ASKlass('INyIdMarkerData',
  * ラスタ画像の任意矩形から、NyARIdMarkerDataを抽出します。
  *
  */
-NyIdMarkerPickup = ASKlass('NyIdMarkerPickup',
-        {
-            _perspective_reader: null,
-            __pickFromRaster_th: new TThreshold(),
-            __pickFromRaster_encoder: new MarkerPattEncoder(),
-            NyIdMarkerPickup: function()
-            {
-                this._perspective_reader = new PerspectivePixelReader();
-                return;
-            }
-            /**
-             * Initialize the marker pickup for a new frame.
-             * Clears out old values from perspective reader motion cache.
-             */
-            , init: function()
-            {
-                this._perspective_reader.newFrame();
-            }
-            /**
-             * i_imageから、idマーカを読みだします。
-             * o_dataにはマーカデータ、o_paramにはまーかのパラメータを返却します。
-             * @param image
-             * @param i_square
-             * @param o_data
-             * @param o_param
-             * @return
-             * @throws NyARException
-             */
-            , pickFromRaster: function(image, i_vertex, o_data, o_param)
-            {
-                //遠近法のパラメータを計算
-                if (!this._perspective_reader.setSourceSquare(i_vertex)) {
-                    if (window.DEBUG)
-                        console.log('NyIdMarkerPickup.pickFromRaster: could not setSourceSquare')
-                    return false;
-                }
-                ;
-                var reader = image.getGrayPixelReader();
-                var raster_size = image.getSize();
-                var th = this.__pickFromRaster_th;
-                var encoder = this.__pickFromRaster_encoder;
-                //マーカパラメータを取得
-                this._perspective_reader.detectThresholdValue(reader, raster_size, th);
-                if (!this._perspective_reader.readDataBits(reader, raster_size, th, encoder)) {
-                    if (window.DEBUG)
-                        console.log('NyIdMarkerPickup.pickFromRaster: could not readDataBits')
-                    return false;
-                }
-                var d = encoder.encode(o_data);
-                if (d < 0) {
-                    if (window.DEBUG)
-                        console.log('NyIdMarkerPickup.pickFromRaster: could not encode')
-                    return false;
-                }
-                o_param.direction = d;
-                o_param.threshold = th.th;
-                return true;
-            }
-        })
-
-
-
+NyIdMarkerPickup = ASKlass('NyIdMarkerPickup', {
+    _perspective_reader: null,
+    __pickFromRaster_th: new TThreshold(),
+    __pickFromRaster_encoder: new MarkerPattEncoder(),
+    NyIdMarkerPickup: function ()
+    {
+        this._perspective_reader = new PerspectivePixelReader();
+        return;
+    }
+    /**
+     * Initialize the marker pickup for a new frame.
+     * Clears out old values from perspective reader motion cache.
+     */
+    , init: function ()
+    {
+        this._perspective_reader.newFrame();
+    }
+    /**
+     * i_imageから、idマーカを読みだします。
+     * o_dataにはマーカデータ、o_paramにはまーかのパラメータを返却します。
+     * @param image
+     * @param i_square
+     * @param o_data
+     * @param o_param
+     * @return
+     * @throws NyARException
+     */
+    , pickFromRaster: function (image, i_vertex, o_data, o_param)
+    {
+        //遠近法のパラメータを計算
+        if (!this._perspective_reader.setSourceSquare(i_vertex)) {
+            if (window.DEBUG)
+                console.log('NyIdMarkerPickup.pickFromRaster: could not setSourceSquare')
+            return false;
+        }
+        ;
+        var reader = image.getGrayPixelReader();
+        var raster_size = image.getSize();
+        var th = this.__pickFromRaster_th;
+        var encoder = this.__pickFromRaster_encoder;
+        //マーカパラメータを取得
+        this._perspective_reader.detectThresholdValue(reader, raster_size, th);
+        if (!this._perspective_reader.readDataBits(reader, raster_size, th, encoder)) {
+            if (window.DEBUG)
+                console.log('NyIdMarkerPickup.pickFromRaster: could not readDataBits')
+            return false;
+        }
+        var d = encoder.encode(o_data);
+        if (d < 0) {
+            if (window.DEBUG)
+                console.log('NyIdMarkerPickup.pickFromRaster: could not encode')
+            return false;
+        }
+        o_param.direction = d;
+        o_param.threshold = th.th;
+        return true;
+    }
+});
 
 
 
@@ -8880,12 +8885,12 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
         {
             _param_gen: new NyARPerspectiveParamGenerator_O1(1, 1, 100, 100),
             _cparam: new FloatVector(8),
-            PerspectivePixelReader: function()
+            PerspectivePixelReader: function ()
             {
                 return;
             }
             , maxPreviousFrameAge: 1
-            , newFrame: function()
+            , newFrame: function ()
             {
                 for (var i in this.previousFrames) {
                     var pf = this.previousFrames[i];
@@ -8895,7 +8900,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
                     }
                 }
             }
-            , setSourceSquare: function(i_vertex)
+            , setSourceSquare: function (i_vertex)
             {
                 var cx = 0, cy = 0;
                 for (var i = 0; i < 4; i++) {
@@ -8923,7 +8928,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
              * @param o_pixel
              * @throws NyARException
              */
-            , rectPixels: function(i_reader, i_raster_size, i_lt_x, i_lt_y, i_step_x, i_step_y, i_width, i_height, i_out_st, o_pixel)
+            , rectPixels: function (i_reader, i_raster_size, i_lt_x, i_lt_y, i_step_x, i_step_y, i_width, i_height, i_out_st, o_pixel)
             {
                 var cpara = this._cparam;
                 var ref_x = this._ref_x;
@@ -8974,7 +8979,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
              * @param i_freq
              * @param i_width
              */
-            , checkFreqWidth: function(i_freq, i_width)
+            , checkFreqWidth: function (i_freq, i_width)
             {
                 var c = i_freq[1] - i_freq[0];
                 var count = i_width * 2 - 1;
@@ -8996,7 +9001,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
              * @return
              * 見つかれば0以上、密辛ければ0未満
              */
-            , getMaxFreq: function(i_freq_count_table, i_freq_table, o_freq_table)
+            , getMaxFreq: function (i_freq_count_table, i_freq_table, o_freq_table)
             {
                 //一番成分の大きいものを得る
                 var index = -1;
@@ -9048,7 +9053,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
              * @return
              * @throws NyARException
              */
-            getRowFrequency: function(i_reader, i_raster_size, i_y1, i_th_h, i_th_l, o_edge_index)
+            getRowFrequency: function (i_reader, i_raster_size, i_y1, i_th_h, i_th_l, o_edge_index)
             {
                 var i;
                 //3,4,5,6,7,8,9,10
@@ -9125,7 +9130,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
                 }
                 return this.getMaxFreq(freq_count_table, freq_table, o_edge_index);
             }
-            , getColFrequency: function(i_reader, i_raster_size, i_x1, i_th_h, i_th_l, o_edge_index)
+            , getColFrequency: function (i_reader, i_raster_size, i_x1, i_th_h, i_th_l, o_edge_index)
             {
                 var i;
                 var cpara = this._cparam;
@@ -9207,7 +9212,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
              * @param o_edge_index
              * @return
              */
-            , getFreqInfo: function(i_pixcels, i_th_h, i_th_l, o_edge_index)
+            , getFreqInfo: function (i_pixcels, i_th_h, i_th_l, o_edge_index)
             {
                 //トークンを解析して、周波数を計算
                 var i = 0;
@@ -9258,7 +9263,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
              * @param i_initial
              * @param i_out
              */
-            getPtailHighAndLow: function(i_pixcel, i_out)
+            getPtailHighAndLow: function (i_pixcel, i_out)
             {
                 var h3, h2, h1, h0, l3, l2, l1, l0;
                 h3 = h2 = h1 = h0 = l3 = l2 = l1 = l0 = i_pixcel[0];
@@ -9322,7 +9327,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
              * @return
              * @throws NyARException
              */
-            detectThresholdValue: function(i_reader, i_raster_size, o_threshold)
+            detectThresholdValue: function (i_reader, i_raster_size, o_threshold)
             {
                 var th_pixels = this._th_pixels;
                 //左上のピックアップ領域からピクセルを得る(00-24)
@@ -9385,7 +9390,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
                 o_threshold.rb_y = (lb_y + rb_y) / 2 + this.THRESHOLD_SAMPLE_RB + 1;
                 return;
             }
-            , getHighPixelCenter: function(i_st, i_pixels, i_width, i_height, i_th, o_point)
+            , getHighPixelCenter: function (i_st, i_pixels, i_width, i_height, i_th, o_point)
             {
                 var rp = i_st;
                 var pos_x = 0;
@@ -9412,7 +9417,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
             },
             __detectDataBitsIndex_freq_index1: new IntVector((100 - (5 * 2)) / 2/*this.FRQ_POINTS*/),
             __detectDataBitsIndex_freq_index2: new IntVector((100 - (5 * 2)) / 2/*this.FRQ_POINTS*/),
-            detectDataBitsIndex: function(i_reader, i_raster_size, i_th, o_index_row, o_index_col)
+            detectDataBitsIndex: function (i_reader, i_raster_size, i_th, o_index_row, o_index_col)
             {
                 var i;
                 //周波数を測定
@@ -9481,8 +9486,9 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
             __readDataBits_index_bit_x: new FloatVector(19/*MAX_DATA_BITS*/ * 2),
             __readDataBits_index_bit_y: new FloatVector(19/*MAX_DATA_BITS*/ * 2),
             previousFrames: {},
-            centerPoint: new IntVector(2),
-            getPreviousFrameSize: function(index_x, index_y) {
+            centerPoint: new IntVector(2)
+            ,
+            getPreviousFrameSize: function (index_x, index_y) {
                 var cx = this.centerPoint[0], cy = this.centerPoint[1];
                 var pfs = this.previousFrames;
                 var pf = (
@@ -9495,8 +9501,9 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
                 index_x.set(pf.index_x);
                 index_y.set(pf.index_y);
                 return pf.size;
-            },
-            setPreviousFrameSize: function(size, index_x, index_y) {
+            }
+            ,
+            setPreviousFrameSize: function (size, index_x, index_y) {
                 var pf = this.previousFrames[this.centerPoint[0] + ":" + this.centerPoint[1]];
                 if (!pf) {
                     pf = {age: 0, size: size, index_x: new FloatVector(index_x), index_y: new FloatVector(index_y)};
@@ -9507,16 +9514,18 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
                 pf.size = size;
                 pf.index_x.set(index_x);
                 pf.index_y.set(index_y);
-            },
-            readDataBits: function(i_reader, i_raster_size, i_th, o_bitbuffer)
-            {
+            }
+            ,
+            readDataBits: function (i_reader, i_raster_size, i_th, o_bitbuffer) {
                 var index_x = this.__readDataBits_index_bit_x;
                 var index_y = this.__readDataBits_index_bit_y;
-                //読み出し位置を取得
+
+                //Get reading position
                 var size = this.detectDataBitsIndex(i_reader, i_raster_size, i_th, index_x, index_y);
                 if (size < 0) {
                     size = this.getPreviousFrameSize(index_x, index_y);
                 }
+
                 var resolution = size + size - 1;
                 if (size < 0) {
                     if (window.DEBUG)
@@ -9528,6 +9537,7 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
                         console.log('readDataBits: initEncoder');
                     return false;
                 }
+
                 var cpara = this._cparam;
                 var ref_x = this._ref_x;
                 var ref_y = this._ref_y;
@@ -9538,9 +9548,10 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
                 var cpara_6 = cpara[6];
                 var th = i_th.th;
                 var p = 0;
+
                 for (var i = 0; i < resolution; i++) {
                     var i2;
-                    //1列分のピクセルのインデックス値を計算する。
+                    //Calculate the index value of one column of pixels.
                     var cy0 = 1 + index_y[i * 2 + 0];
                     var cy1 = 1 + index_y[i * 2 + 1];
                     var cpy0_12 = cpara_1 * cy0 + cpara[2];
@@ -9550,8 +9561,8 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
                     var cpy1_45 = cpara[4] * cy1 + cpara[5];
                     var cpy1_7 = cpara[7] * cy1 + 1.0;
                     var pt = 0;
-                    for (i2 = 0; i2 < resolution; i2++)
-                    {
+
+                    for (i2 = 0; i2 < resolution; i2++) {
                         var d;
                         var cx0 = 1 + index_x[i2 * 2 + 0];
                         var cx1 = 1 + index_x[i2 * 2 + 1];
@@ -9578,13 +9589,14 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
                         ref_y[pt] = toInt((cpx3_1 + cpy1_45) / d);
                         pt++;
                     }
-                    //1行分のピクセルを取得(場合によっては専用アクセサを書いた方がいい)
+
+                    //Obtain pixels for one row (In some cases it is better to write a dedicated accessor)
                     i_reader.getPixelSet(ref_x, ref_y, resolution * 4, pixcel_temp);
-                    //グレースケールにしながら、line→mapへの転写
+                    //Transfer from line to map while setting it to grayscale
                     for (i2 = 0; i2 < resolution; i2++) {
                         var index = i2 * 4;
                         var pixel = (pixcel_temp[index + 0] + pixcel_temp[index + 1] + pixcel_temp[index + 2] + pixcel_temp[index + 3]) / (4);
-                        //暗点を1、明点を0で表現します。
+                        //I denote the dark spot as 1 and the bright spot as 0.
                         o_bitbuffer.setBitByBitIndex(p, pixel > th ? 0 : 1);
                         p++;
                     }
@@ -9592,68 +9604,66 @@ PerspectivePixelReader = ASKlass('PerspectivePixelReader',
                 this.setPreviousFrameSize(size, index_x, index_y);
                 return true;
             }
-            , setSquare: function(i_vertex)
-            {
+            ,
+            setSquare: function (i_vertex) {
                 if (!this._param_gen.getParam(i_vertex, this._cparam)) {
                     return false;
                 }
                 return true;
             }
-        })
-MarkerPattDecoder = ASKlass('MarkerPattDecoder',
-        {
-            decode: function(model, domain, mask)
-            {
-            }
-        })
+        });
 
-INyIdMarkerDataEncoder = ASKlass('INyIdMarkerDataEncoder',
-        {
-            encode: function(i_data, o_dest) {
-            },
-            createDataInstance: function() {
-            }
-        })
-NyIdMarkerDataEncoder_RawBit = ASKlass('NyIdMarkerDataEncoder_RawBit', INyIdMarkerDataEncoder,
-        {
-            _DOMAIN_ID: 0,
-            _mod_data: new IntVector([7, 31, 127, 511, 2047, 4095]),
-            encode: function(i_data, o_dest)
-            {
-                var dest = (o_dest);
-                if (i_data.ctrl_domain != this._DOMAIN_ID) {
-                    return false;
-                }
-                // calculate marker resolution (amount of data dots per side)
-                var resolution_len = (i_data.model * 2 - 1); //trace("resolution", resolution_len);
-                // there are (2*model-1)^2 data dots in a marker
-                // and the amount of packets in a marker is
-                // floor(dataDotCount / 8) + 1  (the +1 is packet 0)
-                var packet_length = (((resolution_len * resolution_len)) / 8) + 1; //trace("packet", packet_length);
-                var sum = 0;
-                for (var i = 0; i < packet_length; i++) {
-                    dest.packet[i] = i_data.data[i]; //trace("i_data[",i,"]",i_data.data[i]);
-                    sum += i_data.data[i];
-                }
-                // data point check sum calculation
-                sum = sum % this._mod_data[i_data.model - 2]; //trace("check dot", i_data.check, sum);
-                // compare data point check sum with expected
-                if (i_data.check != sum) {
-                    return false;
-                }
-                dest.length = packet_length;
-                return true;
-            }
-            , createDataInstance: function()
-            {
-                return new NyIdMarkerData_RawBit();
-            }
-        })
+MarkerPattDecoder = ASKlass('MarkerPattDecoder', {
+    decode: function (model, domain, mask) {
+    }
+});
+
+INyIdMarkerDataEncoder = ASKlass('INyIdMarkerDataEncoder', {
+    encode: function (i_data, o_dest) {
+    },
+    createDataInstance: function () {
+    }
+});
+
+NyIdMarkerDataEncoder_RawBit = ASKlass('NyIdMarkerDataEncoder_RawBit', INyIdMarkerDataEncoder, {
+    _DOMAIN_ID: 0,
+    _mod_data: new IntVector([7, 31, 127, 511, 2047, 4095]),
+    encode: function (i_data, o_dest)
+    {
+        var dest = (o_dest);
+        if (i_data.ctrl_domain != this._DOMAIN_ID) {
+            return false;
+        }
+        // calculate marker resolution (amount of data dots per side)
+        var resolution_len = (i_data.model * 2 - 1); //trace("resolution", resolution_len);
+        // there are (2*model-1)^2 data dots in a marker
+        // and the amount of packets in a marker is
+        // floor(dataDotCount / 8) + 1  (the +1 is packet 0)
+        var packet_length = (((resolution_len * resolution_len)) / 8) + 1; //trace("packet", packet_length);
+        var sum = 0;
+        for (var i = 0; i < packet_length; i++) {
+            dest.packet[i] = i_data.data[i]; //trace("i_data[",i,"]",i_data.data[i]);
+            sum += i_data.data[i];
+        }
+        // data point check sum calculation
+        sum = sum % this._mod_data[i_data.model - 2]; //trace("check dot", i_data.check, sum);
+        // compare data point check sum with expected
+        if (i_data.check != sum) {
+            return false;
+        }
+        dest.length = packet_length;
+        return true;
+    }
+    , createDataInstance: function ()
+    {
+        return new NyIdMarkerData_RawBit();
+    }
+})
 NyIdMarkerData_RawBit = ASKlass('NyIdMarkerData_RawBit', INyIdMarkerData,
         {
             packet: new IntVector(22),
             length: 0,
-            isEqual: function(i_target)
+            isEqual: function (i_target)
             {
                 var s = (i_target);
                 if (s.length != this.length) {
@@ -9666,7 +9676,7 @@ NyIdMarkerData_RawBit = ASKlass('NyIdMarkerData_RawBit', INyIdMarkerData,
                 }
                 return true;
             }
-            , copyFrom: function(i_source)
+            , copyFrom: function (i_source)
             {
                 var s = (i_source);
                 ArrayUtils.copyInt(s.packet, 0, this.packet, 0, s.length);
@@ -9726,7 +9736,7 @@ INyARColorPatt = ASKlass('INyARColorPatt', INyARRgbRaster,
              * @throws NyARException
              */
 //  public boolean pickFromRaster(INyARRgbRaster image, NyARSquare i_square) throws NyARException;
-            pickFromRaster: function(image, i_vertexs) {
+            pickFromRaster: function (image, i_vertexs) {
             }
         })
 NyARColorPatt_Perspective = ASKlass('NyARColorPatt_Perspective', INyARColorPatt,
@@ -9739,7 +9749,7 @@ NyARColorPatt_Perspective = ASKlass('NyARColorPatt_Perspective', INyARColorPatt,
             _pixelreader: null,
             LOCAL_LT: 1,
             BUFFER_FORMAT: NyARBufferType.INT1D_X8R8G8B8_32,
-            initializeInstance: function(i_width, i_height, i_point_per_pix)
+            initializeInstance: function (i_width, i_height, i_point_per_pix)
             {
                 NyAS3Utils.assert(i_width > 2 && i_height > 2);
                 this._resolution = i_point_per_pix;
@@ -9766,7 +9776,7 @@ NyARColorPatt_Perspective = ASKlass('NyARColorPatt_Perspective', INyARColorPatt,
              * @param i_edge_percentage
              * エッジ幅の割合(ARToolKit標準と同じなら、25)
              */
-            , NyARColorPatt_Perspective: function(i_width, i_height, i_point_per_pix, i_edge_percentage)
+            , NyARColorPatt_Perspective: function (i_width, i_height, i_point_per_pix, i_edge_percentage)
             {
                 if (i_edge_percentage == null)
                     i_edge_percentage = -1;
@@ -9791,7 +9801,7 @@ NyARColorPatt_Perspective = ASKlass('NyARColorPatt_Perspective', INyARColorPatt,
              * @param i_x_edge
              * @param i_y_edge
              */
-            , setEdgeSize: function(i_x_edge, i_y_edge, i_resolution)
+            , setEdgeSize: function (i_x_edge, i_y_edge, i_resolution)
             {
                 NyAS3Utils.assert(i_x_edge >= 0);
                 NyAS3Utils.assert(i_y_edge >= 0);
@@ -9805,46 +9815,46 @@ NyARColorPatt_Perspective = ASKlass('NyARColorPatt_Perspective', INyARColorPatt,
                 this._pickup_lt.y = i_y_edge * i_resolution + this.LOCAL_LT;
                 return;
             }
-            , setEdgeSizeByPercent: function(i_x_percent, i_y_percent, i_resolution)
+            , setEdgeSizeByPercent: function (i_x_percent, i_y_percent, i_resolution)
             {
                 NyAS3Utils.assert(i_x_percent >= 0);
                 NyAS3Utils.assert(i_y_percent >= 0);
                 this.setEdgeSize(this._size.w * i_x_percent / 50, this._size.h * i_y_percent / 50, i_resolution);
                 return;
             }
-            , getWidth: function()
+            , getWidth: function ()
             {
                 return this._size.w;
             }
-            , getHeight: function()
+            , getHeight: function ()
             {
                 return this._size.h;
             }
-            , getSize: function()
+            , getSize: function ()
             {
                 return   this._size;
             }
-            , getRgbPixelReader: function()
+            , getRgbPixelReader: function ()
             {
                 return this._pixelreader;
             }
-            , getBuffer: function()
+            , getBuffer: function ()
             {
                 return this._patdata;
             }
-            , hasBuffer: function()
+            , hasBuffer: function ()
             {
                 return this._patdata != null;
             }
-            , wrapBuffer: function(i_ref_buf)
+            , wrapBuffer: function (i_ref_buf)
             {
                 NyARException.notImplement();
             }
-            , getBufferType: function()
+            , getBufferType: function ()
             {
                 return BUFFER_FORMAT;
             }
-            , isEqualBufferType: function(i_type_value)
+            , isEqualBufferType: function (i_type_value)
             {
                 return BUFFER_FORMAT == i_type_value;
             },
@@ -9853,7 +9863,7 @@ NyARColorPatt_Perspective = ASKlass('NyARColorPatt_Perspective', INyARColorPatt,
             /**
              * @see INyARColorPatt#pickFromRaster
              */
-            pickFromRaster: function(image, i_vertexs)
+            pickFromRaster: function (image, i_vertexs)
             {
                 //遠近法のパラメータを計算
                 var cpara = this.__pickFromRaster_cpara;
@@ -9914,7 +9924,7 @@ NyARColorPatt_Perspective = ASKlass('NyARColorPatt_Perspective', INyARColorPatt,
 NyARColorPatt_Perspective_O2 = ASKlass('NyARColorPatt_Perspective_O2', NyARColorPatt_Perspective,
         {
             _pickup: null,
-            NyARColorPatt_Perspective_O2: function(i_width, i_height, i_resolution, i_edge_percentage)
+            NyARColorPatt_Perspective_O2: function (i_width, i_height, i_resolution, i_edge_percentage)
             {
                 NyARColorPatt_Perspective.initialize.call(this, i_width, i_height, i_resolution, i_edge_percentage);
                 switch (i_resolution) {
@@ -9935,7 +9945,7 @@ NyARColorPatt_Perspective_O2 = ASKlass('NyARColorPatt_Perspective_O2', NyARColor
             /**
              * @see INyARColorPatt#pickFromRaster
              */
-            , pickFromRaster: function(image, i_vertexs)
+            , pickFromRaster: function (image, i_vertexs)
             {
                 //遠近法のパラメータを計算
                 var cpara = this.__pickFromRaster_cpara;
@@ -9949,7 +9959,7 @@ NyARColorPatt_Perspective_O2 = ASKlass('NyARColorPatt_Perspective_O2', NyARColor
 
 IpickFromRaster_Impl = ASKlass('IpickFromRaster_Impl',
         {
-            pickFromRaster: function(i_cpara, image, o_patt) {
+            pickFromRaster: function (i_cpara, image, o_patt) {
             }
         })
 
@@ -9963,7 +9973,7 @@ NyARPickFromRaster_1 = ASKlass('NyARPickFromRaster_1', IpickFromRaster_Impl,
         {
             _size_ref: null,
             _lt_ref: null,
-            NyARPickFromRaster_1: function(i_lt, i_source_size)
+            NyARPickFromRaster_1: function (i_lt, i_source_size)
             {
                 this._lt_ref = i_lt;
                 this._size_ref = i_source_size;
@@ -9975,7 +9985,7 @@ NyARPickFromRaster_1 = ASKlass('NyARPickFromRaster_1', IpickFromRaster_Impl,
             _rgb_temp: null,
             _rgb_px: null,
             _rgb_py: null,
-            pickFromRaster: function(i_cpara, image, o_patt)
+            pickFromRaster: function (i_cpara, image, o_patt)
             {
                 var d0, m0;
                 var x, y;
@@ -10084,7 +10094,7 @@ NyARPickFromRaster_2x = ASKlass('NyARPickFromRaster_2x', IpickFromRaster_Impl,
         {
             _size_ref: null,
             _lt_ref: null,
-            NyARPickFromRaster_2x: function(i_lt, i_source_size)
+            NyARPickFromRaster_2x: function (i_lt, i_source_size)
             {
                 this._lt_ref = i_lt;
                 this._size_ref = i_source_size;
@@ -10096,7 +10106,7 @@ NyARPickFromRaster_2x = ASKlass('NyARPickFromRaster_2x', IpickFromRaster_Impl,
             _rgb_temp: null,
             _rgb_px: null,
             _rgb_py: null,
-            pickFromRaster: function(i_cpara, image, o_patt)
+            pickFromRaster: function (i_cpara, image, o_patt)
             {
                 var d0, m0, d1, m1;
                 var x, y;
@@ -10240,7 +10250,7 @@ NyARPickFromRaster_4x = ASKlass('NyARPickFromRaster_4x', IpickFromRaster_Impl,
         {
             _size_ref: null,
             _lt_ref: null,
-            NyARPickFromRaster_4x: function(i_lt, i_source_size)
+            NyARPickFromRaster_4x: function (i_lt, i_source_size)
             {
                 this._lt_ref = i_lt;
                 this._size_ref = i_source_size;
@@ -10252,7 +10262,7 @@ NyARPickFromRaster_4x = ASKlass('NyARPickFromRaster_4x', IpickFromRaster_Impl,
             _rgb_temp: null,
             _rgb_px: null,
             _rgb_py: null,
-            pickFromRaster: function(i_cpara, image, o_patt)
+            pickFromRaster: function (i_cpara, image, o_patt)
             {
                 var x, y;
                 var d, m;
@@ -10617,7 +10627,7 @@ NyARPickFromRaster_N = ASKlass('NyARPickFromRaster_N', IpickFromRaster_Impl,
             _resolution: 0,
             _size_ref: null,
             _lt_ref: null,
-            NyARPickFromRaster_N: function(i_lt, i_resolution, i_source_size)
+            NyARPickFromRaster_N: function (i_lt, i_resolution, i_source_size)
             {
                 this._lt_ref = i_lt;
                 this._resolution = i_resolution;
@@ -10636,7 +10646,7 @@ NyARPickFromRaster_N = ASKlass('NyARPickFromRaster_N', IpickFromRaster_Impl,
             _cp1cy_cp2: null,
             _cp4cy_cp5: null,
             _cp7cy_1: null,
-            pickFromRaster: function(i_cpara, image, o_patt)
+            pickFromRaster: function (i_cpara, image, o_patt)
             {
                 var i2x, i2y;//プライム変数
                 var x, y;
@@ -10784,12 +10794,12 @@ FLSingleARMarkerProcesser = ASKlass('FLSingleARMarkerProcesser',
             , _tobin_filter: null
             , _current_arcode_index: -1
             , _threshold_detect: null
-            , FLSingleARMarkerProcesser: function()
+            , FLSingleARMarkerProcesser: function ()
             {
                 return;
             }
             , _initialized: false
-            , initInstance: function(i_param)
+            , initInstance: function (i_param)
             {
                 //初期化済？
                 NyAS3Utils.assert(this._initialized == false);
@@ -10816,7 +10826,7 @@ FLSingleARMarkerProcesser = ASKlass('FLSingleARMarkerProcesser',
             /**検出するマーカコードの配列を指定します。 検出状態でこの関数を実行すると、
              * オブジェクト状態に強制リセットがかかります。
              */
-            , setARCodeTable: function(i_ref_code_table, i_code_resolution, i_marker_width)
+            , setARCodeTable: function (i_ref_code_table, i_code_resolution, i_marker_width)
             {
                 if (this._current_arcode_index != -1) {
                     // 強制リセット
@@ -10827,7 +10837,7 @@ FLSingleARMarkerProcesser = ASKlass('FLSingleARMarkerProcesser',
                 this._offset.setSquare(i_marker_width);
                 return;
             }
-            , reset: function(i_is_force)
+            , reset: function (i_is_force)
             {
                 if (this._current_arcode_index != -1 && i_is_force == false) {
                     // 強制書き換えでなければイベントコール
@@ -10838,7 +10848,7 @@ FLSingleARMarkerProcesser = ASKlass('FLSingleARMarkerProcesser',
                 return;
             }
             , _detectmarker_cb: null
-            , detectMarker: function(i_raster)
+            , detectMarker: function (i_raster)
             {
                 // サイズチェック
                 NyAS3Utils.assert(this._bin_raster.getSize().isEqualSize_int(i_raster.getSize().w, i_raster.getSize().h));
@@ -10863,7 +10873,7 @@ FLSingleARMarkerProcesser = ASKlass('FLSingleARMarkerProcesser',
              * @param i_new_detect_cf
              * @param i_exist_detect_cf
              */
-            , setConfidenceThreshold: function(i_new_cf, i_exist_cf)
+            , setConfidenceThreshold: function (i_new_cf, i_exist_cf)
             {
                 this._detectmarker_cb.cf_threshold_exist = i_exist_cf;
                 this._detectmarker_cb.cf_threshold_new = i_new_cf;
@@ -10872,7 +10882,7 @@ FLSingleARMarkerProcesser = ASKlass('FLSingleARMarkerProcesser',
                     /**  オブジェクトのステータスを更新し、必要に応じてハンドル関数を駆動します。
                      *   戻り値は、「実際にマーカを発見する事ができたか」です。クラスの状態とは異なります。
                      */
-            , updateStatus: function(i_square, i_code_index)
+            , updateStatus: function (i_square, i_code_index)
             {
                 var result = this.__NyARSquare_result;
                 if (this._current_arcode_index < 0) {// 未認識中
@@ -10913,15 +10923,15 @@ FLSingleARMarkerProcesser = ASKlass('FLSingleARMarkerProcesser',
                     }
                 }
             }
-            , onEnterHandler: function(i_code)
+            , onEnterHandler: function (i_code)
             {
                 throw new NyARException("onEnterHandler not implemented.");
             }
-            , onLeaveHandler: function()
+            , onLeaveHandler: function ()
             {
                 throw new NyARException("onLeaveHandler not implemented.");
             }
-            , onUpdateHandler: function(i_square, result)
+            , onUpdateHandler: function (i_square, result)
             {
                 throw new NyARException("onUpdateHandler not implemented.");
             }
@@ -10946,13 +10956,13 @@ FLARDetectSquareCB_1 = ASKlass('DetectSquareCB',
             , _match_patt: null
             , __detectMarkerLite_mr: new NyARMatchPattResult()
             , _coordline: null
-            , DetectSquareCB: function(i_param)
+            , DetectSquareCB: function (i_param)
             {
                 this._match_patt = null;
                 this._coordline = new NyARCoord2Linear(i_param.getScreenSize(), i_param.getDistortionFactor());
                 return;
             }
-            , setNyARCodeTable: function(i_ref_code, i_code_resolution)
+            , setNyARCodeTable: function (i_ref_code, i_code_resolution)
             {
                 /*unmanagedで実装するときは、ここでリソース解放をすること。*/
                 this._deviation_data = new NyARMatchPattDeviationColorData(i_code_resolution, i_code_resolution);
@@ -10967,7 +10977,7 @@ FLARDetectSquareCB_1 = ASKlass('DetectSquareCB',
                     /**
                      * Initialize call back handler.
                      */
-            , init: function(i_raster, i_target_id)
+            , init: function (i_raster, i_target_id)
             {
                 this._ref_raster = i_raster;
                 this._target_id = i_target_id;
@@ -10978,7 +10988,7 @@ FLARDetectSquareCB_1 = ASKlass('DetectSquareCB',
              * 矩形が見付かるたびに呼び出されます。
              * 発見した矩形のパターンを検査して、方位を考慮した頂点データを確保します。
              */
-            , onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
+            , onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
             {
                 if (this._match_patt == null) {
                     return;
@@ -11083,12 +11093,12 @@ FLSingleNyIdMarkerProcesser = ASKlass('FLSingleNyIdMarkerProcesser',
             , _tobin_filter: null
             , _callback: null
             , _data_current: null
-            , FLSingleNyIdMarkerProcesser: function()
+            , FLSingleNyIdMarkerProcesser: function ()
             {
                 return;
             }
             , _initialized: false
-            , initInstance: function(i_param, i_encoder, i_marker_width)
+            , initInstance: function (i_param, i_encoder, i_marker_width)
             {
                 //初期化済？
                 NyAS3Utils.assert(this._initialized == false);
@@ -11109,12 +11119,12 @@ FLSingleNyIdMarkerProcesser = ASKlass('FLSingleNyIdMarkerProcesser',
                 this._offset.setSquare(i_marker_width);
                 return;
             }
-            , setMarkerWidth: function(i_width)
+            , setMarkerWidth: function (i_width)
             {
                 this._offset.setSquare(i_width);
                 return;
             }
-            , reset: function(i_is_force)
+            , reset: function (i_is_force)
             {
                 if (i_is_force == false && this._is_active) {
                     // 強制書き換えでなければイベントコール
@@ -11124,7 +11134,7 @@ FLSingleNyIdMarkerProcesser = ASKlass('FLSingleNyIdMarkerProcesser',
                 this._is_active = false;
                 return;
             }
-            , detectMarker: function(i_raster)
+            , detectMarker: function (i_raster)
             {
                 // サイズチェック
                 if (!this._bin_raster.getSize().isEqualSize_int(i_raster.getSize().w, i_raster.getSize().h)) {
@@ -11153,7 +11163,7 @@ FLSingleNyIdMarkerProcesser = ASKlass('FLSingleNyIdMarkerProcesser',
             , __NyARSquare_result: new FLARTransMatResult()
                     /**オブジェクトのステータスを更新し、必要に応じてハンドル関数を駆動します。
                      */
-            , updateStatus: function(i_square, i_marker_data)
+            , updateStatus: function (i_square, i_marker_data)
             {
                 var is_id_found = false;
                 var result = this.__NyARSquare_result;
@@ -11197,15 +11207,15 @@ FLSingleNyIdMarkerProcesser = ASKlass('FLSingleNyIdMarkerProcesser',
                 return is_id_found;
             }
             //通知ハンドラ
-            , onEnterHandler: function(i_code)
+            , onEnterHandler: function (i_code)
             {
                 throw new NyARException("onEnterHandler not implemented.");
             }
-            , onLeaveHandler: function()
+            , onLeaveHandler: function ()
             {
                 throw new NyARException("onLeaveHandler not implemented.");
             }
-            , onUpdateHandler: function(i_square, result)
+            , onUpdateHandler: function (i_square, result)
             {
                 throw new NyARException("onUpdateHandler not implemented.");
             }
@@ -11242,7 +11252,7 @@ FLARDetectSquareCB_2 = ASKlass('DetectSquareCB',
             , _encoder: null
             , _data_temp: null
             , _prev_data: null
-            , DetectSquareCB: function(i_param, i_encoder)
+            , DetectSquareCB: function (i_param, i_encoder)
             {
                 this._coordline = new NyARCoord2Linear(i_param.getScreenSize(), i_param.getDistortionFactor());
                 this._data_temp = i_encoder.createDataInstance();
@@ -11254,7 +11264,7 @@ FLARDetectSquareCB_2 = ASKlass('DetectSquareCB',
                     /**
                      * Initialize call back handler.
                      */
-            , init: function(i_raster, i_prev_data)
+            , init: function (i_raster, i_prev_data)
             {
                 this.marker_data = null;
                 this._prev_data = i_prev_data;
@@ -11266,7 +11276,7 @@ FLARDetectSquareCB_2 = ASKlass('DetectSquareCB',
                      * 矩形が見付かるたびに呼び出されます。
                      * 発見した矩形のパターンを検査して、方位を考慮した頂点データを確保します。
                      */
-            , onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
+            , onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
             {
                 //既に発見済なら終了
                 if (this.marker_data != null) {
@@ -11363,11 +11373,11 @@ NyARCustomSingleDetectMarker = ASKlass('NyARCustomSingleDetectMarker',
             _tobin_filter: null,
             _detect_cb: null,
             _offset: null,
-            NyARCustomSingleDetectMarker: function()
+            NyARCustomSingleDetectMarker: function ()
             {
                 return;
             }
-            , initInstance: function(
+            , initInstance: function (
                     i_patt_inst,
                     i_sqdetect_inst,
                     i_transmat_inst,
@@ -11399,7 +11409,7 @@ NyARCustomSingleDetectMarker = ASKlass('NyARCustomSingleDetectMarker',
              * @return マーカーが検出できたかを真偽値で返します。
              * @throws NyARException
              */
-            , detectMarkerLiteB: function(i_raster) {
+            , detectMarkerLiteB: function (i_raster) {
                 //サイズチェック
                 if (!this._bin_raster.getSize().isEqualSize_NyARIntSize(i_raster.getSize())) {
                     throw new NyARException();
@@ -11423,7 +11433,7 @@ NyARCustomSingleDetectMarker = ASKlass('NyARCustomSingleDetectMarker',
              * 変換行列を受け取るオブジェクトを指定します。
              * @throws NyARException
              */
-            , getTransmationMatrix: function(o_result)
+            , getTransmationMatrix: function (o_result)
             {
                 // 一番一致したマーカーの位置とかその辺を計算
                 if (this._is_continue) {
@@ -11437,7 +11447,7 @@ NyARCustomSingleDetectMarker = ASKlass('NyARCustomSingleDetectMarker',
              * 現在の矩形を返します。
              * @return
              */
-            , refSquare: function()
+            , refSquare: function ()
             {
                 return this._detect_cb.square;
             }
@@ -11447,7 +11457,7 @@ NyARCustomSingleDetectMarker = ASKlass('NyARCustomSingleDetectMarker',
              * @return マーカーの一致度を返します。0～1までの値をとります。 一致度が低い場合には、誤認識の可能性が高くなります。
              * @throws NyARException
              */
-            , getConfidence: function()
+            , getConfidence: function ()
             {
                 return this._detect_cb.confidence;
             }
@@ -11457,7 +11467,7 @@ NyARCustomSingleDetectMarker = ASKlass('NyARCustomSingleDetectMarker',
              * @param i_is_continue
              * TRUEなら、transMatCont互換の計算をします。 FALSEなら、transMat互換の計算をします。
              */
-            , setContinueMode: function(i_is_continue)
+            , setContinueMode: function (i_is_continue)
             {
                 this._is_continue = i_is_continue;
             }
@@ -11488,7 +11498,7 @@ DetectSquareCB_3 = ASKlass('DetectSquareCB', NyARSquareContourDetector_IDetectMa
             _match_patt: null,
             __detectMarkerLite_mr: new NyARMatchPattResult(),
             _coordline: null,
-            DetectSquareCB: function(i_inst_patt, i_ref_code, i_param)
+            DetectSquareCB: function (i_inst_patt, i_ref_code, i_param)
             {
                 this._inst_patt = i_inst_patt;
                 this._deviation_data = new NyARMatchPattDeviationColorData(i_ref_code.getWidth(), i_ref_code.getHeight());
@@ -11501,7 +11511,7 @@ DetectSquareCB_3 = ASKlass('DetectSquareCB', NyARSquareContourDetector_IDetectMa
              * 矩形が見付かるたびに呼び出されます。
              * 発見した矩形のパターンを検査して、方位を考慮した頂点データを確保します。
              */
-            onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
+            onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
             {
                 var i;
                 var mr = this.__detectMarkerLite_mr;
@@ -11543,7 +11553,7 @@ DetectSquareCB_3 = ASKlass('DetectSquareCB', NyARSquareContourDetector_IDetectMa
                     }
                 }
             }
-            , init: function(i_raster)
+            , init: function (i_raster)
             {
                 this.confidence = 0;
                 this._ref_raster = i_raster;
@@ -11588,12 +11598,12 @@ NyARDetectMarker = ASKlass('NyARDetectMarker',
              * 入力ラスタのピクセルタイプを指定します。この値は、INyARBufferReaderインタフェイスのgetBufferTypeの戻り値を指定します。
              * @throws NyARException
              */
-            NyARDetectMarker: function(i_param, i_code, i_marker_width, i_number_of_code, i_input_raster_type)
+            NyARDetectMarker: function (i_param, i_code, i_marker_width, i_number_of_code, i_input_raster_type)
             {
                 this.initInstance(i_param, i_code, i_marker_width, i_number_of_code, i_input_raster_type);
                 return;
             }
-            , initInstance: function(
+            , initInstance: function (
                     i_ref_param,
                     i_ref_code,
                     i_marker_width,
@@ -11633,7 +11643,7 @@ NyARDetectMarker = ASKlass('NyARDetectMarker',
              * @return 見つかったマーカーの数を返します。 マーカーが見つからない場合は0を返します。
              * @throws NyARException
              */
-            detectMarkerLite: function(i_raster, i_threshold)
+            detectMarkerLite: function (i_raster, i_threshold)
             {
                 // サイズチェック
                 if (!this._bin_raster.getSize().isEqualSize_NyARIntSize(i_raster.getSize())) {
@@ -11657,7 +11667,7 @@ NyARDetectMarker = ASKlass('NyARDetectMarker',
              * 結果値を受け取るオブジェクトを指定してください。
              * @throws NyARException
              */
-            , getTransmationMatrix: function(i_index, o_result)
+            , getTransmationMatrix: function (i_index, o_result)
             {
                 var result = this._detect_cb.result_stack.getItem(i_index);
                 // 一番一致したマーカーの位置とかその辺を計算
@@ -11676,7 +11686,7 @@ NyARDetectMarker = ASKlass('NyARDetectMarker',
              * @return マーカーの一致度を返します。0～1までの値をとります。 一致度が低い場合には、誤認識の可能性が高くなります。
              * @throws NyARException
              */
-            , getConfidence: function(i_index)
+            , getConfidence: function (i_index)
             {
                 return this._detect_cb.result_stack.getItem(i_index).confidence;
             }
@@ -11687,7 +11697,7 @@ NyARDetectMarker = ASKlass('NyARDetectMarker',
              * マーカーのインデックス番号を指定します。 直前に実行したdetectMarkerLiteの戻り値未満かつ0以上である必要があります。
              * @return
              */
-            , getARCodeIndex: function(i_index)
+            , getARCodeIndex: function (i_index)
             {
                 return this._detect_cb.result_stack.getItem(i_index).arcode_id;
             }
@@ -11697,7 +11707,7 @@ NyARDetectMarker = ASKlass('NyARDetectMarker',
              * @param i_is_continue
              * TRUEなら、transMatContinueを使用します。 FALSEなら、transMatを使用します。
              */
-            , setContinueMode: function(i_is_continue)
+            , setContinueMode: function (i_is_continue)
             {
                 this._is_continue = i_is_continue;
             }
@@ -11712,11 +11722,11 @@ NyARDetectMarkerResult = ASKlass('NyARDetectMarkerResult',
 
 NyARDetectMarkerResultStack = ASKlass('NyARDetectMarkerResultStack ', NyARObjectStack,
         {
-            NyARDetectMarkerResultStack: function(i_length)
+            NyARDetectMarkerResultStack: function (i_length)
             {
                 NyARObjectStack.initialize.call(this, i_length);
             }
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 var ret = new Array(i_length);
                 for (var i = 0; i < i_length; i++) {
@@ -11751,7 +11761,7 @@ NyARDetectSquareCB = ASKlass('NyARDetectSquareCB ', NyARSquareContourDetector_ID
             _match_patt: null,
             __detectMarkerLite_mr: new NyARMatchPattResult(),
             _coordline: null,
-            NyARDetectSquareCB: function(i_inst_patt, i_ref_code, i_num_of_code, i_param)
+            NyARDetectSquareCB: function (i_inst_patt, i_ref_code, i_num_of_code, i_param)
             {
                 var cw = i_ref_code[0].getWidth();
                 var ch = i_ref_code[0].getHeight();
@@ -11775,7 +11785,7 @@ NyARDetectSquareCB = ASKlass('NyARDetectSquareCB ', NyARSquareContourDetector_ID
              * 矩形が見付かるたびに呼び出されます。
              * 発見した矩形のパターンを検査して、方位を考慮した頂点データを確保します。
              */
-            onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
+            onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
             {
                 var mr = this.__detectMarkerLite_mr;
                 //輪郭座標から頂点リストに変換
@@ -11830,7 +11840,7 @@ NyARDetectSquareCB = ASKlass('NyARDetectSquareCB ', NyARSquareContourDetector_ID
                     }
                 }
             }
-            , init: function(i_raster)
+            , init: function (i_raster)
             {
                 this._ref_raster = i_raster;
                 this.result_stack.clear();
@@ -11869,7 +11879,7 @@ NyARSingleDetectMarker = ASKlass('NyARSingleDetectMarker', NyARCustomSingleDetec
              * 入力ラスタのピクセルタイプを指定します。この値は、INyARBufferReaderインタフェイスのgetBufferTypeの戻り値を指定します。
              * @throws NyARException
              */
-            NyARSingleDetectMarker: function(i_param, i_code, i_marker_width, i_input_raster_type, i_profile_id)
+            NyARSingleDetectMarker: function (i_param, i_code, i_marker_width, i_input_raster_type, i_profile_id)
             {
                 if (i_profile_id == null)
                     i_profile_id = this.PF_NYARTOOLKIT;
@@ -11886,7 +11896,7 @@ NyARSingleDetectMarker = ASKlass('NyARSingleDetectMarker', NyARCustomSingleDetec
              * @param i_profile_id
              * @throws NyARException
              */
-            , initInstance2: function(
+            , initInstance2: function (
                     i_ref_param,
                     i_ref_code,
                     i_marker_width,
@@ -11917,7 +11927,7 @@ NyARSingleDetectMarker = ASKlass('NyARSingleDetectMarker', NyARCustomSingleDetec
              * @return マーカーが検出できたかを真偽値で返します。
              * @throws NyARException
              */
-            , detectMarkerLite: function(i_raster, i_threshold)
+            , detectMarkerLite: function (i_raster, i_threshold)
             {
                 (NyARRasterFilter_ARToolkitThreshold(this._tobin_filter)).setThreshold(i_threshold);
                 return NyARCustomSingleDetectMarker.detectMarkerLiteB.call(this, i_raster);
@@ -11963,11 +11973,11 @@ FLARDetectMarkerResult = ASKlass('FLARDetectMarkerResult',
 
 FLARDetectMarkerResultStack = ASKlass('FLARDetectMarkerResultStack', NyARObjectStack,
         {
-            FLARDetectMarkerResultStack: function(i_length)
+            FLARDetectMarkerResultStack: function (i_length)
             {
                 NyARObjectStack.initialize.call(this, i_length);
             },
-            createArray: function(i_length)
+            createArray: function (i_length)
             {
                 var ret = new Array(i_length);
                 for (var i = 0; i < i_length; i++) {
@@ -12007,12 +12017,12 @@ FLARMultiMarkerDetector = ASKlass('FLARMultiMarkerDetector',
                      * i_codeに含まれる、ARCodeの数を指定します。
                      * @throws NyARException
                      */
-            , FLARMultiMarkerDetector: function(i_param, i_code, i_marker_width, i_number_of_code)
+            , FLARMultiMarkerDetector: function (i_param, i_code, i_marker_width, i_number_of_code)
             {
                 this.initInstance(i_param, i_code, i_marker_width, i_number_of_code);
                 return;
             }
-            , initInstance: function(
+            , initInstance: function (
                     i_ref_param,
                     i_ref_code,
                     i_marker_width,
@@ -12065,7 +12075,7 @@ FLARMultiMarkerDetector = ASKlass('FLARMultiMarkerDetector',
                      * @return 見つかったマーカーの数を返します。 マーカーが見つからない場合は0を返します。
                      * @throws NyARException
                      */
-            , detectMarkerLite: function(i_raster, i_threshold)
+            , detectMarkerLite: function (i_raster, i_threshold)
             {
                 // サイズチェック
                 if (!this._bin_raster.getSize().isEqualSize_NyARIntSize(i_raster.getSize())) {
@@ -12100,7 +12110,7 @@ FLARMultiMarkerDetector = ASKlass('FLARMultiMarkerDetector',
              * 結果値を受け取るオブジェクトを指定してください。
              * @throws NyARException
              */
-            , getTransformMatrix: function(i_index, o_result)
+            , getTransformMatrix: function (i_index, o_result)
             {
                 var result = this._detect_cb.result_stack.getItem(i_index);
                 // 一番一致したマーカーの位置とかその辺を計算
@@ -12119,7 +12129,7 @@ FLARMultiMarkerDetector = ASKlass('FLARMultiMarkerDetector',
              * @return マーカーの一致度を返します。0～1までの値をとります。 一致度が低い場合には、誤認識の可能性が高くなります。
              * @throws NyARException
              */
-            , getConfidence: function(i_index)
+            , getConfidence: function (i_index)
             {
                 return this._detect_cb.result_stack.getItem(i_index).confidence;
             }
@@ -12130,7 +12140,7 @@ FLARMultiMarkerDetector = ASKlass('FLARMultiMarkerDetector',
              * マーカーのインデックス番号を指定します。 直前に実行したdetectMarkerLiteの戻り値未満かつ0以上である必要があります。
              * @return
              */
-            , getARCodeIndex: function(i_index)
+            , getARCodeIndex: function (i_index)
             {
                 return this._detect_cb.result_stack.getItem(i_index).arcode_id;
             }
@@ -12140,7 +12150,7 @@ FLARMultiMarkerDetector = ASKlass('FLARMultiMarkerDetector',
              *
              * @return Returns whether any of 0,1,2,3.
              */
-            , getDirection: function(i_index)
+            , getDirection: function (i_index)
             {
                 return this._detect_cb.result_stack.getItem(i_index).direction;
             }
@@ -12148,7 +12158,7 @@ FLARMultiMarkerDetector = ASKlass('FLARMultiMarkerDetector',
              * 検出した FLARSquare 1 個返す。検出できなかったら null。
              * @return Total return detected FLARSquare 1. Detection Dekinakattara null.
              */
-            , getSquare: function(i_index)
+            , getSquare: function (i_index)
             {
                 return this._detect_cb.result_stack.getItem(i_index).square;
             }
@@ -12158,7 +12168,7 @@ FLARMultiMarkerDetector = ASKlass('FLARMultiMarkerDetector',
              * @param i_is_continue
              * TRUEなら、transMatContinueを使用します。 FALSEなら、transMatを使用します。
              */
-            , setContinueMode: function(i_is_continue)
+            , setContinueMode: function (i_is_continue)
             {
                 this._is_continue = i_is_continue;
             }
@@ -12173,7 +12183,7 @@ FLARMultiMarkerDetector = ASKlass('FLARMultiMarkerDetector',
              * @param i_max 解析対象とする白領域の最大pixel数(一辺の二乗) default: 100000
              * @param i_min 解析対象とする白領域の最小pixel数(一辺の二乗) default: 70
              */
-            , setAreaRange: function(i_max, i_min)
+            , setAreaRange: function (i_max, i_min)
             {
                 if (i_max == null)
                     i_max = 100000;
@@ -12197,7 +12207,7 @@ FLARMultiMarkerDetector = ASKlass('FLARMultiMarkerDetector',
              *
              * @return 画像情報を返却します
              */
-            , thresholdedBitmapData: function()
+            , thresholdedBitmapData: function ()
             {
                 try {
                     return ((this._bin_raster).getBuffer());
@@ -12218,7 +12228,7 @@ FLARSingleMarkerDetector = ASKlass('FLARSingleMarkerDetector',
             , _tobin_filter: null
             , _detect_cb: null
             , _offset: null
-            , FLARSingleMarkerDetector: function(i_ref_param, i_ref_code, i_marker_width)
+            , FLARSingleMarkerDetector: function (i_ref_param, i_ref_code, i_marker_width)
             {
                 var th = new FLARRasterFilter_Threshold(100);
                 var patt_inst;
@@ -12243,7 +12253,7 @@ FLARSingleMarkerDetector = ASKlass('FLARSingleMarkerDetector',
                 this.initInstance(patt_inst, sqdetect_inst, transmat_inst, th, i_ref_param, i_ref_code, i_marker_width);
                 return;
             }
-            , initInstance: function(
+            , initInstance: function (
                     i_patt_inst,
                     i_sqdetect_inst,
                     i_transmat_inst,
@@ -12275,7 +12285,7 @@ FLARSingleMarkerDetector = ASKlass('FLARSingleMarkerDetector',
              * @return マーカーが検出できたかを真偽値で返します。
              * @throws NyARException
              */
-            , detectMarkerLite: function(i_raster, i_threshold)
+            , detectMarkerLite: function (i_raster, i_threshold)
             {
                 FLARRasterFilter_Threshold(this._tobin_filter).setThreshold(i_threshold);
                 //サイズチェック
@@ -12301,7 +12311,7 @@ FLARSingleMarkerDetector = ASKlass('FLARSingleMarkerDetector',
              * 変換行列を受け取るオブジェクトを指定します。
              * @throws NyARException
              */
-            , getTransformMatrix: function(o_result)
+            , getTransformMatrix: function (o_result)
             {
                 // 一番一致したマーカーの位置とかその辺を計算
                 if (this._is_continue) {
@@ -12317,7 +12327,7 @@ FLARSingleMarkerDetector = ASKlass('FLARSingleMarkerDetector',
              * @return マーカーの一致度を返します。0～1までの値をとります。 一致度が低い場合には、誤認識の可能性が高くなります。
              * @throws NyARException
              */
-            , getConfidence: function()
+            , getConfidence: function ()
             {
                 return this._detect_cb.confidence;
             }
@@ -12327,7 +12337,7 @@ FLARSingleMarkerDetector = ASKlass('FLARSingleMarkerDetector',
              *
              * @return Returns whether any of 0,1,2,3.
              */
-            , getDirection: function()
+            , getDirection: function ()
             {
                 return this._detect_cb.direction;
             }
@@ -12335,7 +12345,7 @@ FLARSingleMarkerDetector = ASKlass('FLARSingleMarkerDetector',
              * 検出した FLARSquare 1 個返す。検出できなかったら null。
              * @return Total return detected FLARSquare 1. Detection Dekinakattara null.
              */
-            , getSquare: function()
+            , getSquare: function ()
             {
                 return this._detect_cb.square;
             }
@@ -12345,7 +12355,7 @@ FLARSingleMarkerDetector = ASKlass('FLARSingleMarkerDetector',
              * @param i_is_continue
              * TRUEなら、transMatCont互換の計算をします。 FALSEなら、transMat互換の計算をします。
              */
-            , setContinueMode: function(i_is_continue)
+            , setContinueMode: function (i_is_continue)
             {
                 this._is_continue = i_is_continue;
             }
@@ -12360,7 +12370,7 @@ FLARSingleMarkerDetector = ASKlass('FLARSingleMarkerDetector',
              * @param i_max 解析対象とする白領域の最大pixel数(一辺の二乗) default: 100000
              * @param i_min 解析対象とする白領域の最小pixel数(一辺の二乗) default: 70
              */
-            , setAreaRange: function(i_max, i_min)
+            , setAreaRange: function (i_max, i_min)
             {
                 if (i_max == null)
                     i_max = 100000;
@@ -12384,7 +12394,7 @@ FLARSingleMarkerDetector = ASKlass('FLARSingleMarkerDetector',
              *
              * @return 画像情報を返却します
              */
-            , thresholdedBitmapData: function()
+            , thresholdedBitmapData: function ()
             {
                 try {
                     return ((this._bin_raster).getBuffer());
@@ -12411,7 +12421,7 @@ MultiDetectSquareCB = ASKlass('MultiDetectSquareCB',
             , _match_patt: null
             , __detectMarkerLite_mr: new NyARMatchPattResult()
             , _coordline: null
-            , MultiDetectSquareCB: function(i_inst_patt, i_ref_code, i_num_of_code, i_param)
+            , MultiDetectSquareCB: function (i_inst_patt, i_ref_code, i_num_of_code, i_param)
             {
                 var cw = i_ref_code[0].getWidth();
                 var ch = i_ref_code[0].getHeight();
@@ -12435,7 +12445,7 @@ MultiDetectSquareCB = ASKlass('MultiDetectSquareCB',
                      * 矩形が見付かるたびに呼び出されます。
                      * 発見した矩形のパターンを検査して、方位を考慮した頂点データを確保します。
                      */
-            , onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
+            , onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
             {
                 var mr = this.__detectMarkerLite_mr;
                 //輪郭座標から頂点リストに変換
@@ -12491,7 +12501,7 @@ MultiDetectSquareCB = ASKlass('MultiDetectSquareCB',
                     }
                 }
             }
-            , init: function(i_raster)
+            , init: function (i_raster)
             {
                 this._ref_raster = i_raster;
                 this.result_stack.clear();
@@ -12516,7 +12526,7 @@ SingleDetectSquareCB = ASKlass('SingleDetectSquareCB',
             , _match_patt: null
             , __detectMarkerLite_mr: new NyARMatchPattResult()
             , _coordline: null
-            , SingleDetectSquareCB: function(i_inst_patt, i_ref_code, i_param)
+            , SingleDetectSquareCB: function (i_inst_patt, i_ref_code, i_param)
             {
                 this._inst_patt = i_inst_patt;
                 this._deviation_data = new NyARMatchPattDeviationColorData(i_ref_code.getWidth(), i_ref_code.getHeight());
@@ -12529,7 +12539,7 @@ SingleDetectSquareCB = ASKlass('SingleDetectSquareCB',
                      * 矩形が見付かるたびに呼び出されます。
                      * 発見した矩形のパターンを検査して、方位を考慮した頂点データを確保します。
                      */
-            , onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
+            , onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
             {
                 var i;
                 var mr = this.__detectMarkerLite_mr;
@@ -12572,7 +12582,7 @@ SingleDetectSquareCB = ASKlass('SingleDetectSquareCB',
                     }
                 }
             }
-            , init: function(i_raster)
+            , init: function (i_raster)
             {
                 this.confidence = 0;
                 this._ref_raster = i_raster;
@@ -12630,10 +12640,10 @@ FLARIdMarkerData = ASKlass('FLARIdMarkerData',
             , _check: 0
             , _dataDot: 0
             , packetLength: 0
-            , FLARIdMarkerData: function()
+            , FLARIdMarkerData: function ()
             {
             }
-            , isEqual: function(i_target)
+            , isEqual: function (i_target)
             {
                 if (i_target == null || !(i_target instanceof FLARIdMarkerData)) {
                     return false;
@@ -12654,7 +12664,7 @@ FLARIdMarkerData = ASKlass('FLARIdMarkerData',
                 }
                 return true;
             }
-            , copyFrom: function(i_source)
+            , copyFrom: function (i_source)
             {
                 var s = i_source;
                 if (s == null)
@@ -12673,23 +12683,23 @@ FLARIdMarkerData = ASKlass('FLARIdMarkerData',
 ///////////////////////////////////////////////////////////////////////////////////
 // setters
 ///////////////////////////////////////////////////////////////////////////////////
-            , setModel: function(value)
+            , setModel: function (value)
             {
                 this._model = value;
             }
-            , setControlDomain: function(value)
+            , setControlDomain: function (value)
             {
                 this._controlDomain = value;
             }
-            , setControlMask: function(value)
+            , setControlMask: function (value)
             {
                 this._controlMask = value;
             }
-            , setCheck: function(value)
+            , setCheck: function (value)
             {
                 this._check = value;
             }
-            , setPacketData: function(index, data)
+            , setPacketData: function (index, data)
             {
                 if (index < this.packetLength) {
                     this._packet[index] = data;
@@ -12697,33 +12707,33 @@ FLARIdMarkerData = ASKlass('FLARIdMarkerData',
                     throw ("packet index over " + index + " >= " + this.packetLength);
                 }
             }
-            , setDataDotLength: function(value)
+            , setDataDotLength: function (value)
             {
                 this._dataDot = value;
             }
-            , setPacketLength: function(value)
+            , setPacketLength: function (value)
             {
                 this.packetLength = value;
             }
 ///////////////////////////////////////////////////////////////////////////////////
 // getters
 ///////////////////////////////////////////////////////////////////////////////////
-            , dataDotLength: function() {
+            , dataDotLength: function () {
                 return this._dataDot;
             }
-            , model: function() {
+            , model: function () {
                 return this._model;
             }
-            , controlDomain: function() {
+            , controlDomain: function () {
                 return this._controlDomain;
             }
-            , controlMask: function() {
+            , controlMask: function () {
                 return this._controlMask;
             }
-            , check: function() {
+            , check: function () {
                 return this._check;
             }
-            , getPacketData: function(index)
+            , getPacketData: function (index)
             {
                 if (this.packetLength <= index)
                     throw new ArgumentError("packet index over");
@@ -12741,11 +12751,11 @@ FLARDetectIdMarkerResult = ASKlass('FLARDetectIdMarkerResult',
         })
 FLARDetectIdMarkerResultStack = ASKlass('FLARDetectIdMarkerResultStack', NyARObjectStack,
         {
-            FLARDetectIdMarkerResultStack: function(i_length)
+            FLARDetectIdMarkerResultStack: function (i_length)
             {
                 NyARObjectStack.initialize.call(this, i_length);
             }
-            , createArray: function(i_length)
+            , createArray: function (i_length)
             {
                 var ret = new Array(i_length);
                 for (var i = 0; i < i_length; i++) {
@@ -12776,7 +12786,7 @@ FLARMultiIdMarkerDetectCB = ASKlass('FLARMultiIdMarkerDetectCB',
             , __tmp_vertex: NyARIntPoint2d.createArray(4)
             , _marker_param: new NyIdMarkerParam()
             , _maker_pattern: new NyIdMarkerPattern()
-            , FLARMultiIdMarkerDetectCB: function(i_param, i_encoder)
+            , FLARMultiIdMarkerDetectCB: function (i_param, i_encoder)
             {
                 this._coordline = new NyARCoord2Linear(i_param.getScreenSize(), i_param.getDistortionFactor());
                 this._data_temp = i_encoder.createDataInstance();
@@ -12787,7 +12797,7 @@ FLARMultiIdMarkerDetectCB = ASKlass('FLARMultiIdMarkerDetectCB',
             /**
              * Initialize call back handler.
              */
-            , init: function(i_raster)
+            , init: function (i_raster)
             {
                 this.marker_data = null;
                 this.result_stack.clear();
@@ -12799,7 +12809,7 @@ FLARMultiIdMarkerDetectCB = ASKlass('FLARMultiIdMarkerDetectCB',
              * 矩形が見付かるたびに呼び出されます。
              * 発見した矩形のパターンを検査して、方位を考慮した頂点データを確保します。
              */
-            , onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
+            , onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
             {
                 //輪郭座標から頂点リストに変換
                 var vertex = this.__tmp_vertex;
@@ -12871,7 +12881,7 @@ FLARMultiIdMarkerDetectCB = ASKlass('FLARMultiIdMarkerDetectCB',
                     }
                 }
             }
-            , getId: function(data)
+            , getId: function (data)
             {
                 var currId;
                 if (data.packetLength > 4) {
@@ -12900,7 +12910,7 @@ FLARMultiIdMarkerDetector = ASKlass('FLARMultiIdMarkerDetector',
             , _data_current: null
             , _threshold_detect: null
             , _transmat: null
-            , FLARMultiIdMarkerDetector: function(i_param, i_marker_width)
+            , FLARMultiIdMarkerDetector: function (i_param, i_marker_width)
             {
                 var scr_size = i_param.getScreenSize();
                 var encoder = new FLARIdMarkerDataEncoder_RawBit();
@@ -12918,7 +12928,7 @@ FLARMultiIdMarkerDetector = ASKlass('FLARMultiIdMarkerDetector',
                 this._offset.setSquare(i_marker_width);
                 return;
             }
-            , detectMarkerLite: function(i_raster, i_threshold)
+            , detectMarkerLite: function (i_raster, i_threshold)
             {
                 // サイズチェック
                 if (!this._bin_raster.getSize().isEqualSize_int(i_raster.getSize().w, i_raster.getSize().h)) {
@@ -12942,7 +12952,7 @@ FLARMultiIdMarkerDetector = ASKlass('FLARMultiIdMarkerDetector',
              * 結果値を受け取るオブジェクトを指定してください。
              * @throws NyARException
              */
-            , getTransformMatrix: function(i_index, o_result)
+            , getTransformMatrix: function (i_index, o_result)
             {
                 var result = this._callback.result_stack.getItem(i_index);
                 // 一番一致したマーカーの位置とかその辺を計算
@@ -12953,7 +12963,7 @@ FLARMultiIdMarkerDetector = ASKlass('FLARMultiIdMarkerDetector',
                 }
                 return;
             }
-            , getIdMarkerData: function(i_index)
+            , getIdMarkerData: function (i_index)
             {
                 var result = new FLARIdMarkerData();
                 result.copyFrom(this._callback.result_stack.getItem(i_index).markerdata);
@@ -12966,7 +12976,7 @@ FLARMultiIdMarkerDetector = ASKlass('FLARMultiIdMarkerDetector',
              * マーカーのインデックス番号を指定します。 直前に実行したdetectMarkerLiteの戻り値未満かつ0以上である必要があります。
              * @return
              */
-            , getARCodeIndex: function(i_index)
+            , getARCodeIndex: function (i_index)
             {
                 return this._callback.result_stack.getItem(i_index).arcode_id;
             }
@@ -12976,7 +12986,7 @@ FLARMultiIdMarkerDetector = ASKlass('FLARMultiIdMarkerDetector',
              *
              * @return Returns whether any of 0,1,2,3.
              */
-            , getDirection: function(i_index)
+            , getDirection: function (i_index)
             {
                 return this._callback.result_stack.getItem(i_index).direction;
             }
@@ -12984,7 +12994,7 @@ FLARMultiIdMarkerDetector = ASKlass('FLARMultiIdMarkerDetector',
              * 検出した FLARSquare 1 個返す。検出できなかったら null。
              * @return Total return detected FLARSquare 1. Detection Dekinakattara null.
              */
-            , getSquare: function(i_index)
+            , getSquare: function (i_index)
             {
                 return this._callback.result_stack.getItem(i_index).square;
             }
@@ -12994,7 +13004,7 @@ FLARMultiIdMarkerDetector = ASKlass('FLARMultiIdMarkerDetector',
              * @param i_is_continue
              * TRUEなら、transMatContinueを使用します。 FALSEなら、transMatを使用します。
              */
-            , setContinueMode: function(i_is_continue)
+            , setContinueMode: function (i_is_continue)
             {
                 this._is_continue = i_is_continue;
             }
@@ -13003,7 +13013,7 @@ FLARMultiIdMarkerDetector = ASKlass('FLARMultiIdMarkerDetector',
              *
              * @return 画像情報を返却します
              */
-            , thresholdedBitmapData: function()
+            , thresholdedBitmapData: function ()
             {
                 try {
                     return ((this._bin_raster).getBuffer());
@@ -13033,7 +13043,7 @@ FLARSingleIdMarkerDetectCB = ASKlass('FLARSingleIdMarkerDetectCB',
             , __tmp_vertex: NyARIntPoint2d.createArray(4)
             , _marker_param: new NyIdMarkerParam()
             , _maker_pattern: new NyIdMarkerPattern()
-            , FLARSingleIdMarkerDetectCB: function(i_param, i_encoder)
+            , FLARSingleIdMarkerDetectCB: function (i_param, i_encoder)
             {
                 this._coordline = new NyARCoord2Linear(i_param.getScreenSize(), i_param.getDistortionFactor());
                 this._data_temp = i_encoder.createDataInstance();
@@ -13044,7 +13054,7 @@ FLARSingleIdMarkerDetectCB = ASKlass('FLARSingleIdMarkerDetectCB',
             /**
              * Initialize call back handler.
              */
-            , init: function(i_raster, i_prev_data)
+            , init: function (i_raster, i_prev_data)
             {
                 this.marker_data = null;
                 this._prev_data = i_prev_data;
@@ -13054,7 +13064,7 @@ FLARSingleIdMarkerDetectCB = ASKlass('FLARSingleIdMarkerDetectCB',
              * 矩形が見付かるたびに呼び出されます。
              * 発見した矩形のパターンを検査して、方位を考慮した頂点データを確保します。
              */
-            , onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
+            , onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
             {
                 //既に発見済なら終了
                 if (this.marker_data != null) {
@@ -13131,7 +13141,7 @@ FLARSingleIdMarkerDetector = ASKlass('FLARSingleIdMarkerDetector', {
     , _data_current: null
     , _threshold_detect: null
     , _transmat: null
-    , FLARSingleIdMarkerDetector: function(i_param, i_marker_width)
+    , FLARSingleIdMarkerDetector: function (i_param, i_marker_width)
     {
         var scr_size = i_param.getScreenSize();
         var encoder = new FLARIdMarkerDataEncoder_RawBit();
@@ -13149,7 +13159,7 @@ FLARSingleIdMarkerDetector = ASKlass('FLARSingleIdMarkerDetector', {
         this._offset.setSquare(i_marker_width);
         return;
     }
-    , detectMarkerLite: function(i_raster, i_threshold)
+    , detectMarkerLite: function (i_raster, i_threshold)
     {
         // サイズチェック
         if (!this._bin_raster.getSize().isEqualSize_int(i_raster.getSize().w, i_raster.getSize().h)) {
@@ -13170,17 +13180,17 @@ FLARSingleIdMarkerDetector = ASKlass('FLARSingleIdMarkerDetector', {
         this._data_current.copyFrom(this._callback.marker_data);
         return true;
     }
-    , getIdMarkerData: function()
+    , getIdMarkerData: function ()
     {
         var result = new FLARIdMarkerData();
         result.copyFrom(this._callback.marker_data);
         return result;
     }
-    , getDirection: function()
+    , getDirection: function ()
     {
         return this._callback.direction;
     }
-    , getTransformMatrix: function(o_result)
+    , getTransformMatrix: function (o_result)
     {
         if (this._is_continue)
             this._transmat.transMatContinue(this._callback.square, this._offset, o_result);
@@ -13188,7 +13198,7 @@ FLARSingleIdMarkerDetector = ASKlass('FLARSingleIdMarkerDetector', {
             this._transmat.transMat(this._callback.square, this._offset, o_result);
         return;
     }
-    , setContinueMode: function(i_is_continue)
+    , setContinueMode: function (i_is_continue)
     {
         this._is_continue = i_is_continue;
     }
@@ -13201,7 +13211,7 @@ FLARIdMarkerDataEncoder_RawBit = ASKlass('FLARIdMarkerDataEncoder_RawBit',
                      * 制御ドット作成時のmodに使う値
                      */
             , _mod_data: new IntVector([7, 31, 127, 511, 2047, 4095])
-            , encode: function(i_data, o_dest)
+            , encode: function (i_data, o_dest)
             {
                 var dest = o_dest;
                 if (dest == null) {
@@ -13237,7 +13247,7 @@ FLARIdMarkerDataEncoder_RawBit = ASKlass('FLARIdMarkerDataEncoder_RawBit',
                 }
                 return true;
             }
-            , createDataInstance: function()
+            , createDataInstance: function ()
             {
                 return new FLARIdMarkerData();
             }
@@ -13316,12 +13326,12 @@ SingleARMarkerProcesser = ASKlass('SingleARMarkerProcesser',
             _tobin_filter: null,
             _current_arcode_index: -1,
             _threshold_detect: null,
-            SingleARMarkerProcesser: function()
+            SingleARMarkerProcesser: function ()
             {
                 return;
             },
             _initialized: false,
-            initInstance: function(i_param, i_raster_type)
+            initInstance: function (i_param, i_raster_type)
             {
                 //初期化済？
                 NyAS3Utils.assert(this._initialized == false);
@@ -13348,7 +13358,7 @@ SingleARMarkerProcesser = ASKlass('SingleARMarkerProcesser',
             /**検出するマーカコードの配列を指定します。 検出状態でこの関数を実行すると、
              * オブジェクト状態に強制リセットがかかります。
              */
-            , setARCodeTable: function(i_ref_code_table, i_code_resolution, i_marker_width)
+            , setARCodeTable: function (i_ref_code_table, i_code_resolution, i_marker_width)
             {
                 if (this._current_arcode_index != -1) {
                     // 強制リセット
@@ -13359,7 +13369,7 @@ SingleARMarkerProcesser = ASKlass('SingleARMarkerProcesser',
                 this._offset.setSquare(i_marker_width);
                 return;
             }
-            , reset: function(i_is_force)
+            , reset: function (i_is_force)
             {
                 if (this._current_arcode_index != -1 && i_is_force == false) {
                     // 強制書き換えでなければイベントコール
@@ -13370,7 +13380,7 @@ SingleARMarkerProcesser = ASKlass('SingleARMarkerProcesser',
                 return;
             },
             _detectmarker_cb: null,
-            detectMarker: function(i_raster)
+            detectMarker: function (i_raster)
             {
                 // サイズチェック
                 NyAS3Utils.assert(this._bin_raster.getSize().isEqualSize_int(i_raster.getSize().w, i_raster.getSize().h));
@@ -13395,7 +13405,7 @@ SingleARMarkerProcesser = ASKlass('SingleARMarkerProcesser',
              * @param i_new_detect_cf
              * @param i_exist_detect_cf
              */
-            , setConfidenceThreshold: function(i_new_cf, i_exist_cf)
+            , setConfidenceThreshold: function (i_new_cf, i_exist_cf)
             {
                 this._detectmarker_cb.cf_threshold_exist = i_exist_cf;
                 this._detectmarker_cb.cf_threshold_new = i_new_cf;
@@ -13404,7 +13414,7 @@ SingleARMarkerProcesser = ASKlass('SingleARMarkerProcesser',
             /**  オブジェクトのステータスを更新し、必要に応じてハンドル関数を駆動します。
              *   戻り値は、「実際にマーカを発見する事ができたか」です。クラスの状態とは異なります。
              */
-            updateStatus: function(i_square, i_code_index)
+            updateStatus: function (i_square, i_code_index)
             {
                 var result = this.__NyARSquare_result;
                 if (this._current_arcode_index < 0) {// 未認識中
@@ -13445,15 +13455,15 @@ SingleARMarkerProcesser = ASKlass('SingleARMarkerProcesser',
                     }
                 }
             }
-            , onEnterHandler: function(i_code)
+            , onEnterHandler: function (i_code)
             {
                 throw new NyARException("onEnterHandler not implemented.");
             }
-            , onLeaveHandler: function()
+            , onLeaveHandler: function ()
             {
                 throw new NyARException("onLeaveHandler not implemented.");
             }
-            , onUpdateHandler: function(i_square, result)
+            , onUpdateHandler: function (i_square, result)
             {
                 throw new NyARException("onUpdateHandler not implemented.");
             }
@@ -13488,13 +13498,13 @@ DetectSquareCB_1 = ASKlass('DetectSquareCB', NyARSquareContourDetector_IDetectMa
             _match_patt: null,
             __detectMarkerLite_mr: new NyARMatchPattResult(),
             _coordline: null,
-            DetectSquareCB: function(i_param)
+            DetectSquareCB: function (i_param)
             {
                 this._match_patt = null;
                 this._coordline = new NyARCoord2Linear(i_param.getScreenSize(), i_param.getDistortionFactor());
                 return;
             }
-            , setNyARCodeTable: function(i_ref_code, i_code_resolution)
+            , setNyARCodeTable: function (i_ref_code, i_code_resolution)
             {
                 /*unmanagedで実装するときは、ここでリソース解放をすること。*/
                 this._deviation_data = new NyARMatchPattDeviationColorData(i_code_resolution, i_code_resolution);
@@ -13509,7 +13519,7 @@ DetectSquareCB_1 = ASKlass('DetectSquareCB', NyARSquareContourDetector_IDetectMa
             /**
              * Initialize call back handler.
              */
-            init: function(i_raster, i_target_id)
+            init: function (i_raster, i_target_id)
             {
                 this._ref_raster = i_raster;
                 this._target_id = i_target_id;
@@ -13520,7 +13530,7 @@ DetectSquareCB_1 = ASKlass('DetectSquareCB', NyARSquareContourDetector_IDetectMa
              * 矩形が見付かるたびに呼び出されます。
              * 発見した矩形のパターンを検査して、方位を考慮した頂点データを確保します。
              */
-            , onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
+            , onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
             {
                 if (this._match_patt == null) {
                     return;
@@ -13624,12 +13634,12 @@ SingleNyIdMarkerProcesser = ASKlass('SingleNyIdMarkerProcesser',
             _tobin_filter: null,
             _callback: null,
             _data_current: null,
-            SingleNyIdMarkerProcesser: function()
+            SingleNyIdMarkerProcesser: function ()
             {
                 return;
             },
             _initialized: false,
-            initInstance: function(i_param, i_encoder, i_marker_width, i_raster_format)
+            initInstance: function (i_param, i_encoder, i_marker_width, i_raster_format)
             {
                 //初期化済？
                 NyAS3Utils.assert(this._initialized == false);
@@ -13650,12 +13660,12 @@ SingleNyIdMarkerProcesser = ASKlass('SingleNyIdMarkerProcesser',
                 this._offset.setSquare(i_marker_width);
                 return;
             }
-            , setMarkerWidth: function(i_width)
+            , setMarkerWidth: function (i_width)
             {
                 this._offset.setSquare(i_width);
                 return;
             }
-            , reset: function(i_is_force)
+            , reset: function (i_is_force)
             {
                 if (i_is_force == false && this._is_active) {
                     // 強制書き換えでなければイベントコール
@@ -13665,7 +13675,7 @@ SingleNyIdMarkerProcesser = ASKlass('SingleNyIdMarkerProcesser',
                 this._is_active = false;
                 return;
             }
-            , detectMarker: function(i_raster)
+            , detectMarker: function (i_raster)
             {
                 // サイズチェック
                 if (!this._bin_raster.getSize().isEqualSize_int(i_raster.getSize().w, i_raster.getSize().h)) {
@@ -13694,7 +13704,7 @@ SingleNyIdMarkerProcesser = ASKlass('SingleNyIdMarkerProcesser',
             __NyARSquare_result: new NyARTransMatResult(),
             /**オブジェクトのステータスを更新し、必要に応じてハンドル関数を駆動します。
              */
-            updateStatus: function(i_square, i_marker_data)
+            updateStatus: function (i_square, i_marker_data)
             {
                 var is_id_found = false;
                 var result = this.__NyARSquare_result;
@@ -13738,15 +13748,15 @@ SingleNyIdMarkerProcesser = ASKlass('SingleNyIdMarkerProcesser',
                 return is_id_found;
             }
             //通知ハンドラ
-            , onEnterHandler: function(i_code)
+            , onEnterHandler: function (i_code)
             {
                 throw new NyARException("onEnterHandler not implemented.");
             }
-            , onLeaveHandler: function()
+            , onLeaveHandler: function ()
             {
                 throw new NyARException("onLeaveHandler not implemented.");
             }
-            , onUpdateHandler: function(i_square, result)
+            , onUpdateHandler: function (i_square, result)
             {
                 throw new NyARException("onUpdateHandler not implemented.");
             }
@@ -13782,7 +13792,7 @@ DetectSquareCB_2 = ASKlass('DetectSquareCB', NyARSquareContourDetector_IDetectMa
             _encoder: null,
             _data_temp: null,
             _prev_data: null,
-            DetectSquareCB: function(i_param, i_encoder)
+            DetectSquareCB: function (i_param, i_encoder)
             {
                 this._coordline = new NyARCoord2Linear(i_param.getScreenSize(), i_param.getDistortionFactor());
                 this._data_temp = i_encoder.createDataInstance();
@@ -13794,7 +13804,7 @@ DetectSquareCB_2 = ASKlass('DetectSquareCB', NyARSquareContourDetector_IDetectMa
             /**
              * Initialize call back handler.
              */
-            init: function(i_raster, i_prev_data)
+            init: function (i_raster, i_prev_data)
             {
                 this.marker_data = null;
                 this._prev_data = i_prev_data;
@@ -13806,7 +13816,7 @@ DetectSquareCB_2 = ASKlass('DetectSquareCB', NyARSquareContourDetector_IDetectMa
              * 矩形が見付かるたびに呼び出されます。
              * 発見した矩形のパターンを検査して、方位を考慮した頂点データを確保します。
              */
-            onSquareDetect: function(i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
+            onSquareDetect: function (i_sender, i_coordx, i_coordy, i_coor_num, i_vertex_index)
             {
                 //既に発見済なら終了
                 if (this.marker_data != null) {
@@ -13916,7 +13926,7 @@ TransformedBitmapPickup = ASKlass('TransformedBitmapPickup', NyARColorPatt_Persp
              * @param i_resolution
              * resolution of reading pixel per point. ---- 取得時の解像度。高解像度のときは1を指定してください。低解像度のときは2以上を指定します。
              */
-            TransformedBitmapPickup: function(i_ref_cparam, i_width, i_height, i_resolution)
+            TransformedBitmapPickup: function (i_ref_cparam, i_width, i_height, i_resolution)
             {
                 NyARColorPatt_Perspective_O2.initialize.call(this, i_width, i_height, i_resolution, 0);
                 this._ref_perspective = i_ref_cparam;
@@ -13941,7 +13951,7 @@ TransformedBitmapPickup = ASKlass('TransformedBitmapPickup', NyARColorPatt_Persp
              * @param i_base_mat
              * @return 画像の取得の成否を返す。
              */
-            , pickupImage2d: function(i_src_imege, i_l, i_t, i_r, i_b, i_base_mat)
+            , pickupImage2d: function (i_src_imege, i_l, i_t, i_r, i_b, i_base_mat)
             {
                 var cp00, cp01, cp02, cp11, cp12;
                 cp00 = this._ref_perspective.m00;

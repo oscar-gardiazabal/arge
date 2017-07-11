@@ -1,9 +1,9 @@
 
 FLARColorRasterFilter_Threshold = ASKlass('FLARColorRasterFilter_Threshold', {// binarization by a constant threshold.
-    FLARColorRasterFilter_Threshold: function() {
+    FLARColorRasterFilter_Threshold: function () {
     },
     // Threshold for binarizing the image. Will be <bright point <= th scotoma.
-    doFilter: function(i_input, i_output) {
+    doFilter: function (i_input, i_output) {
         NyAS3Utils.assert(i_input.width == i_output.width && i_input.height == i_output.height);
         var out_buf = (i_output._buf);
         var in_reader = i_input._rgb_reader;
@@ -25,7 +25,7 @@ FLARColorRasterFilter_Threshold = ASKlass('FLARColorRasterFilter_Threshold', {//
     }
 });
 
-FLARSquareContourDetector.prototype.detectBoard = function(i_raster, i_callback, _offset) {
+FLARSquareContourDetector.prototype.detectBoard = function (i_raster, i_callback, _offset) {
     var flagment = this._stack;
     // Up to this point the number of labels is 0
     var label_num = this._labeling.imple_labeling(i_raster, null, null, i_raster._size.h, flagment);
@@ -58,9 +58,7 @@ FLARSquareContourDetector.prototype.detectBoard = function(i_raster, i_callback,
         if (window.DEBUG) {
             var cv = document.getElementById('debugCanvas').getContext('2d');
             cv.strokeStyle = 'red';
-            cv.strokeRect(
-                    label_pt.clip_l, label_pt.clip_t, label_pt.clip_r - label_pt.clip_l, label_pt.clip_b - label_pt.clip_t
-                    );
+            cv.strokeRect(label_pt.clip_l, label_pt.clip_t, label_pt.clip_r - label_pt.clip_l, label_pt.clip_b - label_pt.clip_t);
             cv.fillStyle = 'red';
             cv.fillRect(label_pt.entry_x - 1, label_pt.clip_t - 1, 3, 3);
             cv.fillStyle = 'cyan';
@@ -68,10 +66,8 @@ FLARSquareContourDetector.prototype.detectBoard = function(i_raster, i_callback,
         }
 
         // Get the outline
-        var coord_num = this._cpickup.getContour_FLARBinRaster(
-                i_raster, label_pt.entry_x, label_pt.clip_t, coord_max, xcoord, ycoord
-                );
-        if (coord_num == -1 || coord_num == coord_max) {
+        var coord_num = this._cpickup.getContour_FLARBinRaster(i_raster, label_pt.entry_x, label_pt.clip_t, coord_max, xcoord, ycoord);
+        if (coord_num < 0 || coord_num >= coord_max) {
             continue;
         }
 
@@ -99,7 +95,7 @@ FLARSquareContourDetector.prototype.detectBoard = function(i_raster, i_callback,
         var param = result[result.length - 1];
 
         var boardCombination = false;
-        this.getMarkerCombination(result, function(array, dv) { //TroLL
+        this.getMarkerCombination(result, function (array, dv) { //TroLL
 
             //100+20+20
             var x = -(param.marker.p.x + dv / 2) * 140;
@@ -108,7 +104,7 @@ FLARSquareContourDetector.prototype.detectBoard = function(i_raster, i_callback,
 
             var offsetWidth = 140 * dv;
 //            if (_offset.width != offsetWidth) {
-                _offset.setSquare(offsetWidth);
+            _offset.setSquare(offsetWidth);
 //                _offset.width = offsetWidth;
 //            }
 
@@ -134,7 +130,7 @@ FLARSquareContourDetector.prototype.detectBoard = function(i_raster, i_callback,
             Game.sceneGroup.position = new THREE.Vector3(-param.marker.p.x * 140, -1500 + param.marker.p.y * 140, 0);
 
 //            if (_offset.width != 100) {
-                _offset.setSquare(100);
+            _offset.setSquare(100);
 //                _offset.width = 100;
 //            }
             i_callback.onSquareResult(param, this._xcoord, this._ycoord); //TroLL
@@ -150,8 +146,7 @@ FLARSquareContourDetector.prototype.detectBoard = function(i_raster, i_callback,
     return;
 };
 
-FLARSquareContourDetector.prototype.getMarkerCombination = function(params, callback) { //TroLL
-
+FLARSquareContourDetector.prototype.getMarkerCombination = function (params, callback) { //TroLL
     var b = [];
     for (var i = 0; i < 12; i++) {//make board
         b[i] = [];
@@ -230,47 +225,46 @@ FLARSquareContourDetector.prototype.getMarkerCombination = function(params, call
 };
 
 MarkerBitEncoder = ASKlass('MarkerBitEncoder', {
-    _bits: 0
-    ,
-    setBitByBitIndex: function(i_value) {
+    _bits: 0,
+    setBitByBitIndex: function (i_value) {
         this._bits = parseInt(this._bits.toString(2) + i_value, 2);
-        return;
     }
 });
 
 NyIdBoardPickup = ASKlass('NyIdBoardPickup', {// NyARIdMarkerData from any rectangle of the raster image
     _perspective_reader: null,
-    __pickFromRaster_encoder: new MarkerBitEncoder(),
-    NyIdBoardPickup: function() {
+    __pickFromRaster_encoder: new MarkerBitEncoder()
+    ,
+    NyIdBoardPickup: function () {
         this._perspective_reader = new PerspectivePixelBoardReader();
-        return;
     }
     ,
-    // read id marker from i_image. Marker data to o_data, marker parameters to o_param.
-    pickFromRaster: function(image, i_vertex, o_param) {
+    //read id marker from i_image. Marker data to o_data, marker parameters to o_param.
+    pickFromRaster: function (image, i_vertex, o_param) {
 
         // Calculate the parameters of perspective
-        if (!this._perspective_reader.setSourceSquare(i_vertex)) {
-            if (window.DEBUG) {
-                console.log('NyIdBoardPickup.pickFromRaster: could not setSourceSquare')
-            }
+        var success = this._perspective_reader.setSourceSquare(i_vertex);
+        if (!success) {
+            window.DEBUG ? console.log('NyIdBoardPickup.pickFromRaster: could not setSourceSquare') : null;
             return false;
         }
 
         var reader = image._gray_reader;
         var encoder = this.__pickFromRaster_encoder;
-        encoder._bits = 0;
+        encoder._bits = 0; //reset?
+
         // Get the marker parameter
-        var cp = this._perspective_reader.readDataBits(reader, encoder)
+        var cp = this._perspective_reader.readDataBits(reader, encoder); //(readDataBits() in plugin)
         if (!cp) {
             return false;
         }
 
-        o_param.bits = encoder._bits; //TroLL
+        o_param.bits = encoder._bits; //TroLL custom object
         o_param.marker = board[o_param.bits];
         if (!o_param.marker) {
             return false;
         }
+
         //TroLL
         o_param.centerPoint = cp;
         o_param.direction = o_param.marker.d;
@@ -278,7 +272,7 @@ NyIdBoardPickup = ASKlass('NyIdBoardPickup', {// NyARIdMarkerData from any recta
     }
 });
 
-NyARCoord2Linear.prototype.coord2LineSquare = function(_xpos, _ypos, o_line) {
+NyARCoord2Linear.prototype.coord2LineSquare = function (_xpos, _ypos, o_line) {
     var evec = this.__getSquareLine_evec;
     var ev = this.__getSquareLine_ev;
     var mean = this.__getSquareLine_mean;
@@ -293,23 +287,27 @@ NyARCoord2Linear.prototype.coord2LineSquare = function(_xpos, _ypos, o_line) {
 PerspectivePixelBoardReader = ASKlass('PerspectivePixelBoardReader', {
     _param_gen: new NyARPerspectiveParamGenerator_O1(1, 1, 100, 100),
     _cparam: new FloatVector(8),
-    PerspectivePixelBoardReader: function() {
-        return;
+    PerspectivePixelBoardReader: function () {
+        //this._param_gen = new NyARPerspectiveParamGenerator_O1(1, 1, 100, 100);
     }
     ,
-    setSourceSquare: function(i_vertex) {
+    //vertex: 4 vertex marker
+    setSourceSquare: function (i_vertex) {
         var cx = 0, cy = 0;
         for (var i = 0; i < 4; i++) {
             cx += i_vertex[i].x;
             cy += i_vertex[i].y;
         }
+
         cx /= 4;
         cy /= 4;
         var qx = cx;
         var qy = cy;
+
         this.centerPoint[0] = qx;
         this.centerPoint[1] = qy;
-        return this._param_gen.getParam(i_vertex, this._cparam);
+        var done = this._param_gen.getParam(i_vertex, this._cparam);
+        return done;
     }
     ,
     FRQ_EDGE: 10,
@@ -320,80 +318,93 @@ PerspectivePixelBoardReader = ASKlass('PerspectivePixelBoardReader', {
     ,
     centerPoint: new IntVector(2)
     ,
-    readDataBits: function(i_reader, o_bitbuffer) {
-
+    //READ POINTS TO DETERMINE MARKER INDEX
+    readDataBits: function (i_reader, o_bitbuffer) {
         var cp;
 
-        // Get the reading position        
-        var index_x = new FloatVector([26, 34, 46, 54, 66, 74]); //TroLL
-        var index_y = new FloatVector([26, 34, 46, 54, 66, 74]);
+        // Get the reading position
+        var index_x = new FloatVector([25, 33, 46, 54, 67, 75]); //TroLL (of 100% pos.)
+        var index_y = new FloatVector([25, 33, 46, 54, 67, 75]);
         var resolution = 3;
         o_bitbuffer._bits = 0;
+
         var cpara = this._cparam;
         var ref_x = this._ref_x;
         var ref_y = this._ref_y;
         var pixcel_temp = this._pixcel_temp;
-        var cpara_0 = cpara[0];
-        var cpara_1 = cpara[1];
-        var cpara_3 = cpara[3];
-        var cpara_6 = cpara[6];
-        var p = 0;
+
+        //for every row (3)
         for (var i = 0; i < resolution; i++) {
             var i2;
+
             // calculate the index values ​​of the pixels of one column.
-            var cy0 = 1 + index_y[i * 2 + 0];
-            var cy1 = 1 + index_y[i * 2 + 1];
-            var cpy0_12 = cpara_1 * cy0 + cpara[2];
+            var cy0 = index_y[i * 2];
+            var cy1 = index_y[i * 2 + 1];
+
+            var cpy0_12 = cpara[1] * cy0 + cpara[2];
             var cpy0_45 = cpara[4] * cy0 + cpara[5];
-            var cpy0_7 = cpara[7] * cy0 + 1.0;
-            var cpy1_12 = cpara_1 * cy1 + cpara[2];
+            var cpy0_7 = cpara[7] * cy0 + 1; //+1 rly needed
+            var cpy1_12 = cpara[1] * cy1 + cpara[2];
             var cpy1_45 = cpara[4] * cy1 + cpara[5];
-            var cpy1_7 = cpara[7] * cy1 + 1.0;
+            var cpy1_7 = cpara[7] * cy1 + 1; //+1 rly needed
+
             var pt = 0;
+
+            //for every cell (3)
             for (i2 = 0; i2 < resolution; i2++) {
                 var d;
-                var cx0 = 1 + index_x[i2 * 2 + 0];
-                var cx1 = 1 + index_x[i2 * 2 + 1];
-                var cp6_0 = cpara_6 * cx0;
-                var cpx0_0 = cpara_0 * cx0;
-                var cpx3_0 = cpara_3 * cx0;
-                var cp6_1 = cpara_6 * cx1;
-                var cpx0_1 = cpara_0 * cx1;
-                var cpx3_1 = cpara_3 * cx1;
+                var cx0 = index_x[i2 * 2];
+                var cx1 = index_x[i2 * 2 + 1];
+
+                var cp6_0 = cpara[6] * cx0;
+                var cpx0_0 = cpara[0] * cx0;
+                var cpx3_0 = cpara[3] * cx0;
+                var cp6_1 = cpara[6] * cx1;
+                var cpx0_1 = cpara[0] * cx1;
+                var cpx3_1 = cpara[3] * cx1;
+
                 d = cp6_0 + cpy0_7;
                 ref_x[pt] = toInt((cpx0_0 + cpy0_12) / d);
                 ref_y[pt] = toInt((cpx3_0 + cpy0_45) / d);
+
                 pt++;
                 d = cp6_0 + cpy1_7;
                 ref_x[pt] = toInt((cpx0_0 + cpy1_12) / d);
                 ref_y[pt] = toInt((cpx3_0 + cpy1_45) / d);
+
                 pt++;
                 d = cp6_1 + cpy0_7;
                 ref_x[pt] = toInt((cpx0_1 + cpy0_12) / d);
                 ref_y[pt] = toInt((cpx3_1 + cpy0_45) / d);
+
                 pt++;
                 d = cp6_1 + cpy1_7;
                 ref_x[pt] = toInt((cpx0_1 + cpy1_12) / d);
                 ref_y[pt] = toInt((cpx3_1 + cpy1_45) / d);
+
                 pt++;
             }
 
             // (The person who wrote the only accessor is good in some cases) to get the pixel of one line
+            //@return pixcel_temp (pixel data (3 squares x 4 points) 0/255)
             i_reader.getPixelSet(ref_x, ref_y, resolution * 4, pixcel_temp);
-            
+
             if (i == 1) {
                 var x = (ref_x[5] + ref_x[6]) / 2;
                 var y = (ref_y[5] + ref_y[6]) / 2;
                 cp = new IntVector([x, y]);
             }
-            
+
+            //every 4 data points in color square (3x3)
             if (window.DEBUG) {
                 this.debugDataBits(ref_x, ref_y, resolution * 4);
             }
+
             // While the gray scale, transfer to the line → map
             for (i2 = 0; i2 < resolution; i2++) {
                 var index = i2 * 4;
-                var pixel = (pixcel_temp[index + 0] + pixcel_temp[index + 1] + pixcel_temp[index + 2] + pixcel_temp[index + 3]) / (4);
+                var pixel = (pixcel_temp[index] + pixcel_temp[index + 1] + pixcel_temp[index + 2] + pixcel_temp[index + 3]) / (4);
+
                 // 1 = bright point, 0 = dark point                
                 if (pixel == 255) {
                     o_bitbuffer.setBitByBitIndex(0);
@@ -402,14 +413,14 @@ PerspectivePixelBoardReader = ASKlass('PerspectivePixelBoardReader', {
                 } else {
                     return false;
                 }
-                p++;
             }
         }
+
         o_bitbuffer.size = 0;
         return cp;
     }
     ,
-    debugDataBits: function(i_x, i_y, i_num) {
+    debugDataBits: function (i_x, i_y, i_num) {
         for (var i = 0; i < i_num; i++) {
             var cv = document.getElementById('debugCanvas').getContext('2d');
             cv.fillStyle = 'red';
@@ -422,22 +433,23 @@ FLARBoardDetectCB = ASKlass('FLARBoardDetectCB', {// callback function of detect
 // Public properties
     result_stack: new FLARDetectIdMarkerResult(),
     square: new FLARSquare(),
-    _ref_raster: null,
+    _ref_raster: null, //FLARBinRaster
     _prev_data: null,
     _id_pickup: new NyIdBoardPickup(),
     _coordline: null,
     __tmp_vertex: NyARIntPoint2d.createArray(4)
     ,
-    FLARBoardDetectCB: function(i_param) {
+    FLARBoardDetectCB: function (i_param) {
         this._coordline = new NyARCoord2Linear(i_param._screen_size, i_param._dist);
         return;
     }
     ,
-    init: function(i_raster) { // Initialize call back handler.                
+    //param FLARBinRaster i_raster
+    init: function (i_raster) { // Initialize call back handler.                
         this._ref_raster = i_raster;
     }
     ,
-    onBoardSquareDetect: function(i_coordx, i_coordy, i_vertex_index) { //ensure pattern vertex data with the orientation
+    onBoardSquareDetect: function (i_coordx, i_coordy, i_vertex_index) { //ensure pattern vertex data with the orientation
         // Convert to vertex list from the contour coordinate
         var vertex = this.__tmp_vertex;
         vertex[0].x = i_coordx[i_vertex_index[0]];
@@ -448,6 +460,7 @@ FLARBoardDetectCB = ASKlass('FLARBoardDetectCB', {// callback function of detect
         vertex[2].y = i_coordy[i_vertex_index[2]];
         vertex[3].x = i_coordx[i_vertex_index[3]];
         vertex[3].y = i_coordy[i_vertex_index[3]];
+
         // I cut out from the image a pattern of the evaluation criteria
         var cv;
         if (window.DEBUG) {
@@ -472,13 +485,13 @@ FLARBoardDetectCB = ASKlass('FLARBoardDetectCB', {// callback function of detect
 
         if (window.DEBUG) {
             cv.font = "bold 16px Verdana";
-            cv.fillStyle = '#ff0000';
+            cv.fillStyle = 'red';
             cv.fillText(param.bits, cx + 3, cy);
         }
         return param; //marker info
     }
     ,
-    onSquareResult: function(param, i_coordx, i_coordy) {
+    onSquareResult: function (param, i_coordx, i_coordy) {
         var i_coor_num = param.i_coor_num;
         var i_vertex_index = param.i_vertex_index;
 
@@ -511,7 +524,7 @@ FLARBoardDetectCB = ASKlass('FLARBoardDetectCB', {// callback function of detect
         }
     }
     ,
-    onSquareCompound: function(vX, vY) {
+    onSquareCompound: function (vX, vY) {
         // Only when there is an update in the ongoing recognition or recognition, new, 
         // I want to update the information Square
         // Above is executed only under this condition from here
@@ -540,7 +553,7 @@ FLARBoardDetector = ASKlass('FLARBoardDetector', {//!PLUGIN
     _callback: null,
     _transmat: null
     ,
-    FLARBoardDetector: function(i_param) {
+    FLARBoardDetector: function (i_param) {
         var scr_size = i_param._screen_size;
         // make the analysis object
         this._square_detect = new FLARSquareContourDetector(scr_size);
@@ -552,7 +565,7 @@ FLARBoardDetector = ASKlass('FLARBoardDetector', {//!PLUGIN
         this._offset = new NyARRectOffset();
 //        this._offset.width = 0;
     },
-    detectMarkerLite: function(i_raster) {
+    detectMarkerLite: function (i_raster) {
         // Size check
         if (!this._bin_raster._size.isEqualSize_int(i_raster._size.w, i_raster._size.h)) {
             throw new NyARException();
@@ -572,7 +585,7 @@ FLARBoardDetector = ASKlass('FLARBoardDetector', {//!PLUGIN
     // @ Param i_index = index number of the marker. Must be greater than or equal to 0 and less 
     // than the return value of detectMarkerLite that ran just before. 
     // @ Param o_result = object that receives the result value. 
-    getTransformMatrix: function(o_result) { //!IMPORTANT
+    getTransformMatrix: function (o_result) { //!IMPORTANT
         var result = this._callback.result_stack; //unique
         // Calculate the neighborhood such as the position of the marker that matches most
 
@@ -583,7 +596,7 @@ FLARBoardDetector = ASKlass('FLARBoardDetector', {//!PLUGIN
 
 //nothing changes
 
-NyARTransMat.prototype.transMatBoard = function(i_square, i_offset, o_result_conv) {
+NyARTransMat.prototype.transMatBoard = function (i_square, i_offset, o_result_conv) {
 
     var trans = this.__transMat_trans;
     // io_result_conv If the initial value, calculated in transMat.
@@ -630,7 +643,7 @@ NyARTransMat.prototype.transMatBoard = function(i_square, i_offset, o_result_con
         this.updateMatrixValue(this._rotmatrix, trans, o_result_conv);
 
     } else { // calculate new trasformation
-        console.log("new")
+        //console.log("new")
         // Calculate the rotation matrix
         this._rotmatrix.initRotBySquare(i_square.line, i_square.sqvertex);
         // From the 3D coordinate system after the rotation, and calculate the amount of translation
